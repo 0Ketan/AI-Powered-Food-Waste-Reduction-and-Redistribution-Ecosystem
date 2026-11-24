@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+env/
+
+# Environment
+.env
+.venv
+*.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.cursor/
+
+# Data / ML artifacts
+runtime/
+*.db
+*.sqlite
+*.pkl
+*.pkl.gz
+
+# Logs
+logs/
+*.log
+
+# Node
+node_modules/
+
+# Jupyter
+.ipynb_checkpoints/
+analysis-notebooks/
+*.ipynb
+
+# Development
+.DS_Store
+.nox/
+.pytest_cache/
+.coverage
+htmlcov/
+.tox
+
+# Frontend vendor (fetched at setup time)
+frontend/vendor/

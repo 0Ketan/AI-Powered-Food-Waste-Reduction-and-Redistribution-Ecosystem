@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AnnaSetu AI — Food Waste Reduction & Redistribution</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f5; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .container { background: white; padding: 3rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); max-width: 600px; text-align: center; }
+    h1 { color: #1a1a1a; font-size: 2.5rem; margin-bottom: 0.5rem; }
+    .tagline { color: #666; font-size: 1.1rem; margin-bottom: 2rem; }
+    .status { background: #e8f5e9; color: #2e7d32; padding: 1rem; border-radius: 8px; margin-bottom: 2rem; font-weight: 500; }
+    .modules { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 2rem; text-align: left; }
+    .module { background: #fafafa; border: 1px solid #eee; padding: 1rem; border-radius: 8px; }
+    .module h3 { color: #333; font-size: 0.95rem; margin-bottom: 0.5rem; }
+    .module p { color: #888; font-size: 0.85rem; }
+    .footer { color: #999; font-size: 0.85rem; }
+    .footer a { color: #1976d2; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>AnnaSetu AI</h1>
+    <p class="tagline">Food Waste Reduction & Redistribution Ecosystem</p>
+    <div class="status">✅ Backend API running at <code>http://localhost:8000</code></div>
+    <div class="modules">
+      <div class="module">
+        <h3>🔮 Forecast (M2)</h3>
+        <p>Cooking quantity recommendations with baseline + weather/event adjustments</p>
+      </div>
+      <div class="module">
+        <h3>📊 Waste (M2)</h3>
+        <p>Daily waste logging and summary statistics per kitchen/slot</p>
+      </div>
+      <div class="module">
+        <h3>🛡️ Safety (M1)</h3>
+        <p>Food safety evaluation, label generation, donation/disposal records</p>
+      </div>
+      <div class="module">
+        <h3>🏪 Marketplace (M3)</h3>
+        <p>Surplus matching, claim/pickup/served flow, needs & pledges, alerts & impact</p>
+      </div>
+    </div>
+    <p class="footer">API Docs: <a href="/docs" target="_blank">/docs</a> | Health: <a href="/health" target="_blank">/health</a> | Demo Clock: <a href="/api/demo/clock" target="_blank">/api/demo/clock</a></p>
+  </div>
+</body>
+</html>

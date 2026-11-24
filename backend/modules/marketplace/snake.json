@@ -1,0 +1,26 @@
+{
+  "name": "marketplace",
+  "version": "0.1.0",
+  "owner": "M3",
+  "description": "Surplus food matching, claim/pickup/served flow, needs & pledges, alerts & impact",
+  "endpoints": [
+    "GET /marketplace/listings",
+    "POST /marketplace/listings",
+    "GET /marketplace/nearby",
+    "POST /marketplace/listings/{id}/claim",
+    "POST /marketplace/listings/{id}/pickup",
+    "POST /marketplace/listings/{id}/served",
+    "GET /marketplace/needs",
+    "POST /marketplace/needs",
+    "POST /marketplace/needs/{id}/pledge",
+    "GET /alerts",
+    "POST /alerts/read",
+    "GET /impact"
+  ],
+  "data_files": [
+    "data/seed/marketplace.json",
+    "data/seed/core.json"
+  ],
+  "dependencies": [],
+  "stub": true
+}

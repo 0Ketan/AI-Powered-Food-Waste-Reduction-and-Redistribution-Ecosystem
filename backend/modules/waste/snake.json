@@ -1,0 +1,17 @@
+{
+  "name": "waste",
+  "version": "0.1.0",
+  "owner": "M2",
+  "description": "Daily waste logging and summary statistics per kitchen/slot",
+  "endpoints": [
+    "POST /waste/log",
+    "GET /waste/logs",
+    "GET /waste/summary"
+  ],
+  "data_files": [
+    "data/seed/waste.json",
+    "data/seed/core.json"
+  ],
+  "dependencies": [],
+  "stub": true
+}

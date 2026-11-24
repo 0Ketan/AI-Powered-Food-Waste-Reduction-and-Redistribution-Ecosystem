@@ -1,0 +1,21 @@
+{
+  "name": "safety",
+  "version": "0.1.0",
+  "owner": "M1",
+  "description": "Food safety evaluation, label generation, donation/disposal records",
+  "endpoints": [
+    "GET /safety/categories",
+    "POST /safety/evaluate",
+    "GET /safety/label/{label_id}/print",
+    "GET /safety/records",
+    "GET /safety/records.csv",
+    "GET /safety/disposals",
+    "POST /safety/records/{record_id}/complete"
+  ],
+  "data_files": [
+    "data/seed/core.json",
+    "data/seed/safety.json"
+  ],
+  "dependencies": [],
+  "stub": true
+}

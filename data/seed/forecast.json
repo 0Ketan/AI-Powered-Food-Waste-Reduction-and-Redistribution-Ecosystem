@@ -1,0 +1,30 @@
+{
+  "history": [
+    {"kitchen_id": "1", "date": "2026-11-17", "slot": "lunch", "actual": 175},
+    {"kitchen_id": "1", "date": "2026-11-18", "slot": "lunch", "actual": 182},
+    {"kitchen_id": "1", "date": "2026-11-19", "slot": "lunch", "actual": 168},
+    {"kitchen_id": "1", "date": "2026-11-20", "slot": "lunch", "actual": 190},
+    {"kitchen_id": "1", "date": "2026-11-21", "slot": "lunch", "actual": 155},
+    {"kitchen_id": "1", "date": "2026-11-22", "slot": "lunch", "actual": 145},
+    {"kitchen_id": "1", "date": "2026-11-23", "slot": "lunch", "actual": 170},
+    {"kitchen_id": "2", "date": "2026-11-17", "slot": "lunch", "actual": 140},
+    {"kitchen_id": "2", "date": "2026-11-18", "slot": "lunch", "actual": 148},
+    {"kitchen_id": "2", "date": "2026-11-19", "slot": "lunch", "actual": 135},
+    {"kitchen_id": "2", "date": "2026-11-20", "slot": "lunch", "actual": 155},
+    {"kitchen_id": "2", "date": "2026-11-21", "slot": "lunch", "actual": 125},
+    {"kitchen_id": "2", "date": "2026-11-22", "slot": "lunch", "actual": 118},
+    {"kitchen_id": "2", "date": "2026-11-23", "slot": "lunch", "actual": 138},
+    {"kitchen_id": "3", "date": "2026-11-17", "slot": "lunch", "actual": 95},
+    {"kitchen_id": "3", "date": "2026-11-18", "slot": "lunch", "actual": 102},
+    {"kitchen_id": "3", "date": "2026-11-19", "slot": "lunch", "actual": 88},
+    {"kitchen_id": "3", "date": "2026-11-20", "slot": "lunch", "actual": 110},
+    {"kitchen_id": "3", "date": "2026-11-21", "slot": "lunch", "actual": 82},
+    {"kitchen_id": "3", "date": "2026-11-22", "slot": "lunch", "actual": 75},
+    {"kitchen_id": "3", "date": "2026-11-23", "slot": "lunch", "actual": 92}
+  ],
+  "baselines": {
+    "1": {"lunch": 180},
+    "2": {"lunch": 145},
+    "3": {"lunch": 95}
+  }
+}

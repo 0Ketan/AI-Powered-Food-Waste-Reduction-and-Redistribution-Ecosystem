@@ -1,0 +1,17 @@
+{
+  "name": "forecast",
+  "version": "0.1.0",
+  "owner": "M2",
+  "description": "Cooking quantity recommendation engine with baseline + adjustments",
+  "endpoints": [
+    "GET /forecast/options",
+    "POST /forecast/recommend",
+    "GET /forecast/metrics"
+  ],
+  "data_files": [
+    "data/seed/forecast.json",
+    "data/seed/core.json"
+  ],
+  "dependencies": [],
+  "stub": true
+}

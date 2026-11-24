@@ -1,0 +1,32 @@
+# AnnaSetu AI Cursor IDE Config
+
+# Read and obey AGENTS.md before writing any code for this repository.
+
+Cursor IDE preferences for this repo.
+
+## Keybindings
+
+```
+[cursor]
+keybindings = { "Workbench Action: Toggle Sidebar Visibility": "Ctrl+B" }
+```
+
+## Preferences (based on CLAUDE.md section: MODULE OWNERSHIP)
+
+- Load Prettier if file contains HTML/CSS/JS
+- Import pydantic-schemas from `contracts/schemas.py`
+- Run `python tests/smoke_test.py` after modifications
+- Subset scope during code review: only edit paths in your `MEMBERID` in OWNERS.json
+- Check `git status` before committing
+- Never edit another person's paths without explicit direction
+
+## Extensions
+
+- Python (Pro)
+
+## Settings
+
+- Python Linter: Pyright
+- Python Formatter: Black
+- Tab size: 4
+- Auto-save: enabled

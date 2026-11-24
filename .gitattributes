@@ -1,0 +1,14 @@
+# Git attributes - line endings
+* text=auto eol=lf
+
+# Language hints
+*.py linguist-language=Python
+*.md linguist-documentation=true
+*.json linguist-language=JSON
+*.txt linguist-language=Text
+*.sql linguist-code
+
+# Force markdown files to be UTF-8
+*.md text eol=lf
+*.mdc text eol=lf
+*.md markdown linguist-documentation=true

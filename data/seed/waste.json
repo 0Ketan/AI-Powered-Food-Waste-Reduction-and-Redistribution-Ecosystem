@@ -1,0 +1,25 @@
+{
+  "logs": [
+    {"kitchen_id": "1", "date": "2026-11-17", "slot": "lunch", "prepared": 190, "served": 175, "leftover": 15, "ran_short": false},
+    {"kitchen_id": "1", "date": "2026-11-18", "slot": "lunch", "prepared": 195, "served": 182, "leftover": 13, "ran_short": false},
+    {"kitchen_id": "1", "date": "2026-11-19", "slot": "lunch", "prepared": 185, "served": 168, "leftover": 17, "ran_short": false},
+    {"kitchen_id": "1", "date": "2026-11-20", "slot": "lunch", "prepared": 200, "served": 190, "leftover": 10, "ran_short": false},
+    {"kitchen_id": "1", "date": "2026-11-21", "slot": "lunch", "prepared": 170, "served": 155, "leftover": 15, "ran_short": false},
+    {"kitchen_id": "1", "date": "2026-11-22", "slot": "lunch", "prepared": 160, "served": 145, "leftover": 15, "ran_short": false},
+    {"kitchen_id": "1", "date": "2026-11-23", "slot": "lunch", "prepared": 180, "served": 170, "leftover": 10, "ran_short": false},
+    {"kitchen_id": "2", "date": "2026-11-17", "slot": "lunch", "prepared": 155, "served": 140, "leftover": 15, "ran_short": false},
+    {"kitchen_id": "2", "date": "2026-11-18", "slot": "lunch", "prepared": 160, "served": 148, "leftover": 12, "ran_short": false},
+    {"kitchen_id": "2", "date": "2026-11-19", "slot": "lunch", "prepared": 150, "served": 135, "leftover": 15, "ran_short": false},
+    {"kitchen_id": "2", "date": "2026-11-20", "slot": "lunch", "prepared": 170, "served": 155, "leftover": 15, "ran_short": false},
+    {"kitchen_id": "2", "date": "2026-11-21", "slot": "lunch", "prepared": 140, "served": 125, "leftover": 15, "ran_short": false},
+    {"kitchen_id": "2", "date": "2026-11-22", "slot": "lunch", "prepared": 135, "served": 118, "leftover": 17, "ran_short": false},
+    {"kitchen_id": "2", "date": "2026-11-23", "slot": "lunch", "prepared": 150, "served": 138, "leftover": 12, "ran_short": false},
+    {"kitchen_id": "3", "date": "2026-11-17", "slot": "lunch", "prepared": 105, "served": 95, "leftover": 10, "ran_short": false},
+    {"kitchen_id": "3", "date": "2026-11-18", "slot": "lunch", "prepared": 110, "served": 102, "leftover": 8, "ran_short": false},
+    {"kitchen_id": "3", "date": "2026-11-19", "slot": "lunch", "prepared": 100, "served": 88, "leftover": 12, "ran_short": false},
+    {"kitchen_id": "3", "date": "2026-11-20", "slot": "lunch", "prepared": 120, "served": 110, "leftover": 10, "ran_short": false},
+    {"kitchen_id": "3", "date": "2026-11-21", "slot": "lunch", "prepared": 95, "served": 82, "leftover": 13, "ran_short": false},
+    {"kitchen_id": "3", "date": "2026-11-22", "slot": "lunch", "prepared": 90, "served": 75, "leftover": 15, "ran_short": false},
+    {"kitchen_id": "3", "date": "2026-11-23", "slot": "lunch", "prepared": 100, "served": 92, "leftover": 8, "ran_short": false}
+  ]
+}

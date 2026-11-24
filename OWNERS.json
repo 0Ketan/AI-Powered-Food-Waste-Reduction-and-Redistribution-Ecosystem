@@ -1,0 +1,45 @@
+{
+  "version": "1",
+  "members": {
+    "m1": "0Ketan",
+    "m2": "member2",
+    "m3": "member3"
+  },
+  "ownership": {
+    "m1": [
+      "contracts/**",
+      "docs/**",
+      "frontend/**",
+      "scripts/**",
+      "tests/**",
+      "backend/app.py",
+      "backend/core/**",
+      "backend/modules/safety/**",
+      "data/seed/core.json",
+      "data/seed/safety.json",
+      "OWNERS.json",
+      "README.md",
+      "AGENTS.md",
+      "CLAUDE.md",
+      "GEMINI.md",
+      ".cursorrules",
+      "requirements*.txt",
+      ".gitignore",
+      ".gitattributes",
+      "run.py",
+      ".claude/**",
+      ".vscode/**",
+      ".github/**"
+    ],
+    "m2": [
+      "backend/modules/forecast/**",
+      "backend/modules/waste/**",
+      "data/seed/forecast.json",
+      "data/seed/waste.json"
+    ],
+    "m3": [
+      "backend/modules/marketplace/**",
+      "data/seed/marketplace.json"
+    ]
+  }
+}

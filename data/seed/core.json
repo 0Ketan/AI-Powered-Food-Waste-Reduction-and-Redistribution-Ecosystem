@@ -1,0 +1,24 @@
+{
+  "kitchens": [
+    {"id": "1", "name": "Boys Hostel 1 Mess", "lat": 28.7041, "lon": 77.1025, "capacity_plates": 500, "type": "hostel"},
+    {"id": "2", "name": "Girls Hostel 1 Mess", "lat": 28.7050, "lon": 77.1030, "capacity_plates": 400, "type": "hostel"},
+    {"id": "3", "name": "PG Hostel Mess", "lat": 28.7038, "lon": 77.1018, "capacity_plates": 250, "type": "hostel"},
+    {"id": "4", "name": "Campus Food Processing Unit", "lat": 28.7035, "lon": 77.1015, "capacity_plates": 300, "type": "processing_unit"}
+  ],
+  "recipients": [
+    {"id": "10", "name": "Annapurna Seva Trust (demo NGO)", "lat": 28.7060, "lon": 77.1040, "veg_only": true, "capacity": 100, "type": "ngo"},
+    {"id": "11", "name": "Shri Mandir Community Kitchen", "lat": 28.7020, "lon": 77.1000, "veg_only": true, "capacity": 80, "type": "mandir"},
+    {"id": "12", "name": "Campus Security Staff", "lat": 28.7045, "lon": 77.1020, "veg_only": false, "capacity": 50, "type": "ngo"}
+  ],
+  "food_categories": [
+    {"id": "cooked_rice", "name": "Cooked Rice", "placeholder_hours_room_temp": 2, "placeholder_hours_hot_held": 4, "placeholder_hours_cold": 24},
+    {"id": "cooked_dal", "name": "Cooked Dal/Curry", "placeholder_hours_room_temp": 2, "placeholder_hours_hot_held": 4, "placeholder_hours_cold": 24},
+    {"id": "roti_bread", "name": "Roti/Bread", "placeholder_hours_room_temp": 4, "placeholder_hours_hot_held": 6, "placeholder_hours_cold": 48},
+    {"id": "fruit_veg", "name": "Fruit/Vegetable", "placeholder_hours_room_temp": 6, "placeholder_hours_hot_held": 8, "placeholder_hours_cold": 72},
+    {"id": "packaged", "name": "Packaged/Dry", "placeholder_hours_room_temp": 168, "placeholder_hours_hot_held": 168, "placeholder_hours_cold": 168}
+  ],
+  "storage_types": ["room_temp", "hot_held", "cold"],
+  "slots": ["breakfast", "lunch", "dinner"],
+  "weather_options": ["sunny", "rain", "cloudy", "hot"],
+  "event_options": ["normal", "exam", "festival", "holiday", "sports"]
+}
