@@ -200,23 +200,35 @@ class ForecastOptionsResponse(BaseModel):
 
 class ForecastRecommendRequest(BaseModel):
     kitchen_id: str
-    slot: Literal["lunch", "dinner"]
+    slot: Literal["breakfast", "lunch", "dinner"]
     date: str  # YYYY-MM-DD
-    weather: str
-    event: str
+    weather: str = "clear"
+    event: str = "none"
+    safety_level: float = Field(default=0.75, ge=0.0, le=1.0)  # Target 0.5-0.95
 
 
 class ForecastAdjustmentReason(BaseModel):
     factor: str
-    delta: int
+    effect_pct: Optional[float] = None
+    delta: Optional[int] = None
 
 
 class ForecastRecommendResponse(BaseModel):
-    baseline: int
-    adjustments: List[ForecastAdjustmentReason]
-    recommended: int
-    date: str
+    kitchen_id: Optional[str] = None
     slot: str
+    date: str
+    unit: str = "plates"
+    baseline: int
+    forecast_median: Optional[int] = None
+    safety_margin_pct: Optional[float] = None
+    recommended: int
+    safety_level: Optional[float] = 0.75
+    reasons: Optional[List[dict]] = None
+    adjustments: Optional[List[ForecastAdjustmentReason]] = None
+    summary: Optional[str] = None
+    history: Optional[List[dict]] = None
+    model: Optional[str] = "stub"
+    data_note: Optional[str] = "Simulated data"
 
 
 class ForecastMetricsResponse(BaseModel):

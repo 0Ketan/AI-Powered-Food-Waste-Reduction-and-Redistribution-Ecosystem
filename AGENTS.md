@@ -60,3 +60,7 @@ When using agents across module boundaries:
 - Before trusting their output, verify against your own knowledge of the code
 - If a reported finding contradicts your reading, re-read the target files yourself
 - If a fork agent needs to look at the same things you're looking at, run it yourself instead
+
+## Testing Structure
+
+- Root `tests/` = contract and integration tests (M1). Module unit tests live in `backend/modules/<name>/tests/` with unique file names and belong to the module owner.
