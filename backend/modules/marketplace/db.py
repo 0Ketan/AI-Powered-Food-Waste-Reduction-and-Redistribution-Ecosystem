@@ -59,10 +59,27 @@ def create_listing(donor_id: str, item_name: str, category_id: str, veg: bool,
         conn.close()
 
 
+def check_and_update_expired_listings(conn):
+    """Mark open listings whose consume_by has passed as expired."""
+    now_str = get_demo_time().isoformat()
+    # Handle both with/without Z or timezone in ISO strings
+    rows = conn.execute("SELECT id, consume_by FROM mkt_listings WHERE status = 'open'").fetchall()
+    now_dt = get_demo_time()
+    for row in rows:
+        try:
+            c_dt = datetime.fromisoformat(row["consume_by"].replace("Z", "+00:00"))
+            if now_dt >= c_dt:
+                conn.execute("UPDATE mkt_listings SET status = 'expired' WHERE id = ?", (row["id"],))
+        except Exception:
+            pass
+    conn.commit()
+
+
 def get_listings(donor_id: Optional[str] = None, status: Optional[str] = None) -> List[dict]:
     """Get marketplace listings."""
     conn = get_connection()
     try:
+        check_and_update_expired_listings(conn)
         query = "SELECT * FROM mkt_listings WHERE 1=1"
         params = []
         if donor_id:
@@ -82,6 +99,7 @@ def get_listing(listing_id: str) -> Optional[dict]:
     """Get a single listing by ID."""
     conn = get_connection()
     try:
+        check_and_update_expired_listings(conn)
         row = conn.execute("SELECT * FROM mkt_listings WHERE id = ?", (listing_id,)).fetchone()
         return dict(row) if row else None
     finally:
@@ -96,6 +114,7 @@ def get_nearby_listings(recipient_id: str, max_km: float = 10.0) -> List[dict]:
 
     conn = get_connection()
     try:
+        check_and_update_expired_listings(conn)
         rows = conn.execute(
             "SELECT * FROM mkt_listings WHERE status = 'open' ORDER BY created_at DESC"
         ).fetchall()

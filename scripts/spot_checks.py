@@ -32,7 +32,7 @@ d = r.json()
 check("Safe item approves (packaged, fresh)", r.status_code == 200 and d.get('decision') == 'approve',
       f"status={r.status_code} decision={d.get('decision')} reason={d.get('reason','')[:60]}")
 
-# --- SPOT CHECK b: 6h old room_temp cooked rice -> reject with plain-English reason ---
+# --- SPOT CHECK b: 6h old room_temp cooked rice -> reject with plain-English reason & routes to animal_feed_compost ---
 from datetime import datetime, timedelta, timezone
 old_time = (datetime.now(timezone.utc) - timedelta(hours=6)).isoformat()
 r = c.post('/api/safety/evaluate', json={
@@ -43,6 +43,7 @@ r = c.post('/api/safety/evaluate', json={
 d = r.json()
 check("6h old cooked_rice at room_temp -> reject", r.status_code == 200 and d.get('decision') == 'reject',
       f"status={r.status_code} decision={d.get('decision')}")
+check("Item routes to animal_feed/compost", d.get('route') in ('animal_feed', 'compost'), f"route={d.get('route')}")
 check("Reject reason is plain English (non-empty)", bool(d.get('reason')), f"reason={d.get('reason')}")
 print(f"       reason: {d.get('reason','')[:80]}")
 
@@ -110,9 +111,29 @@ check("Waste summary total increments by logged amount",
       after_tot == before_tot + 150, f"before={before_tot} after={after_tot} expected={before_tot+150}")
 
 # --- SPOT CHECK h: Clock advance marks near-expiry listing expired ---
+# Create listing that expires in 30 minutes
+from backend.core.clock import get_demo_time
+near_expiry_time = (get_demo_time() + timedelta(minutes=30)).isoformat()
+r_exp_list = c.post('/api/marketplace/listings', json={
+    'donor_id': '1', 'item_name': 'Expiring Soon Kheer', 'category_id': 'dairy',
+    'veg': True, 'quantity': 15, 'unit': 'bowls', 'storage': 'cold',
+    'consume_by': near_expiry_time
+})
+exp_lid = r_exp_list.json().get('listing_id')
+r_before_adv = c.get(f'/api/marketplace/listings/{exp_lid}')
+check("Listing is initially open", r_before_adv.json().get('status') == 'open')
+
 r_adv = c.post('/api/demo/advance', params={'minutes': 60})
 check("Clock advance 60 min returns offset=60",
       r_adv.json().get('offset_minutes') == 60, f"offset={r_adv.json().get('offset_minutes')}")
+
+r_after_adv = c.get(f'/api/marketplace/listings/{exp_lid}')
+check("Listing expiring within 1 hour is marked 'expired' after 60 min advance",
+      r_after_adv.json().get('status') == 'expired',
+      f"status={r_after_adv.json().get('status')}")
+
+# Reset clock
+c.post('/api/demo/reset')
 
 print()
 print("=" * 50)

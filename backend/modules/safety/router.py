@@ -39,7 +39,8 @@ class SafetyEvaluateOut(BaseModel):
     consume_by: Optional[str] = None
     label_id: Optional[str] = None
     record_id: Optional[str] = None
-    disposal_id: Optional[int] = None
+    disposal_id: Optional[str] = None
+    route: Optional[str] = None
 
 
 class DisposalIn(BaseModel):

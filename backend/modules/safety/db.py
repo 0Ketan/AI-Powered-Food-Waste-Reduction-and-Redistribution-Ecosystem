@@ -66,13 +66,19 @@ def evaluate_safety(donor_id: str, item_name: str, category_id: str, veg: bool,
 
     # Check if already expired
     if now >= consume_by_dt:
+        disp_id = create_disposal(
+            donor_id, item_name, quantity, unit,
+            "animal_feed",
+            f"Already past safe window ({hold_hours}h from preparation)"
+        )
         return {
             "decision": "reject",
-            "reason": f"Already past safe window ({hold_hours}h from preparation)",
+            "reason": f"Already past safe window ({hold_hours}h from preparation). Routed to animal_feed/compost.",
             "consume_by": consume_by_dt.isoformat(),
             "label_id": None,
             "record_id": None,
-            "disposal_id": None,
+            "disposal_id": disp_id,
+            "route": "animal_feed",
         }
 
     # Check buffer time
