@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - AnnaSetu AI</title>
+    <link rel="stylesheet" href="shared/styles.css">
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <script type="module" src="shared/nav.js"></script>
+
+    <main id="main-content" class="page">
+        <div class="container">
+            <header class="page-header">
+                <h1 class="page-title">
+                    <span>📊</span>
+                    <span>Dashboard</span>
+                </h1>
+                <p class="page-subtitle">Kitchen Overview & Key Metrics</p>
+            </header>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid" id="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon stat-icon-primary">🗑️</div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="stat-waste-logged">--</div>
+                        <div class="stat-label">Total Waste Logged (kg)</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon stat-icon-warning">🍽️</div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="stat-surplus-posted">--</div>
+                        <div class="stat-label">Surplus Posted (kg)</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon stat-icon-success">✅</div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="stat-items-distributed">--</div>
+                        <div class="stat-label">Items Distributed</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon stat-icon-info">👥</div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="stat-people-served">--</div>
+                        <div class="stat-label">People Served</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: var(--space-6); margin-bottom: var(--space-6);">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Waste by Category</h2>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="chart-waste-category" height="250"></canvas>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Waste Trend (Last 7 Days)</h2>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="chart-waste-trend" height="250"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity & Quick Actions -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: var(--space-6);">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Recent Activity</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Time</th>
+                                        <th>Action</th>
+                                        <th>Details</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recent-activity-body">
+                                    <tr>
+                                        <td colspan="3" class="text-center text-muted">Loading...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Quick Actions</h2>
+                    </div>
+                    <div class="card-body">
+                        <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+                            <a href="plan.html" class="btn btn-primary">
+                                <span>🔮</span> Plan Cooking Quantity
+                            </a>
+                            <a href="log.html" class="btn btn-warning">
+                                <span>📋</span> Log Waste Entry
+                            </a>
+                            <a href="post-surplus.html" class="btn btn-success">
+                                <span>🏪</span> Post Surplus
+                            </a>
+                            <a href="listings.html" class="btn btn-secondary">
+                                <span>📋</span> View My Listings
+                            </a>
+                        </div>
+                        <hr style="margin: var(--space-4) 0;">
+                        <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+                            <h4 style="font-size: var(--font-size-sm); color: var(--color-gray-600);">Demo Controls</h4>
+                            <button class="btn btn-sm btn-outline" id="btn-advance-1h">Advance Clock 1 Hour</button>
+                            <button class="btn btn-sm btn-outline" id="btn-advance-6h">Advance Clock 6 Hours</button>
+                            <button class="btn btn-sm btn-outline" id="btn-advance-24h">Advance Clock 24 Hours</button>
+                            <button class="btn btn-sm btn-outline" id="btn-reset-clock-dash">Reset Clock</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        import { state, initState } from './shared/state.js';
+        import { api, formatNumber, formatDateTime, showToast, minutesUntilExpiry } from './shared/api.js';
+        import { updateNavUI } from './shared/nav.js';
+        import { Chart } from '../vendor/chart.js/chart.umd.min.js';
+
+        // Initialize
+        initState();
+        updateNavUI();
+
+        // Check access
+        if (!state.canAccessPage(['kitchen', 'processing_unit'])) {
+            window.location.href = 'index.html';
+        }
+
+        // Chart instances
+        let wasteCategoryChart = null;
+        let wasteTrendChart = null;
+
+        // Load dashboard data
+        async function loadDashboard() {
+            try {
+                // Fetch waste summary
+                const wasteSummary = await api.getWasteSummary();
+                updateStats(wasteSummary);
+
+                // Fetch recent waste logs for activity
+                const wasteLogs = await api.getWasteLogs({ limit: 10 });
+                updateRecentActivity(wasteLogs);
+
+                // Fetch listings for distributed count
+                const listings = await api.getListings({ posted_by: state.user.id });
+                updateCharts(wasteSummary, listings);
+            } catch (e) {
+                console.error('Failed to load dashboard:', e);
+                showToast('Failed to load dashboard data', 'error');
+            }
+        }
+
+        function updateStats(summary) {
+            document.getElementById('stat-waste-logged').textContent = formatNumber(summary.total_waste_kg || 0);
+            document.getElementById('stat-surplus-posted').textContent = formatNumber(summary.surplus_kg || 0);
+
+            // Calculate distributed and served from listings
+            // This would need marketplace claims data - using placeholders
+            document.getElementById('stat-items-distributed').textContent = '--';
+            document.getElementById('stat-people-served').textContent = '--';
+        }
+
+        function updateRecentActivity(logs) {
+            const tbody = document.getElementById('recent-activity-body');
+            if (!logs || logs.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" class="text-center text-muted">No recent activity</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = logs.map(log => `
+                <tr>
+                    <td>${formatDateTime(log.created_at)}</td>
+                    <td><span class="badge badge-${getReasonBadgeClass(log.reason)}">${escapeHtml(log.reason)}</span></td>
+                    <td>${escapeHtml(log.item_name)} - ${log.quantity_kg} kg</td>
+                </tr>
+            `).join('');
+        }
+
+        function getReasonBadgeClass(reason) {
+            const classes = {
+                'overproduction': 'warning',
+                'spoilage': 'danger',
+                'expired': 'danger',
+                'trim_waste': 'info',
+                'quality_issue': 'warning',
+                'other': 'gray'
+            };
+            return classes[reason] || 'gray';
+        }
+
+        function updateCharts(summary, listings) {
+            // Waste by Category Chart
+            const categoryCtx = document.getElementById('chart-waste-category').getContext('2d');
+            if (wasteCategoryChart) wasteCategoryChart.destroy();
+
+            const categories = summary.by_category || {};
+            wasteCategoryChart = new Chart(categoryCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(categories),
+                    datasets: [{
+                        data: Object.values(categories),
+                        backgroundColor: [
+                            '#e53935', '#fb8c00', '#fdd835', '#43a047', '#1e88e5', '#8e24aa', '#e91e63'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { position: 'right', labels: { font: { size: 11 } } },
+                        tooltip: { callbacks: { label: ctx => `${ctx.label}: ${formatNumber(ctx.raw)} kg` } }
+                    }
+                }
+            });
+
+            // Waste Trend Chart (Last 7 Days)
+            const trendCtx = document.getElementById('chart-waste-trend').getContext('2d');
+            if (wasteTrendChart) wasteTrendChart.destroy();
+
+            // Generate mock trend data for demo (in real app, fetch from API)
+            const labels = [];
+            const data = [];
+            const now = state.getDemoTime();
+            for (let i = 6; i >= 0; i--) {
+                const d = new Date(now);
+                d.setDate(d.getDate() - i);
+                labels.push(d.toLocaleDateString('en-IN', { weekday: 'short', day: '2-digit', month: 'short' }));
+                data.push(Math.random() * 50 + 10); // Mock data
+            }
+
+            wasteTrendChart = new Chart(trendCtx, {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'Waste (kg)',
+                        data,
+                        borderColor: '#1e88e5',
+                        backgroundColor: 'rgba(30, 136, 229, 0.1)',
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } } }
+                }
+            });
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Demo clock controls
+        document.getElementById('btn-advance-1h')?.addEventListener('click', () => advanceClock(60));
+        document.getElementById('btn-advance-6h')?.addEventListener('click', () => advanceClock(360));
+        document.getElementById('btn-advance-24h')?.addEventListener('click', () => advanceClock(1440));
+        document.getElementById('btn-reset-clock-dash')?.addEventListener('click', resetClock);
+
+        async function advanceClock(minutes) {
+            try {
+                await api.advanceDemoClock(minutes);
+                showToast(`Clock advanced by ${minutes} minutes`, 'success');
+                setTimeout(loadDashboard, 500);
+            } catch (e) {
+                showToast('Failed to advance clock', 'error');
+            }
+        }
+
+        async function resetClock() {
+            try {
+                await api.resetDemoClock();
+                showToast('Clock reset to real time', 'success');
+                setTimeout(loadDashboard, 500);
+            } catch (e) {
+                showToast('Failed to reset clock', 'error');
+            }
+        }
+
+        // Load on start
+        loadDashboard();
+    </script>
+</body>
+</html>
