@@ -6,10 +6,15 @@ User instruction: Build complete SKELETON of AnnaSetu AI hackathon prototype per
 
 ## [Unreleased]
 
-### Added
-- Initial API contract definitions in API.md
-- Multi-module flow definitions in FLOWS.md
-- Shared Pydantic schemas in schemas.py
+## [1.1.0] - 2026-11-24
+
+### Changed - Forecast API Contract (v1.1)
+- Clarified `safety_level` (0.5–0.95, default 0.75) as target demand coverage quantile (`shortage` weighted `level/(1-level)` times worse than surplus).
+- Required `recommended` to be a positive integer and monotonically non-decreasing in `safety_level`.
+- Clarified `reasons[]` and `summary` describe demand drivers vs baseline only (never the slider), with weekday/weekend derived strictly from the request `date`.
+- Added optional response fields `forecast_median` (`Optional[int]`) and `safety_margin_pct` (`Optional[float]`) to `contracts/schemas.py` (`ForecastRecommendResponse`) and `contracts/API.md`.
+- Fixed the `POST /forecast/recommend` example for `2026-11-30` (Monday, Boys Hostel 1 Mess `"1"`, rain + exam, 14-day history, consistent arithmetic `180 -> 151 -> 159`).
+- Documented fallback rule: non-ML fallback must also be non-decreasing in `safety_level`.
 
 ## [1.0.0] - 2026-11-24
 

@@ -133,17 +133,63 @@ def test_forecast():
         payload = {
             "kitchen_id": kitchen_id,
             "slot": slot,
-            "date": "2026-11-24",
-            "weather": "clear",
-            "event": "none",
+            "date": "2026-11-30",  # Monday
+            "weather": "rain",
+            "event": "exam",
             "safety_level": 0.75
         }
         r = requests.post(f"{BASE_URL}/api/forecast/recommend", json=payload)
         assert r.status_code == 200
         rec = r.json()
-        assert "recommended" in rec
-        assert "baseline" in rec
+        assert isinstance(rec.get("recommended"), int) and rec["recommended"] > 0, f"Invalid recommended: {rec.get('recommended')}"
+        assert isinstance(rec.get("baseline"), int)
+        assert isinstance(rec.get("reasons"), list)
+        assert isinstance(rec.get("summary"), str)
         print(f"PASS Recommend: baseline={rec['baseline']}, recommended={rec['recommended']}, summary={rec['summary']}")
+
+        # Optional v1.1 fields check (WARN if missing)
+        median = rec.get("forecast_median")
+        margin = rec.get("safety_margin_pct")
+        if median is None:
+            print("WARN Recommend: optional field 'forecast_median' missing")
+        if margin is None:
+            print("WARN Recommend: optional field 'safety_margin_pct' missing")
+        if median is not None:
+            assert isinstance(median, int) and median > 0
+            if margin is None or margin >= 0:
+                assert rec["recommended"] >= median, f"recommended ({rec['recommended']}) < forecast_median ({median})"
+            print(f"PASS Median check: forecast_median={median}, safety_margin_pct={margin}, recommended={rec['recommended']}")
+
+        # Weekday/weekend check: Monday 2026-11-30 must not say weekend/Saturday; Saturday 2026-11-28 should
+        mon_text = (" ".join(str(x.get("factor", "")) for x in rec["reasons"]) + " " + rec["summary"]).lower()
+        assert "weekend" not in mon_text and "saturday" not in mon_text, f"Monday had weekend factor: {mon_text}"
+        r_sat = requests.post(f"{BASE_URL}/api/forecast/recommend", json={
+            "kitchen_id": kitchen_id, "slot": slot, "date": "2026-11-28",
+            "weather": "clear", "event": "none", "safety_level": 0.75
+        })
+        assert r_sat.status_code == 200
+        sat = r_sat.json()
+        sat_text = (" ".join(str(x.get("factor", "")) for x in sat["reasons"]) + " " + sat["summary"]).lower()
+        assert "weekend" in sat_text or "saturday" in sat_text, f"Saturday missing weekend factor: {sat_text}"
+        print("PASS Date factor check: Monday/Saturday match calendar")
+
+        # Monotonic safety_level check across 0.5..0.95
+        levels = [round(0.5 + 0.05 * i, 2) for i in range(10)]
+        vals = []
+        for lvl in levels:
+            rl = requests.post(f"{BASE_URL}/api/forecast/recommend", json={
+                "kitchen_id": kitchen_id, "slot": slot, "date": "2026-11-30",
+                "weather": "rain", "event": "exam", "safety_level": lvl
+            })
+            assert rl.status_code == 200
+            v = rl.json()["recommended"]
+            assert isinstance(v, int) and v > 0
+            vals.append(v)
+        for i in range(len(levels) - 1):
+            assert vals[i] <= vals[i + 1], (
+                f"Non-monotonic safety_level: {levels[i]}->{vals[i]} > {levels[i+1]}->{vals[i+1]}"
+            )
+        print(f"PASS Monotonic safety_level (0.5..0.95): {vals}")
 
     # Metrics
     if data["kitchens"]:
@@ -291,6 +337,13 @@ def test_marketplace():
     categories = r.json()
     cat_id = categories[0]["id"]
 
+    # Get current demo clock so consume_by / needed_by are always in the future
+    from datetime import datetime, timedelta
+    clock_r = requests.get(f"{BASE_URL}/api/demo/clock")
+    now_dt = datetime.fromisoformat(clock_r.json()["demo_time_utc"].replace("Z", "+00:00"))
+    future_consume_by = (now_dt + timedelta(hours=4)).isoformat().replace("+00:00", "Z")
+    future_needed_by = (now_dt + timedelta(hours=8)).isoformat().replace("+00:00", "Z")
+
     # Create listing
     payload = {
         "donor_id": kitchen_id,
@@ -300,7 +353,7 @@ def test_marketplace():
         "quantity": 50,
         "unit": "plates",
         "storage": "refrigerated",
-        "consume_by": "2026-11-24T14:00:00Z",
+        "consume_by": future_consume_by,
         "label_id": "lbl_test123",
         "record_id": "rec_test123"
     }
@@ -351,7 +404,7 @@ def test_marketplace():
     need_payload = {
         "recipient_id": ngo_id,
         "people": 100,
-        "needed_by": "2026-11-24T18:00:00Z",
+        "needed_by": future_needed_by,
         "veg_only": True,
         "notes": "Urgent need"
     }

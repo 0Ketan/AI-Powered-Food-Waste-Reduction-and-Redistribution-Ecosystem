@@ -23,6 +23,7 @@
       "CLAUDE.md",
       "GEMINI.md",
       ".cursorrules",
+      "pytest.ini",
       "requirements*.txt",
       ".gitignore",
       ".gitattributes",

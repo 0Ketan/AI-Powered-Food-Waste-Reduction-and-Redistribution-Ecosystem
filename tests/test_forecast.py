@@ -1,132 +1,179 @@
 """
-Forecast Module Unit Tests
-Importers: None (standalone test module)
-Affected API: /forecast/options, /forecast/recommend, /forecast/metrics
-Data schemas: forecast_history, forecast_baselines tables from core/db.py
-User instruction: Build complete SKELETON of AnnaSetu AI hackathon prototype per detailed specification
+Forecast Module Contract Tests (M1)
+Implementation-agnostic HTTP contract tests against /api/forecast/*.
 """
+import os
 import sys
 from pathlib import Path
 
-# Add backend to path
-sys.path.insert(0, str(Path(__file__).parent.parent / "backend"))
+os.environ["NO_PROXY"] = "localhost,127.0.0.1,0.0.0.0"
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import pytest
-from backend.modules.forecast.db import (
-    get_baseline, set_baseline, get_history, add_history_entry,
-    get_all_kitchens, get_slots, get_weather_options, get_event_options,
-    compute_adjustments, compute_mae
-)
-from backend.core.db import init_db, get_connection
+from fastapi.testclient import TestClient
+from backend.app import app
+from backend.core.db import init_db, seed_database
 
 
 @pytest.fixture(scope="module")
-def setup_db():
-    """Initialize test database."""
+def client():
+    """Initialize DB and return FastAPI TestClient."""
     init_db()
-    yield
+    seed_database()
+    return TestClient(app)
 
 
-def test_get_all_kitchens(setup_db):
-    """Test getting all kitchen configurations."""
-    kitchens = get_all_kitchens()
-    assert len(kitchens) > 0
-    assert all("id" in k and "name" in k and "role" in k for k in kitchens)
-    assert all(k["role"] == "kitchen" for k in kitchens)
+def _get_first_kitchen_and_slot(client: TestClient) -> tuple[str, str]:
+    resp = client.get("/api/forecast/options")
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data["kitchens"], "No kitchens returned by /api/forecast/options"
+    assert data["slots"], "No slots returned by /api/forecast/options"
+    return data["kitchens"][0]["id"], data["slots"][0]
 
 
-def test_get_slots(setup_db):
-    """Test getting meal slots."""
-    slots = get_slots()
-    assert slots == ["lunch", "dinner"]
+def test_forecast_options_shape(client):
+    """GET /api/forecast/options returns expected shape and types."""
+    resp = client.get("/api/forecast/options")
+    assert resp.status_code == 200
+    data = resp.json()
+    assert isinstance(data.get("kitchens"), list) and len(data["kitchens"]) > 0
+    assert isinstance(data.get("slots"), list) and len(data["slots"]) > 0
+    assert isinstance(data.get("weather_options"), list)
+    assert isinstance(data.get("event_options"), list)
 
 
-def test_get_weather_options(setup_db):
-    """Test getting weather options."""
-    weather = get_weather_options()
-    assert "clear" in weather
-    assert "rain" in weather
-    assert "hot" in weather
-    assert "cloudy" in weather
+def test_forecast_recommend_shape_and_types(client):
+    """POST /api/forecast/recommend returns valid contract v1.1 shape and types."""
+    kitchen_id, slot = _get_first_kitchen_and_slot(client)
+    resp = client.post(
+        "/api/forecast/recommend",
+        json={
+            "kitchen_id": kitchen_id,
+            "slot": slot,
+            "date": "2026-11-30",  # Monday
+            "weather": "rain",
+            "event": "exam",
+            "safety_level": 0.75,
+        },
+    )
+    assert resp.status_code == 200
+    rec = resp.json()
+
+    assert isinstance(rec.get("kitchen_id"), str)
+    assert isinstance(rec.get("slot"), str)
+    assert isinstance(rec.get("date"), str)
+    assert isinstance(rec.get("unit"), str)
+    assert isinstance(rec.get("baseline"), int)
+    assert isinstance(rec.get("recommended"), int) and rec["recommended"] > 0
+    assert isinstance(rec.get("safety_level"), (int, float))
+    assert isinstance(rec.get("reasons"), list)
+    for r in rec["reasons"]:
+        assert isinstance(r.get("factor"), str)
+        assert isinstance(r.get("effect_pct"), (int, float))
+    assert isinstance(rec.get("summary"), str)
+    assert isinstance(rec.get("history"), list)
+    assert isinstance(rec.get("model"), str)
+    assert isinstance(rec.get("data_note"), str)
+
+    # Optional v1.1 fields: WARN if missing, check invariant if present
+    median = rec.get("forecast_median")
+    margin = rec.get("safety_margin_pct")
+    if median is None:
+        print("WARN: optional field 'forecast_median' missing from /api/forecast/recommend")
+    if margin is None:
+        print("WARN: optional field 'safety_margin_pct' missing from /api/forecast/recommend")
+    if median is not None:
+        assert isinstance(median, int) and median > 0
+        if margin is None or margin >= 0:
+            assert rec["recommended"] >= median, (
+                f"recommended ({rec['recommended']}) < forecast_median ({median})"
+            )
 
 
-def test_get_event_options(setup_db):
-    """Test getting event options."""
-    events = get_event_options()
-    assert "none" in events
-    assert "exam" in events
-    assert "festival" in events
-    assert "holiday" in events
-    assert "sports" in events
+def test_forecast_monotonic_safety_level(client):
+    """recommended must be non-decreasing across safety_level 0.5, 0.55, ..., 0.95."""
+    kitchen_id, slot = _get_first_kitchen_and_slot(client)
+    levels = [round(0.5 + 0.05 * i, 2) for i in range(10)]  # 0.50 .. 0.95
+    recs = []
+    for lvl in levels:
+        resp = client.post(
+            "/api/forecast/recommend",
+            json={
+                "kitchen_id": kitchen_id,
+                "slot": slot,
+                "date": "2026-11-30",
+                "weather": "rain",
+                "event": "exam",
+                "safety_level": lvl,
+            },
+        )
+        assert resp.status_code == 200
+        val = resp.json()["recommended"]
+        assert isinstance(val, int) and val > 0
+        recs.append(val)
+
+    for i in range(len(levels) - 1):
+        assert recs[i] <= recs[i + 1], (
+            f"Non-monotonic: safety_level {levels[i]} -> {recs[i]} > "
+            f"safety_level {levels[i+1]} -> {recs[i+1]}"
+        )
 
 
-def test_baseline_operations(setup_db):
-    """Test getting and setting baselines."""
-    kitchens = get_all_kitchens()
-    kitchen_id = kitchens[0]["id"]
+def test_forecast_weekday_weekend_matches_date(client):
+    """Weekday/weekend factors in reasons/summary must match the request date."""
+    kitchen_id, slot = _get_first_kitchen_and_slot(client)
 
-    # Get baseline (should have default)
-    baseline = get_baseline(kitchen_id, "lunch")
-    assert isinstance(baseline, int)
-    assert baseline > 0
+    # Monday 2026-11-30 must NOT report weekend/Saturday/Sunday
+    r_mon = client.post(
+        "/api/forecast/recommend",
+        json={
+            "kitchen_id": kitchen_id,
+            "slot": slot,
+            "date": "2026-11-30",
+            "weather": "clear",
+            "event": "none",
+            "safety_level": 0.75,
+        },
+    )
+    assert r_mon.status_code == 200
+    mon = r_mon.json()
+    mon_factors = " ".join(str(r.get("factor", "")) for r in mon.get("reasons", [])).lower()
+    mon_summary = str(mon.get("summary", "")).lower()
+    for bad in ("weekend", "saturday", "sunday"):
+        assert bad not in mon_factors, f"Monday 2026-11-30 had '{bad}' in reasons: {mon['reasons']}"
+        assert bad not in mon_summary, f"Monday 2026-11-30 had '{bad}' in summary: {mon['summary']}"
 
-    # Set baseline
-    set_baseline(kitchen_id, "lunch", 150)
-    new_baseline = get_baseline(kitchen_id, "lunch")
-    assert new_baseline == 150
-
-
-def test_history_operations(setup_db):
-    """Test forecast history operations."""
-    kitchens = get_all_kitchens()
-    kitchen_id = kitchens[0]["id"]
-
-    # Add history entry
-    add_history_entry(kitchen_id, "lunch", "2026-11-20", 120, 115)
-    add_history_entry(kitchen_id, "lunch", "2026-11-21", 130, 125)
-
-    # Get history
-    history = get_history(kitchen_id, "lunch")
-    assert len(history) >= 2
-    assert all("predicted" in h and "actual" in h for h in history)
-
-
-def test_compute_adjustments(setup_db):
-    """Test adjustment computation."""
-    from datetime import date
-
-    # Test clear weather, no event, weekday
-    total, reasons = compute_adjustments("clear", "none", date(2026, 11, 23))  # Monday
-    assert total == 0
-    assert len(reasons) == 0
-
-    # Test rain
-    total, reasons = compute_adjustments("rain", "none", date(2026, 11, 23))
-    assert total == -6
-    assert any(r["factor"] == "weather:rain" for r in reasons)
-
-    # Test festival
-    total, reasons = compute_adjustments("clear", "festival", date(2026, 11, 23))
-    assert total == 15
-    assert any(r["factor"] == "event:festival" for r in reasons)
-
-    # Test weekend
-    total, reasons = compute_adjustments("clear", "none", date(2026, 11, 28))  # Saturday
-    assert total == -8
-    assert any(r["factor"] == "weekend" for r in reasons)
+    # Saturday 2026-11-28 must NOT report weekday/Monday..Friday, and should reflect weekend
+    r_sat = client.post(
+        "/api/forecast/recommend",
+        json={
+            "kitchen_id": kitchen_id,
+            "slot": slot,
+            "date": "2026-11-28",
+            "weather": "clear",
+            "event": "none",
+            "safety_level": 0.75,
+        },
+    )
+    assert r_sat.status_code == 200
+    sat = r_sat.json()
+    sat_factors = " ".join(str(r.get("factor", "")) for r in sat.get("reasons", [])).lower()
+    sat_summary = str(sat.get("summary", "")).lower()
+    assert ("weekend" in sat_factors) or ("saturday" in sat_factors) or ("weekend" in sat_summary) or ("saturday" in sat_summary), (
+        f"Saturday 2026-11-28 missing weekend/saturday factor: reasons={sat['reasons']}, summary={sat['summary']}"
+    )
 
 
-def test_compute_mae(setup_db):
-    """Test MAE computation."""
-    kitchens = get_all_kitchens()
-    kitchen_id = kitchens[0]["id"]
-
-    # Add some history
-    add_history_entry(kitchen_id, "dinner", "2026-11-22", 100, 95)
-    add_history_entry(kitchen_id, "dinner", "2026-11-23", 100, 105)
-
-    mae = compute_mae(kitchen_id, "dinner")
-    assert mae == 5.0  # (5 + 5) / 2 = 5.0
+def test_forecast_metrics_shape(client):
+    """GET /api/forecast/metrics returns expected shape and types."""
+    kitchen_id, slot = _get_first_kitchen_and_slot(client)
+    resp = client.get("/api/forecast/metrics", params={"kitchen_id": kitchen_id, "slot": slot})
+    assert resp.status_code == 200
+    m = resp.json()
+    assert isinstance(m.get("baseline_mae"), (int, float))
+    assert isinstance(m.get("model_mae"), (int, float))
+    assert isinstance(m.get("history_count"), int)
 
 
 if __name__ == "__main__":

@@ -20,6 +20,7 @@ tests/
 
 # Personal config: @0Ketan
 OWNERS.json
+pytest.ini
 .gitignore
 .gitattributes
 
