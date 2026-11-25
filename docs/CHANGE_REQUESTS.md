@@ -134,6 +134,17 @@ This document tracks all change requests for the AnnaSetu AI hackathon prototype
 - **Impact**: Test coverage, documentation
 - **Testing**: All tests pass
 
+### CR-0016: Forecast Contract v1.1 — Slider Semantics & Corrected Example
+- **Module**: contracts, tests
+- **Owner**: M1
+- **Type**: fix
+- **Priority**: P0
+- **Status**: Resolved
+- **Linked PR**: branch `m1/forecast-contract-fix`
+- **Description**: Fixed `POST /api/forecast/recommend` example in `contracts/API.md` (2026-11-30 is Monday, not Saturday; aligned baseline -> median -> recommended arithmetic), defined quantile `safety_level` semantics, added optional `forecast_median` and `safety_margin_pct` fields to `contracts/schemas.py`, and added implementation-agnostic contract tests.
+- **Impact**: `contracts/API.md`, `contracts/schemas.py`, `contracts/CHANGELOG.md`, `tests/test_forecast.py`, `tests/smoke_test.py`
+- **Testing**: `tests/smoke_test.py`, `pytest` contract tests
+
 ---
 
 ## Future Change Requests (Post-Hackathon)

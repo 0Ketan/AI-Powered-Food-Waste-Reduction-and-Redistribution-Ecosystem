@@ -1,48 +1,362 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AnnaSetu AI — Food Waste Reduction & Redistribution</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f5; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-    .container { background: white; padding: 3rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); max-width: 600px; text-align: center; }
-    h1 { color: #1a1a1a; font-size: 2.5rem; margin-bottom: 0.5rem; }
-    .tagline { color: #666; font-size: 1.1rem; margin-bottom: 2rem; }
-    .status { background: #e8f5e9; color: #2e7d32; padding: 1rem; border-radius: 8px; margin-bottom: 2rem; font-weight: 500; }
-    .modules { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 2rem; text-align: left; }
-    .module { background: #fafafa; border: 1px solid #eee; padding: 1rem; border-radius: 8px; }
-    .module h3 { color: #333; font-size: 0.95rem; margin-bottom: 0.5rem; }
-    .module p { color: #888; font-size: 0.85rem; }
-    .footer { color: #999; font-size: 0.85rem; }
-    .footer a { color: #1976d2; text-decoration: none; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnnaSetu AI - Demo Guide</title>
+    <link rel="stylesheet" href="shared/styles.css">
 </head>
 <body>
-  <div class="container">
-    <h1>AnnaSetu AI</h1>
-    <p class="tagline">Food Waste Reduction & Redistribution Ecosystem</p>
-    <div class="status">✅ Backend API running at <code>http://localhost:8000</code></div>
-    <div class="modules">
-      <div class="module">
-        <h3>🔮 Forecast (M2)</h3>
-        <p>Cooking quantity recommendations with baseline + weather/event adjustments</p>
-      </div>
-      <div class="module">
-        <h3>📊 Waste (M2)</h3>
-        <p>Daily waste logging and summary statistics per kitchen/slot</p>
-      </div>
-      <div class="module">
-        <h3>🛡️ Safety (M1)</h3>
-        <p>Food safety evaluation, label generation, donation/disposal records</p>
-      </div>
-      <div class="module">
-        <h3>🏪 Marketplace (M3)</h3>
-        <p>Surplus matching, claim/pickup/served flow, needs & pledges, alerts & impact</p>
-      </div>
-    </div>
-    <p class="footer">API Docs: <a href="/docs" target="_blank">/docs</a> | Health: <a href="/health" target="_blank">/health</a> | Demo Clock: <a href="/api/demo/clock" target="_blank">/api/demo/clock</a></p>
-  </div>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Navigation will be injected by nav.js -->
+    <script type="module" src="shared/nav.js"></script>
+
+    <main id="main-content" class="page">
+        <div class="container">
+            <header class="page-header">
+                <h1 class="page-title">
+                    <span>🍲</span>
+                    <span>AnnaSetu AI - Demo Guide</span>
+                </h1>
+                <p class="page-subtitle">AI-Powered Food Waste Reduction & Redistribution Ecosystem</p>
+            </header>
+
+            <div class="card" style="margin-bottom: var(--space-6);">
+                <div class="card-body">
+                    <h2>Welcome to AnnaSetu AI</h2>
+                    <p style="font-size: var(--font-size-lg); color: var(--color-gray-700); margin-bottom: var(--space-4);">
+                        <strong>AnnaSetu AI</strong> connects kitchens with surplus food to NGOs, temples, and processing units
+                        that can redistribute or repurpose it — reducing waste and feeding communities.
+                    </p>
+                    <p>This demo guide walks you through the complete workflow in 7 steps. Each step corresponds to a page
+                        in the application. You can follow along by clicking the links or using the navigation bar after logging in.</p>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: var(--space-6);">
+                <div class="card-header">
+                    <h2 class="card-title">Demo Users</h2>
+                </div>
+                <div class="card-body">
+                    <p>Log in as any of these pre-seeded demo accounts:</p>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon stat-icon-primary">🍳</div>
+                            <div class="stat-content">
+                                <div class="stat-value">Kitchen Staff</div>
+                                <div class="stat-label">Donors (2 accounts)</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon stat-icon-warning">🏭</div>
+                            <div class="stat-content">
+                                <div class="stat-value">Processing Unit</div>
+                                <div class="stat-label">Donors (1 account)</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon stat-icon-info">🤝</div>
+                            <div class="stat-content">
+                                <div class="stat-value">NGO Staff</div>
+                                <div class="stat-label">Recipients (2 accounts)</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: #f3e5f5; color: #6a1b9a;">🕉️</div>
+                            <div class="stat-content">
+                                <div class="stat-value">Mandir Staff</div>
+                                <div class="stat-label">Recipients (1 account)</div>
+                            </div>
+                        </div>
+                    </div>
+                    <p style="margin-top: var(--space-4);"><strong>Click any login button in the top bar to select a demo user.</strong></p>
+                </div>
+            </div>
+
+            <!-- Demo Steps -->
+            <section>
+                <h2 class="page-title" style="margin-bottom: var(--space-4);">7-Step Demo Flow</h2>
+
+                <div class="card" style="margin-bottom: var(--space-4);">
+                    <div class="card-body">
+                        <div style="display: flex; align-items: flex-start; gap: var(--space-4);">
+                            <div style="flex-shrink: 0; width: 48px; height: 48px; border-radius: var(--radius-md); background: var(--color-primary-bg); color: var(--color-primary); display: flex; align-items: center; justify-content: center; font-size: var(--font-size-xl); font-weight: bold;">1</div>
+                            <div style="flex: 1;">
+                                <h3 style="margin-bottom: var(--space-2);">📊 Dashboard — View Overview</h3>
+                                <p><strong>Role:</strong> Kitchen / Processing Unit</p>
+                                <p>View key metrics: total waste logged, surplus posted, items distributed, people served. See recent activity and quick actions.</p>
+                                <a href="dashboard.html" class="btn btn-primary btn-sm">Open Dashboard</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-bottom: var(--space-4);">
+                    <div class="card-body">
+                        <div style="display: flex; align-items: flex-start; gap: var(--space-4);">
+                            <div style="flex-shrink: 0; width: 48px; height: 48px; border-radius: var(--radius-md); background: var(--color-primary-bg); color: var(--color-primary); display: flex; align-items: center; justify-content: center; font-size: var(--font-size-xl); font-weight: bold;">2</div>
+                            <div style="flex: 1;">
+                                <h3 style="margin-bottom: var(--space-2);">🔮 Plan — AI Forecast Recommendation</h3>
+                                <p><strong>Role:</strong> Kitchen / Processing Unit</p>
+                                <p>Get AI-powered cooking quantity recommendations. Select kitchen, meal slot, weather, and events to see predicted attendance vs recommended cook qty with confidence interval.</p>
+                                <a href="plan.html" class="btn btn-primary btn-sm">Open Plan</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-bottom: var(--space-4);">
+                    <div class="card-body">
+                        <div style="display: flex; align-items: flex-start; gap: var(--space-4);">
+                            <div style="flex-shrink: 0; width: 48px; height: 48px; border-radius: var(--radius-md); background: var(--color-primary-bg); color: var(--color-primary); display: flex; align-items: center; justify-content: center; font-size: var(--font-size-xl); font-weight: bold;">3</div>
+                            <div style="flex: 1;">
+                                <h3 style="margin-bottom: var(--space-2);">📋 Log Waste — Record Waste Entry</h3>
+                                <p><strong>Role:</strong> Kitchen / Processing Unit</p>
+                                <p>Log food waste with item details, quantity, reason, and disposal method. Automatic safety evaluation determines if surplus is safe for donation.</p>
+                                <a href="log.html" class="btn btn-primary btn-sm">Open Log Waste</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-bottom: var(--space-4);">
+                    <div class="card-body">
+                        <div style="display: flex; align-items: flex-start; gap: var(--space-4);">
+                            <div style="flex-shrink: 0; width: 48px; height: 48px; border-radius: var(--radius-md); background: var(--color-primary-bg); color: var(--color-primary); display: flex; align-items: center; justify-content: center; font-size: var(--font-size-xl); font-weight: bold;">4</div>
+                            <div style="flex: 1;">
+                                <h3 style="margin-bottom: var(--space-2);">🏪 Post Surplus — Create Marketplace Listing</h3>
+                                <p><strong>Role:</strong> Kitchen / Processing Unit</p>
+                                <p>Post safe surplus as a marketplace listing with item details, quantity, storage condition, consume-by time. Auto-generates safety label and alerts nearby recipients.</p>
+                                <a href="post-surplus.html" class="btn btn-primary btn-sm">Open Post Surplus</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-bottom: var(--space-4);">
+                    <div class="card-body">
+                        <div style="display: flex; align-items: flex-start; gap: var(--space-4);">
+                            <div style="flex-shrink: 0; width: 48px; height: 48px; border-radius: var(--radius-md); background: var(--color-secondary-bg); color: var(--color-secondary); display: flex; align-items: center; justify-content: center; font-size: var(--font-size-xl); font-weight: bold;">5</div>
+                            <div style="flex: 1;">
+                                <h3 style="margin-bottom: var(--space-2);">🗺️ Nearby Food — Browse & Claim Listings</h3>
+                                <p><strong>Role:</strong> NGO / Mandir</p>
+                                <p>View nearby surplus listings on a map and list. Filter by distance, veg-only, time left. Claim listings with 4-digit pickup code.</p>
+                                <a href="nearby.html" class="btn btn-secondary btn-sm">Open Nearby Food</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-bottom: var(--space-4);">
+                    <div class="card-body">
+                        <div style="display: flex; align-items: flex-start; gap: var(--space-4);">
+                            <div style="flex-shrink: 0; width: 48px; height: 48px; border-radius: var(--radius-md); background: var(--color-secondary-bg); color: var(--color-secondary); display: flex; align-items: center; justify-content: center; font-size: var(--font-size-xl); font-weight: bold;">6</div>
+                            <div style="flex: 1;">
+                                <h3 style="margin-bottom: var(--space-2);">📝 My Needs — Post & Manage Need Requests</h3>
+                                <p><strong>Role:</strong> NGO / Mandir</p>
+                                <p>Create need requests (people count, needed-by time, veg-only). View pledges from donors. Track fulfillment status.</p>
+                                <a href="needs.html" class="btn btn-secondary btn-sm">Open My Needs</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-bottom: var(--space-4);">
+                    <div class="card-body">
+                        <div style="display: flex; align-items: flex-start; gap: var(--space-4);">
+                            <div style="flex-shrink: 0; width: 48px; height: 48px; border-radius: var(--radius-md); background: var(--color-secondary-bg); color: var(--color-secondary); display: flex; align-items: center; justify-content: center; font-size: var(--font-size-xl); font-weight: bold;">7</div>
+                            <div style="flex: 1;">
+                                <h3 style="margin-bottom: var(--space-2);">✅ My Claims — Track Pickup to Served</h3>
+                                <p><strong>Role:</strong> NGO / Mandir</p>
+                                <p>Track claimed listings through pickup → served flow. Enter actual people served. Kitchen side: verify pickup codes, mark collected.</p>
+                                <a href="claims.html" class="btn btn-secondary btn-sm">Open My Claims</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Demo Clock Controls -->
+            <div class="card" style="margin-bottom: var(--space-6);">
+                <div class="card-header">
+                    <h2 class="card-title">⏰ Demo Clock Controls</h2>
+                </div>
+                <div class="card-body">
+                    <p>The demo clock allows time-travel testing for expiry, alerts, and workflow progression.</p>
+                    <div style="display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center;">
+                        <div style="display: flex; align-items: center; gap: var(--space-2);">
+                            <label for="advance-minutes" class="form-label" style="margin-bottom: 0;">Advance by (minutes):</label>
+                            <input type="number" id="advance-minutes" class="form-input" style="width: auto; min-width: 100px;" value="60" min="1" max="10080">
+                        </div>
+                        <button class="btn btn-primary" id="btn-advance-clock">Advance Clock</button>
+                        <button class="btn btn-outline" id="btn-reset-clock">Reset to Real Time</button>
+                        <span id="clock-display" style="margin-left: auto; font-family: var(--font-family-mono); font-weight: var(--font-weight-semibold); color: var(--color-primary);"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- API Endpoints Reference -->
+            <details class="card" style="margin-bottom: var(--space-6);">
+                <summary class="card-header" style="cursor: pointer;">
+                    <h2 class="card-title">📚 API Endpoints Reference</h2>
+                </summary>
+                <div class="card-body">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-4);">
+                        <div>
+                            <h4 style="color: var(--color-primary); margin-bottom: var(--space-2);">Core</h4>
+                            <ul style="font-size: var(--font-size-sm); line-height: 2;">
+                                <li><code>GET /api/health</code> - Health check</li>
+                                <li><code>GET /api/demo/clock</code> - Demo clock time</li>
+                                <li><code>POST /api/demo/advance</code> - Advance clock</li>
+                                <li><code>POST /api/demo/reset</code> - Reset clock</li>
+                                <li><code>GET /api/demo/users</code> - Demo users list</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 style="color: var(--color-warning); margin-bottom: var(--space-2);">Forecast (M2)</h4>
+                            <ul style="font-size: var(--font-size-sm); line-height: 2;">
+                                <li><code>GET /api/forecast/options</code> - Options</li>
+                                <li><code>POST /api/forecast/recommend</code> - Recommend qty</li>
+                                <li><code>GET /api/forecast/metrics</code> - Metrics</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 style="color: var(--color-success); margin-bottom: var(--space-2);">Waste (M2)</h4>
+                            <ul style="font-size: var(--font-size-sm); line-height: 2;">
+                                <li><code>POST /api/waste/log</code> - Log waste</li>
+                                <li><code>GET /api/waste/logs</code> - Get logs</li>
+                                <li><code>GET /api/waste/summary</code> - Summary</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 style="color: var(--color-info); margin-bottom: var(--space-2);">Safety (M1)</h4>
+                            <ul style="font-size: var(--font-size-sm); line-height: 2;">
+                                <li><code>GET /api/safety/categories</code> - Categories</li>
+                                <li><code>POST /api/safety/evaluate</code> - Evaluate</li>
+                                <li><code>GET /api/safety/label/:id/print</code> - Label</li>
+                                <li><code>GET /api/safety/records</code> - Records</li>
+                                <li><code>GET /api/safety/disposals</code> - Disposals</li>
+                                <li><code>POST /api/safety/disposals</code> - Create disposal</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 style="color: #6a1b9a; margin-bottom: var(--space-2);">Marketplace (M3)</h4>
+                            <ul style="font-size: var(--font-size-sm); line-height: 2;">
+                                <li><code>GET /api/marketplace/listings</code> - Listings</li>
+                                <li><code>POST /api/marketplace/listings</code> - Create listing</li>
+                                <li><code>GET /api/marketplace/nearby</code> - Nearby</li>
+                                <li><code>POST /api/marketplace/listings/:id/claim</code> - Claim</li>
+                                <li><code>POST /api/marketplace/listings/:id/pickup</code> - Pickup</li>
+                                <li><code>POST /api/marketplace/listings/:id/served</code> - Served</li>
+                                <li><code>GET /api/marketplace/needs</code> - Needs</li>
+                                <li><code>POST /api/marketplace/needs</code> - Create need</li>
+                                <li><code>POST /api/marketplace/needs/:id/pledge</code> - Pledge</li>
+                                <li><code>GET /api/alerts</code> - Alerts</li>
+                                <li><code>POST /api/alerts/read</code> - Mark read</li>
+                                <li><code>GET /api/impact</code> - Impact</li>
+                                <li><code>GET /api/marketplace/claims</code> - Claims</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </details>
+
+            <!-- Architecture Overview -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">🏗️ Architecture Overview</h2>
+                </div>
+                <div class="card-body">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-4);">
+                        <div>
+                            <h4>Backend</h4>
+                            <ul style="font-size: var(--font-size-sm); line-height: 2;">
+                                <li>FastAPI + uvicorn</li>
+                                <li>SQLite (stdlib, no ORM)</li>
+                                <li>Module auto-discovery (snake.json)</li>
+                                <li>Demo clock with SQLite persistence</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4>Frontend</h4>
+                            <ul style="font-size: var(--font-size-sm); line-height: 2;">
+                                <li>Plain HTML/CSS/ES Modules</li>
+                                <li>No framework, no build step</li>
+                                <li>Chart.js for charts</li>
+                                <li>Leaflet for maps</li>
+                                <li>Role-based navigation</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4>Modules</h4>
+                            <ul style="font-size: var(--font-size-sm); line-height: 2;">
+                                <li>Core (M1) - Auth, Clock, Users</li>
+                                <li>Waste (M2) - Logging, Summary</li>
+                                <li>Safety (M1) - Evaluation, Labels</li>
+                                <li>Forecast (M2) - AI Recommendations</li>
+                                <li>Marketplace (M3) - Listings, Needs, Claims</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4>Data Flow</h4>
+                            <ul style="font-size: var(--font-size-sm); line-height: 2;">
+                                <li>Waste → Safety → Marketplace</li>
+                                <li>Forecast → Plan → Reduce Waste</li>
+                                <li>Need → Pledge → Listing → Claim → Pickup → Serve</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        import { advanceDemoClock, resetDemoClock, getDemoClock, showToast } from './shared/api.js';
+
+        // Update clock display
+        async function updateClockDisplay() {
+            try {
+                const data = await getDemoClock();
+                const display = document.getElementById('clock-display');
+                if (display) {
+                    const dt = new Date(data.demo_time_utc);
+                    display.textContent = dt.toLocaleString('en-IN', {
+                        day: '2-digit', month: 'short', year: 'numeric',
+                        hour: '2-digit', minute: '2-digit', hour12: true
+                    }) + ` (UTC${data.offset_minutes >= 0 ? '+' : ''}${data.offset_minutes}min)`;
+                }
+            } catch (e) {
+                console.warn('Failed to fetch clock:', e);
+            }
+        }
+
+        // Advance clock
+        document.getElementById('btn-advance-clock')?.addEventListener('click', async () => {
+            const minutes = parseInt(document.getElementById('advance-minutes')?.value) || 60;
+            try {
+                await advanceDemoClock(minutes);
+                showToast(`Clock advanced by ${minutes} minutes`, 'success');
+                updateClockDisplay();
+            } catch (e) {
+                showToast('Failed to advance clock: ' + e.message, 'error');
+            }
+        });
+
+        // Reset clock
+        document.getElementById('btn-reset-clock')?.addEventListener('click', async () => {
+            try {
+                await resetDemoClock();
+                showToast('Clock reset to real time', 'success');
+                updateClockDisplay();
+            } catch (e) {
+                showToast('Failed to reset clock: ' + e.message, 'error');
+            }
+        });
+
+        // Initial load
+        updateClockDisplay();
+    </script>
 </body>
 </html>

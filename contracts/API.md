@@ -48,15 +48,25 @@ Returns kitchens, slots, weather, events metadata.
 ### Recommend
 ```
 POST /forecast/recommend {
-  "kitchen_id": "string",
-  "slot": "string",
-  "date": "YYYY-MM-DD",
-  "weather": "string",
-  "event": "string",
+  "kitchen_id": "1",
+  "slot": "lunch",
+  "date": "2026-11-30",
+  "weather": "rain",
+  "event": "exam",
   "safety_level": 0.75
 }
 ```
-**Response**
+
+**Semantics & Rules (Contract v1.1):**
+- `safety_level` (`0.5`–`0.95`, default `0.75`): target share of similar situations in which the recommended quantity should cover demand (a quantile). Equivalent view: a shortage is treated as `level / (1 - level)` times worse than a surplus (`0.5 -> 1x`, `0.75 -> 3x`, `0.9 -> 9x`, `0.95 -> 19x`).
+- `recommended` is a positive integer and **MUST be non-decreasing** in `safety_level`: `recommended(0.5) <= recommended(0.75) <= recommended(0.9) <= recommended(0.95)` for the same other inputs.
+- `reasons[]` and `summary` describe **demand drivers** versus baseline only (weather, event, weekend), never the slider. A weekday/weekend factor may appear only if the request `date` really falls on it (derive it from the date).
+- Optional response fields:
+  - `forecast_median` (optional `int`): expected demand before the safety margin.
+  - `safety_margin_pct` (optional `float`): percentage added on top of `forecast_median` by the slider (`recommended ~= forecast_median * (1 + safety_margin_pct / 100)`).
+- **Fallback rule:** Any fallback without ML libraries must also be non-decreasing in `safety_level` (for example: `baseline * (1 + sum_of_effects) * (1 + (safety_level - 0.5) * 0.2)`).
+
+**Response (illustrative numbers — Boys Hostel 1 Mess, Monday 2026-11-30)**
 ```json
 {
   "kitchen_id": "1",
@@ -64,15 +74,36 @@ POST /forecast/recommend {
   "date": "2026-11-30",
   "unit": "plates",
   "baseline": 180,
-  "recommended": 165,
+  "forecast_median": 151,
+  "safety_margin_pct": 5.0,
+  "recommended": 159,
   "safety_level": 0.75,
-  "reasons": [{"factor":"weekend","effect_pct":-8}],
-  "summary": "-8%: Saturday",
-  "history": [{"date":"2026-11-23","actual":170}],
+  "reasons": [
+    {"factor": "Rain", "effect_pct": -6.0},
+    {"factor": "Exam day", "effect_pct": -10.0}
+  ],
+  "summary": "-16%: Rain + exam",
+  "history": [
+    {"date": "2026-11-16", "actual": 176},
+    {"date": "2026-11-17", "actual": 175},
+    {"date": "2026-11-18", "actual": 182},
+    {"date": "2026-11-19", "actual": 168},
+    {"date": "2026-11-20", "actual": 190},
+    {"date": "2026-11-21", "actual": 155},
+    {"date": "2026-11-22", "actual": 145},
+    {"date": "2026-11-23", "actual": 170},
+    {"date": "2026-11-24", "actual": 178},
+    {"date": "2026-11-25", "actual": 184},
+    {"date": "2026-11-26", "actual": 172},
+    {"date": "2026-11-27", "actual": 188},
+    {"date": "2026-11-28", "actual": 158},
+    {"date": "2026-11-29", "actual": 149}
+  ],
   "model": "stub",
   "data_note": "Simulated data"
 }
 ```
+*(Arithmetic: `180 * 0.84 = 151.2 -> 151`; `151.2 * 1.05 = 158.76 -> 159`.)*
 
 ### Metrics
 ```
