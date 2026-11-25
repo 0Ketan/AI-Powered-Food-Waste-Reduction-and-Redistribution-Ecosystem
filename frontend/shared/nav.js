@@ -26,22 +26,21 @@ function createTopShell() {
             <div class="nav-container">
                 <div class="nav-left">
                     <a href="/index.html" class="nav-brand">
-                        <span class="brand-icon">🍲</span>
-                        <span class="brand-text">AnnaSetu AI — Prototype</span>
+                        <span class="brand-text">AnnaSetu AI</span>
                     </a>
                     <div class="nav-menu" id="nav-menu"></div>
                 </div>
                 <div class="nav-right">
                     <a href="/index.html" class="btn btn-sm btn-outline" id="btn-demo-guide">Demo Guide</a>
                     <div class="nav-clock" id="nav-clock" title="Demo Clock">
-                        <span class="clock-icon">⏰</span>
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                         <span class="clock-time" id="nav-clock-time">--:--</span>
                     </div>
                     <button type="button" class="btn btn-sm btn-outline" id="btn-plus-hour" title="Advance demo clock by 1 hour">+1 Hour</button>
                     <button type="button" class="btn btn-sm btn-danger" id="btn-reset-demo" title="Reset demo database and clock">Reset Demo</button>
                     <div class="alerts-wrapper" style="position:relative;">
                         <button type="button" class="nav-alerts" id="nav-alerts" title="Alerts" aria-label="Alerts">
-                            <span class="alerts-icon">🔔</span>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
                             <span class="alerts-badge" id="alerts-badge" style="display:none;">0</span>
                         </button>
                         <div class="alerts-dropdown" id="alerts-dropdown" style="display:none;">
@@ -77,7 +76,6 @@ function renderNavMenu() {
     const current = getCurrentPageId();
     container.innerHTML = items.map(item => `
         <a href="${item.href}" class="nav-item ${item.id === current ? 'active' : ''}" data-page="${item.id}">
-            <span>${item.icon}</span>
             <span>${item.label}</span>
         </a>
     `).join('');
@@ -120,10 +118,13 @@ function updateAlertsUI() {
 
 function alertHref(a) {
     const role = state.user?.role;
+    const t = (a.type || a.alert_type || '').toLowerCase();
     if (role === 'kitchen' || role === 'processing_unit') {
+        if (t === 'log_reminder') {
+            return `/kitchen/log.html?slot=${encodeURIComponent(a.slot || 'lunch')}`;
+        }
         return '/kitchen/listings.html';
     }
-    const t = (a.type || a.alert_type || '').toLowerCase();
     if (t === 'new_listing') return '/recipient/nearby.html';
     if (t === 'pledge') return '/recipient/needs.html';
     if (t === 'claimed' || t === 'collected') return '/recipient/claims.html';

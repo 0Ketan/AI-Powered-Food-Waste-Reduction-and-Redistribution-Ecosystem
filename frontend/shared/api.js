@@ -182,9 +182,9 @@ export async function logWaste(payload) {
     });
 }
 
-export async function getWasteLogs(kitchenId, limit = 50) {
+export async function getWasteLogs(kitchenId, limit = 50, options = {}) {
     const params = new URLSearchParams({ kitchen_id: kitchenId, limit: String(limit) });
-    return apiRequest(`/waste/logs?${params}`);
+    return apiRequest(`/waste/logs?${params}`, options);
 }
 
 export async function getWasteSummary(kitchenId, options = {}) {
@@ -269,12 +269,12 @@ export async function serveListing(listingId, recipientId, peopleServed) {
     });
 }
 
-export async function getMarketplaceNeeds(status = null, recipientId = null, forDonorId = null) {
+export async function getMarketplaceNeeds(status = null, recipientId = null, forDonorId = null, options = {}) {
     const params = new URLSearchParams();
     if (status) params.append('status', status);
     if (recipientId) params.append('recipient_id', recipientId);
     if (forDonorId) params.append('for_donor_id', forDonorId);
-    return apiRequest(`/marketplace/needs?${params}`);
+    return apiRequest(`/marketplace/needs?${params}`, options);
 }
 
 export async function createMarketplaceNeed(payload) {

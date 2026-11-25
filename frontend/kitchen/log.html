@@ -14,7 +14,6 @@
         <div class="container">
             <header class="page-header">
                 <h1 class="page-title">
-                    <span>📝</span>
                     <span>Log Daily Waste</span>
                     <span class="goal-tag">Monitor</span>
                 </h1>
@@ -185,6 +184,10 @@
 
         await navReady;
         document.getElementById('log-date').value = getDemoTime().toISOString().slice(0, 10);
+        const slotParam = new URLSearchParams(window.location.search).get('slot');
+        if (slotParam && ['breakfast', 'lunch', 'dinner'].includes(slotParam)) {
+            document.getElementById('log-slot').value = slotParam;
+        }
         await loadLogs();
     </script>
 </body>

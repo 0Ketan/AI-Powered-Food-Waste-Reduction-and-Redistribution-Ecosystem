@@ -117,8 +117,74 @@ export async function refreshClock(api) {
 export async function fetchAlerts(api) {
     if (!state.user) return;
     try {
-        const alerts = await api.getAlerts(state.user.id);
-        state.alerts = Array.isArray(alerts) ? alerts : [];
+        const rawAlerts = await api.getAlerts(state.user.id);
+        let alerts = Array.isArray(rawAlerts) ? [...rawAlerts] : [];
+
+        if (isDonorRole(state.user.role)) {
+            // Keep only kitchen-relevant backend alerts (never NGO new_listing alerts)
+            alerts = alerts.filter(a => (a.type || a.alert_type || '').toLowerCase() !== 'new_listing');
+
+            const dt = getDemoTime();
+            const todayStr = dt.toISOString().slice(0, 10);
+            const hour = dt.getHours();
+
+            // Check missing meal waste logs for today's demo date
+            try {
+                const logsRes = await api.getWasteLogs(state.user.id, 20, { silent: true });
+                const todaySlots = new Set(
+                    (logsRes.logs || [])
+                        .filter(l => l.date === todayStr)
+                        .map(l => String(l.slot).toLowerCase())
+                );
+                const reminders = [];
+                if (hour >= 10 && !todaySlots.has('breakfast')) {
+                    reminders.push({
+                        id: `rem-breakfast-${todayStr}`,
+                        type: 'log_reminder',
+                        slot: 'breakfast',
+                        message: 'Reminder: Breakfast waste log not recorded yet for today.',
+                        created_at: dt.toISOString(),
+                        read: 0,
+                    });
+                }
+                if (hour >= 14 && !todaySlots.has('lunch')) {
+                    reminders.push({
+                        id: `rem-lunch-${todayStr}`,
+                        type: 'log_reminder',
+                        slot: 'lunch',
+                        message: 'Reminder: Lunch waste log not recorded yet for today.',
+                        created_at: dt.toISOString(),
+                        read: 0,
+                    });
+                }
+                if (hour >= 21 && !todaySlots.has('dinner')) {
+                    reminders.push({
+                        id: `rem-dinner-${todayStr}`,
+                        type: 'log_reminder',
+                        slot: 'dinner',
+                        message: 'Reminder: Dinner waste log not recorded yet for today.',
+                        created_at: dt.toISOString(),
+                        read: 0,
+                    });
+                }
+                alerts = [...reminders, ...alerts];
+            } catch {}
+
+            // Surface open NGO/Mandir food needs nearby
+            try {
+                const openNeeds = await api.getMarketplaceNeeds('open', null, state.user.id, { silent: true });
+                const needAlerts = (openNeeds || []).slice(0, 5).map(n => ({
+                    id: `open-need-${n.id}`,
+                    type: 'open_need',
+                    message: `Food need: ${n.recipient_name} requested meals for ${n.people} people.`,
+                    created_at: n.created_at || dt.toISOString(),
+                    read: 0,
+                }));
+                alerts = [...needAlerts, ...alerts];
+            } catch {}
+        }
+
+        state.alerts = alerts;
         state.unreadAlertCount = state.alerts.filter(a => !a.read).length;
         window.dispatchEvent(new CustomEvent('alerts-update', {
             detail: { alerts: state.alerts, unreadCount: state.unreadAlertCount }
@@ -161,14 +227,14 @@ export function stopPolling() {
 export function getNavItems() {
     const role = getUserRole();
     const items = [
-        { id: 'dashboard', label: 'Dashboard', href: '/kitchen/dashboard.html', icon: '📊', roles: ['kitchen', 'processing_unit'] },
-        { id: 'plan', label: 'Plan', href: '/kitchen/plan.html', icon: '🔮', roles: ['kitchen', 'processing_unit'] },
-        { id: 'log', label: 'Log Waste', href: '/kitchen/log.html', icon: '📝', roles: ['kitchen', 'processing_unit'] },
-        { id: 'post-surplus', label: 'Post Surplus', href: '/kitchen/post-surplus.html', icon: '🏪', roles: ['kitchen', 'processing_unit'] },
-        { id: 'listings', label: 'My Listings', href: '/kitchen/listings.html', icon: '📋', roles: ['kitchen', 'processing_unit'] },
-        { id: 'nearby', label: 'Nearby Food', href: '/recipient/nearby.html', icon: '🗺️', roles: ['ngo', 'mandir'] },
-        { id: 'needs', label: 'My Needs', href: '/recipient/needs.html', icon: '🙏', roles: ['ngo', 'mandir'] },
-        { id: 'claims', label: 'My Claims', href: '/recipient/claims.html', icon: '✅', roles: ['ngo', 'mandir'] },
+        { id: 'dashboard', label: 'Dashboard', href: '/kitchen/dashboard.html', roles: ['kitchen', 'processing_unit'] },
+        { id: 'plan', label: 'Plan', href: '/kitchen/plan.html', roles: ['kitchen', 'processing_unit'] },
+        { id: 'log', label: 'Log Waste', href: '/kitchen/log.html', roles: ['kitchen', 'processing_unit'] },
+        { id: 'post-surplus', label: 'Post Surplus', href: '/kitchen/post-surplus.html', roles: ['kitchen', 'processing_unit'] },
+        { id: 'listings', label: 'My Listings', href: '/kitchen/listings.html', roles: ['kitchen', 'processing_unit'] },
+        { id: 'nearby', label: 'Nearby Food', href: '/recipient/nearby.html', roles: ['ngo', 'mandir'] },
+        { id: 'needs', label: 'My Needs', href: '/recipient/needs.html', roles: ['ngo', 'mandir'] },
+        { id: 'claims', label: 'My Claims', href: '/recipient/claims.html', roles: ['ngo', 'mandir'] },
     ];
     return items.filter(item => item.roles.includes(role));
 }

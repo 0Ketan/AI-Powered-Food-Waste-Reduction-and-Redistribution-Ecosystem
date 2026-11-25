@@ -14,7 +14,6 @@
         <div class="container">
             <header class="page-header">
                 <h1 class="page-title">
-                    <span>🏪</span>
                     <span>Post Surplus Food</span>
                     <span class="goal-tag">Identify</span>
                 </h1>
@@ -29,11 +28,11 @@
                     <div style="margin-bottom: var(--space-4);">
                         <div class="form-label" style="margin-bottom:0.4rem;">Quick-Fill Presets</div>
                         <div id="preset-chips" style="display:flex; flex-wrap:wrap; gap:0.5rem;">
-                            <button type="button" class="btn btn-outline btn-sm preset-chip" data-name="Cooked Rice" data-cat="cooked_rice" data-veg="true" data-unit="plates">🍚 Cooked Rice</button>
-                            <button type="button" class="btn btn-outline btn-sm preset-chip" data-name="Dal & Sabzi" data-cat="cooked_dal" data-veg="true" data-unit="plates">🍲 Dal / Sabzi</button>
-                            <button type="button" class="btn btn-outline btn-sm preset-chip" data-name="Roti / Chapati" data-cat="bread" data-veg="true" data-unit="plates">🫓 Roti / Bread</button>
-                            <button type="button" class="btn btn-outline btn-sm preset-chip" data-name="Fresh Fruit" data-cat="fruit" data-veg="true" data-unit="plates">🍎 Fresh Fruit</button>
-                            <button type="button" class="btn btn-outline btn-sm preset-chip" data-name="Packaged Snacks" data-cat="packaged" data-veg="true" data-unit="packets">📦 Packaged Batch</button>
+                            <button type="button" class="btn btn-outline btn-sm preset-chip" data-name="Cooked Rice" data-cat="cooked_rice" data-veg="true" data-unit="plates">Cooked Rice</button>
+                            <button type="button" class="btn btn-outline btn-sm preset-chip" data-name="Dal & Sabzi" data-cat="cooked_dal" data-veg="true" data-unit="plates">Dal / Sabzi</button>
+                            <button type="button" class="btn btn-outline btn-sm preset-chip" data-name="Roti / Chapati" data-cat="bread" data-veg="true" data-unit="plates">Roti / Bread</button>
+                            <button type="button" class="btn btn-outline btn-sm preset-chip" data-name="Fresh Fruit" data-cat="fruit" data-veg="true" data-unit="plates">Fresh Fruit</button>
+                            <button type="button" class="btn btn-outline btn-sm preset-chip" data-name="Packaged Snacks" data-cat="packaged" data-veg="true" data-unit="packets">Packaged Batch</button>
                         </div>
                     </div>
                     <form id="surplus-form">
@@ -216,7 +215,7 @@
                     resultArea.innerHTML = `
                         <div class="card card-green">
                             <div class="card-body">
-                                <h2 style="margin-bottom:0.5rem;">✅ Safe to Donate — Posted to Marketplace</h2>
+                                <h2 style="margin-bottom:0.5rem;">Safe to Donate — Posted to Marketplace</h2>
                                 <p><strong>Listing ID:</strong> ${escapeHtml(listing.listing_id || listing.id || 'created')}</p>
                                 <p><strong>Consume By:</strong> ${escapeHtml(formatDateTime(evalRes.consume_by))} (${escapeHtml(minsLeft)} min left)</p>
                                 <div style="background:white; padding:0.75rem; border-radius:6px; margin:0.75rem 0; border:1px solid #a5d6a7;">
@@ -231,7 +230,7 @@
                     resultArea.innerHTML = `
                         <div class="card card-orange">
                             <div class="card-body">
-                                <h2 style="margin-bottom:0.5rem;">⚠️ Sent to animal feed / compost</h2>
+                                <h2 style="margin-bottom:0.5rem;">Sent to animal feed / compost</h2>
                                 <p><strong>Reason:</strong> ${escapeHtml(evalRes.reason || 'Not safe for human donation')}</p>
                                 ${evalRes.disposal_id ? `<p><strong>Disposal ID:</strong> ${escapeHtml(evalRes.disposal_id)}</p>` : ''}
                             </div>
