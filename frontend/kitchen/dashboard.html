@@ -112,7 +112,7 @@
             document.getElementById('kitchen-subtitle').textContent = `Showing metrics for ${user.name} (${user.role})`;
 
             const [summaryRes, impactRes, listingsRes] = await Promise.allSettled([
-                getWasteSummary(user.id),
+                getWasteSummary(user.id, { silent: true }),
                 getImpact(user.id),
                 getMarketplaceListings(user.id),
             ]);
@@ -127,7 +127,12 @@
                 document.getElementById('stat-shortages').textContent = s.shortage_count ?? totals.shortage_count ?? 0;
                 renderChartOrTable(s.days || []);
             } else {
-                document.getElementById('chart-loading').textContent = 'Unable to load waste summary.';
+                document.getElementById('stat-prepared').textContent = '0';
+                document.getElementById('stat-served').textContent = '0';
+                document.getElementById('stat-leftover').textContent = '0';
+                document.getElementById('stat-leftover-pct').textContent = '0';
+                document.getElementById('stat-shortages').textContent = '0';
+                document.getElementById('chart-loading').textContent = 'No waste logs recorded yet for this unit.';
             }
 
             if (impactRes.status === 'fulfilled') {

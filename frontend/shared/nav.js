@@ -118,6 +118,18 @@ function updateAlertsUI() {
     }
 }
 
+function alertHref(a) {
+    const role = state.user?.role;
+    if (role === 'kitchen' || role === 'processing_unit') {
+        return '/kitchen/listings.html';
+    }
+    const t = (a.type || a.alert_type || '').toLowerCase();
+    if (t === 'new_listing') return '/recipient/nearby.html';
+    if (t === 'pledge') return '/recipient/needs.html';
+    if (t === 'claimed' || t === 'collected') return '/recipient/claims.html';
+    return getHomePageForRole(role || 'ngo');
+}
+
 function renderAlertsList() {
     const list = document.getElementById('alerts-list');
     if (!list) return;
@@ -127,12 +139,12 @@ function renderAlertsList() {
         return;
     }
     list.innerHTML = alerts.map(a => `
-        <div class="alert-item ${!a.read ? 'unread' : ''}">
+        <a href="${alertHref(a)}" class="alert-item ${!a.read ? 'unread' : ''}" style="text-decoration:none; color:inherit;">
             <div class="alert-content">
                 <div class="alert-message">${api.escapeHtml(a.message)}</div>
                 <div class="alert-time">${api.formatDateTime(a.created_at)}</div>
             </div>
-        </div>
+        </a>
     `).join('');
 }
 

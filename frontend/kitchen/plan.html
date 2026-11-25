@@ -23,8 +23,12 @@
             </header>
 
             <div class="card" style="margin-bottom: var(--space-6);">
-                <div class="card-header">
+                <div class="card-header" style="flex-wrap:wrap;">
                     <h2 class="card-title">Forecast Parameters</h2>
+                    <div style="display:flex; align-items:center; gap:0.5rem;">
+                        <label for="date" class="form-label" style="margin:0; white-space:nowrap;">Date:</label>
+                        <input type="date" id="date" class="form-input" style="width:auto; padding:0.25rem 0.5rem; font-size:0.875rem;" required>
+                    </div>
                 </div>
                 <div class="card-body">
                     <form id="forecast-form" class="form-grid">
@@ -35,10 +39,6 @@
                         <div class="form-group">
                             <label for="slot" class="form-label">Meal Slot</label>
                             <select id="slot" class="form-select" required></select>
-                        </div>
-                        <div class="form-group">
-                            <label for="date" class="form-label">Date</label>
-                            <input type="date" id="date" class="form-input" required>
                         </div>
                         <div class="form-group">
                             <label for="weather" class="form-label">Weather</label>
@@ -57,6 +57,7 @@
                         </div>
                         <div class="form-group" style="grid-column: 1 / -1;">
                             <button type="submit" class="btn btn-primary" id="btn-recommend">Get recommendation</button>
+                            <small class="form-help" style="display:block; margin-top:0.5rem;">Date (weekday/weekend), weather, and event adjust the recommended quantity.</small>
                         </div>
                     </form>
                 </div>
@@ -134,7 +135,7 @@
             const level = pct / 100;
             const n = Math.round(level / (1 - level));
             sliderVal.textContent = `${pct}%`;
-            sliderRatio.textContent = `about ${n} times: running short is treated ${n} times worse than having extra`;
+            sliderRatio.textContent = `Safety Level: ${pct}% — about ${n}× : running short is treated ${n} times worse than having extra. Any surplus is safely donated.`;
         }
         slider.addEventListener('input', updateSliderHelper);
         updateSliderHelper();

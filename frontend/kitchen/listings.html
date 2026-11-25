@@ -237,12 +237,30 @@
             }
         }
 
+        function isUserTypingInListingsOrNeeds() {
+            const listingsBody = document.getElementById('listings-body');
+            const needsList = document.getElementById('open-needs-list');
+            for (const sec of [listingsBody, needsList]) {
+                if (!sec) continue;
+                for (const el of sec.querySelectorAll('input, textarea')) {
+                    if (document.activeElement === el) return true;
+                    if (sec === listingsBody && el.value.trim() !== '') return true;
+                    if (sec === needsList && (el.defaultValue ? el.value !== el.defaultValue : el.value.trim() !== '')) return true;
+                }
+            }
+            return false;
+        }
+
         await navReady;
         if (state.user) {
             document.getElementById('btn-download-csv').href = `/api/safety/records.csv?donor_id=${encodeURIComponent(state.user.id)}`;
         }
         await Promise.all([loadListings(), loadDisposals(), loadOpenNeeds()]);
-        setInterval(loadListings, 5000);
+        setInterval(() => {
+            if (!isUserTypingInListingsOrNeeds()) {
+                loadListings();
+            }
+        }, 5000);
         window.addEventListener('demo-clock-advanced', loadListings);
     </script>
 </body>

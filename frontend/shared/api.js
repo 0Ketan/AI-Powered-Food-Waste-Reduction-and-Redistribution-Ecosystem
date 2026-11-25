@@ -187,9 +187,9 @@ export async function getWasteLogs(kitchenId, limit = 50) {
     return apiRequest(`/waste/logs?${params}`);
 }
 
-export async function getWasteSummary(kitchenId) {
+export async function getWasteSummary(kitchenId, options = {}) {
     const params = new URLSearchParams({ kitchen_id: kitchenId });
-    return apiRequest(`/waste/summary?${params}`);
+    return apiRequest(`/waste/summary?${params}`, options);
 }
 
 // ============================================================================

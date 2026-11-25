@@ -22,15 +22,15 @@
             </header>
 
             <div class="card" style="margin-bottom: var(--space-6);">
-                <div class="card-header">
+                <div class="card-header" style="flex-wrap:wrap;">
                     <h2 class="card-title">New Waste Log</h2>
+                    <div style="display:flex; align-items:center; gap:0.5rem;">
+                        <label for="log-date" class="form-label" style="margin:0; white-space:nowrap;">Date:</label>
+                        <input type="date" id="log-date" class="form-input" style="width:auto; padding:0.25rem 0.5rem; font-size:0.875rem;" required>
+                    </div>
                 </div>
                 <div class="card-body">
                     <form id="waste-form" class="form-grid">
-                        <div class="form-group">
-                            <label for="log-date" class="form-label">Date</label>
-                            <input type="date" id="log-date" class="form-input" required>
-                        </div>
                         <div class="form-group">
                             <label for="log-slot" class="form-label">Slot</label>
                             <select id="log-slot" class="form-select" required>
@@ -53,7 +53,7 @@
                         </div>
                         <div class="form-group" style="display:flex; align-items:center; gap:0.5rem; padding-top:1.5rem;">
                             <input type="checkbox" id="log-ran-short">
-                            <label for="log-ran-short" class="form-label" style="margin:0;">Food ran out</label>
+                            <label for="log-ran-short" class="form-label" style="margin:0;">Food ran out (not all students were served)</label>
                         </div>
                         <div class="form-group" style="grid-column: 1 / -1;">
                             <button type="submit" class="btn btn-primary" id="btn-log-waste">Save Waste Log</button>
@@ -94,6 +94,33 @@
         import { navReady } from '/shared/nav.js';
         import { state, getDemoTime } from '/shared/state.js';
 
+        const preparedEl = document.getElementById('log-prepared');
+        const servedEl   = document.getElementById('log-served');
+        const leftoverEl = document.getElementById('log-leftover');
+        const ranShortEl = document.getElementById('log-ran-short');
+
+        /* Auto-calculate leftover when user types in prepared/served (and "Food ran out" is unchecked) */
+        function autoCalcLeftover() {
+            if (ranShortEl.checked) return;
+            const p = Number(preparedEl.value) || 0;
+            const s = Number(servedEl.value) || 0;
+            leftoverEl.value = Math.max(0, p - s);
+        }
+        preparedEl.addEventListener('input', autoCalcLeftover);
+        servedEl.addEventListener('input', autoCalcLeftover);
+
+        /* "Food ran out" checkbox logic */
+        ranShortEl.addEventListener('change', () => {
+            if (ranShortEl.checked) {
+                leftoverEl.value = 0;
+                leftoverEl.disabled = true;
+                servedEl.value = preparedEl.value;
+            } else {
+                leftoverEl.disabled = false;
+                autoCalcLeftover();
+            }
+        });
+
         async function loadLogs() {
             const tbody = document.getElementById('logs-body');
             if (!state.user) return;
@@ -123,12 +150,17 @@
         document.getElementById('waste-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!state.user) return;
-            const prepared = Number(document.getElementById('log-prepared').value);
-            const served = Number(document.getElementById('log-served').value);
-            const leftover = Number(document.getElementById('log-leftover').value);
+            const prepared = Number(preparedEl.value);
+            const served = Number(servedEl.value);
+            const leftover = Number(leftoverEl.value);
+            const ranShort = ranShortEl.checked;
 
             if ([prepared, served, leftover].some(n => Number.isNaN(n) || n < 0)) {
                 showError('Prepared, served, and leftover must be numbers >= 0.');
+                return;
+            }
+            if (ranShort && leftover > 0) {
+                showError('"Food ran out" is checked but leftover is greater than 0. Please uncheck it or set leftover to 0.');
                 return;
             }
             if (served + leftover !== prepared) {
@@ -144,7 +176,7 @@
                     prepared,
                     served,
                     leftover,
-                    ran_short: document.getElementById('log-ran-short').checked,
+                    ran_short: ranShort,
                 });
                 showToast('Waste log saved!', 'success');
                 await loadLogs();
