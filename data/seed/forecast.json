@@ -1,30 +1,5058 @@
 {
   "history": [
-    {"kitchen_id": "1", "date": "2026-11-17", "slot": "lunch", "actual": 175},
-    {"kitchen_id": "1", "date": "2026-11-18", "slot": "lunch", "actual": 182},
-    {"kitchen_id": "1", "date": "2026-11-19", "slot": "lunch", "actual": 168},
-    {"kitchen_id": "1", "date": "2026-11-20", "slot": "lunch", "actual": 190},
-    {"kitchen_id": "1", "date": "2026-11-21", "slot": "lunch", "actual": 155},
-    {"kitchen_id": "1", "date": "2026-11-22", "slot": "lunch", "actual": 145},
-    {"kitchen_id": "1", "date": "2026-11-23", "slot": "lunch", "actual": 170},
-    {"kitchen_id": "2", "date": "2026-11-17", "slot": "lunch", "actual": 140},
-    {"kitchen_id": "2", "date": "2026-11-18", "slot": "lunch", "actual": 148},
-    {"kitchen_id": "2", "date": "2026-11-19", "slot": "lunch", "actual": 135},
-    {"kitchen_id": "2", "date": "2026-11-20", "slot": "lunch", "actual": 155},
-    {"kitchen_id": "2", "date": "2026-11-21", "slot": "lunch", "actual": 125},
-    {"kitchen_id": "2", "date": "2026-11-22", "slot": "lunch", "actual": 118},
-    {"kitchen_id": "2", "date": "2026-11-23", "slot": "lunch", "actual": 138},
-    {"kitchen_id": "3", "date": "2026-11-17", "slot": "lunch", "actual": 95},
-    {"kitchen_id": "3", "date": "2026-11-18", "slot": "lunch", "actual": 102},
-    {"kitchen_id": "3", "date": "2026-11-19", "slot": "lunch", "actual": 88},
-    {"kitchen_id": "3", "date": "2026-11-20", "slot": "lunch", "actual": 110},
-    {"kitchen_id": "3", "date": "2026-11-21", "slot": "lunch", "actual": 82},
-    {"kitchen_id": "3", "date": "2026-11-22", "slot": "lunch", "actual": 75},
-    {"kitchen_id": "3", "date": "2026-11-23", "slot": "lunch", "actual": 92}
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-03",
+      "slot": "lunch",
+      "actual": 172,
+      "predicted": 176
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-04",
+      "slot": "lunch",
+      "actual": 185,
+      "predicted": 185
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-05",
+      "slot": "lunch",
+      "actual": 124,
+      "predicted": 124
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-06",
+      "slot": "lunch",
+      "actual": 129,
+      "predicted": 124
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-07",
+      "slot": "lunch",
+      "actual": 187,
+      "predicted": 176
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-08",
+      "slot": "lunch",
+      "actual": 178,
+      "predicted": 169
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-09",
+      "slot": "lunch",
+      "actual": 186,
+      "predicted": 185
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-10",
+      "slot": "lunch",
+      "actual": 180,
+      "predicted": 176
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-11",
+      "slot": "lunch",
+      "actual": 170,
+      "predicted": 169
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-12",
+      "slot": "lunch",
+      "actual": 150,
+      "predicted": 140
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-13",
+      "slot": "lunch",
+      "actual": 125,
+      "predicted": 135
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-14",
+      "slot": "lunch",
+      "actual": 181,
+      "predicted": 185
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-15",
+      "slot": "lunch",
+      "actual": 187,
+      "predicted": 180
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-16",
+      "slot": "lunch",
+      "actual": 176,
+      "predicted": 176
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-17",
+      "slot": "lunch",
+      "actual": 164,
+      "predicted": 169
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-18",
+      "slot": "lunch",
+      "actual": 185,
+      "predicted": 176
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-19",
+      "slot": "lunch",
+      "actual": 126,
+      "predicted": 131
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-20",
+      "slot": "lunch",
+      "actual": 134,
+      "predicted": 124
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-21",
+      "slot": "lunch",
+      "actual": 188,
+      "predicted": 180
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-22",
+      "slot": "lunch",
+      "actual": 176,
+      "predicted": 169
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-23",
+      "slot": "lunch",
+      "actual": 173,
+      "predicted": 169
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-24",
+      "slot": "lunch",
+      "actual": 168,
+      "predicted": 169
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-25",
+      "slot": "lunch",
+      "actual": 161,
+      "predicted": 169
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-26",
+      "slot": "lunch",
+      "actual": 135,
+      "predicted": 140
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-27",
+      "slot": "lunch",
+      "actual": 114,
+      "predicted": 124
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-28",
+      "slot": "lunch",
+      "actual": 183,
+      "predicted": 196
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-29",
+      "slot": "lunch",
+      "actual": 176,
+      "predicted": 169
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-30",
+      "slot": "lunch",
+      "actual": 170,
+      "predicted": 180
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-01",
+      "slot": "lunch",
+      "actual": 184,
+      "predicted": 176
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-02",
+      "slot": "lunch",
+      "actual": 168,
+      "predicted": 180
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-03",
+      "slot": "lunch",
+      "actual": 132,
+      "predicted": 135
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-04",
+      "slot": "lunch",
+      "actual": 131,
+      "predicted": 135
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-05",
+      "slot": "lunch",
+      "actual": 190,
+      "predicted": 180
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-06",
+      "slot": "lunch",
+      "actual": 186,
+      "predicted": 180
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-07",
+      "slot": "lunch",
+      "actual": 167,
+      "predicted": 180
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-08",
+      "slot": "lunch",
+      "actual": 182,
+      "predicted": 169
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-09",
+      "slot": "lunch",
+      "actual": 171,
+      "predicted": 176
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-10",
+      "slot": "lunch",
+      "actual": 129,
+      "predicted": 124
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-11",
+      "slot": "lunch",
+      "actual": 134,
+      "predicted": 135
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-12",
+      "slot": "lunch",
+      "actual": 169,
+      "predicted": 180
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-13",
+      "slot": "lunch",
+      "actual": 177,
+      "predicted": 185
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-14",
+      "slot": "lunch",
+      "actual": 177,
+      "predicted": 180
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-15",
+      "slot": "lunch",
+      "actual": 178,
+      "predicted": 169
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-16",
+      "slot": "lunch",
+      "actual": 169,
+      "predicted": 169
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-17",
+      "slot": "lunch",
+      "actual": 131,
+      "predicted": 135
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-18",
+      "slot": "lunch",
+      "actual": 130,
+      "predicted": 124
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-19",
+      "slot": "lunch",
+      "actual": 170,
+      "predicted": 180
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-20",
+      "slot": "lunch",
+      "actual": 186,
+      "predicted": 176
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-21",
+      "slot": "lunch",
+      "actual": 171,
+      "predicted": 180
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-22",
+      "slot": "lunch",
+      "actual": 179,
+      "predicted": 180
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-23",
+      "slot": "lunch",
+      "actual": 176,
+      "predicted": 176
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-24",
+      "slot": "lunch",
+      "actual": 150,
+      "predicted": 135
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-25",
+      "slot": "lunch",
+      "actual": 137,
+      "predicted": 124
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-26",
+      "slot": "lunch",
+      "actual": 189,
+      "predicted": 180
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-27",
+      "slot": "lunch",
+      "actual": 182,
+      "predicted": 180
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-28",
+      "slot": "lunch",
+      "actual": 156,
+      "predicted": 169
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-29",
+      "slot": "lunch",
+      "actual": 192,
+      "predicted": 180
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-30",
+      "slot": "lunch",
+      "actual": 185,
+      "predicted": 176
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-31",
+      "slot": "lunch",
+      "actual": 125,
+      "predicted": 131
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-01",
+      "slot": "lunch",
+      "actual": 141,
+      "predicted": 140
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-02",
+      "slot": "lunch",
+      "actual": 176,
+      "predicted": 180
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-03",
+      "slot": "lunch",
+      "actual": 182,
+      "predicted": 169
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-04",
+      "slot": "lunch",
+      "actual": 169,
+      "predicted": 180
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-05",
+      "slot": "lunch",
+      "actual": 188,
+      "predicted": 180
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-06",
+      "slot": "lunch",
+      "actual": 186,
+      "predicted": 180
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-07",
+      "slot": "lunch",
+      "actual": 126,
+      "predicted": 124
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-08",
+      "slot": "lunch",
+      "actual": 125,
+      "predicted": 131
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-09",
+      "slot": "lunch",
+      "actual": 158,
+      "predicted": 169
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-10",
+      "slot": "lunch",
+      "actual": 184,
+      "predicted": 180
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-11",
+      "slot": "lunch",
+      "actual": 160,
+      "predicted": 169
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-12",
+      "slot": "lunch",
+      "actual": 176,
+      "predicted": 180
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-13",
+      "slot": "lunch",
+      "actual": 171,
+      "predicted": 185
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-14",
+      "slot": "lunch",
+      "actual": 131,
+      "predicted": 135
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-15",
+      "slot": "lunch",
+      "actual": 111,
+      "predicted": 106
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-16",
+      "slot": "lunch",
+      "actual": 151,
+      "predicted": 151
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-17",
+      "slot": "lunch",
+      "actual": 140,
+      "predicted": 151
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-18",
+      "slot": "lunch",
+      "actual": 190,
+      "predicted": 180
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-19",
+      "slot": "lunch",
+      "actual": 171,
+      "predicted": 169
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-20",
+      "slot": "lunch",
+      "actual": 174,
+      "predicted": 180
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-21",
+      "slot": "lunch",
+      "actual": 134,
+      "predicted": 131
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-22",
+      "slot": "lunch",
+      "actual": 144,
+      "predicted": 135
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-23",
+      "slot": "lunch",
+      "actual": 191,
+      "predicted": 180
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-24",
+      "slot": "lunch",
+      "actual": 166,
+      "predicted": 169
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-25",
+      "slot": "lunch",
+      "actual": 178,
+      "predicted": 169
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-26",
+      "slot": "lunch",
+      "actual": 148,
+      "predicted": 144
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-27",
+      "slot": "lunch",
+      "actual": 155,
+      "predicted": 149
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-28",
+      "slot": "lunch",
+      "actual": 133,
+      "predicted": 140
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-29",
+      "slot": "lunch",
+      "actual": 140,
+      "predicted": 135
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-30",
+      "slot": "lunch",
+      "actual": 187,
+      "predicted": 180
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-01",
+      "slot": "lunch",
+      "actual": 170,
+      "predicted": 180
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-02",
+      "slot": "lunch",
+      "actual": 167,
+      "predicted": 158
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-03",
+      "slot": "lunch",
+      "actual": 178,
+      "predicted": 167
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-04",
+      "slot": "lunch",
+      "actual": 167,
+      "predicted": 162
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-05",
+      "slot": "lunch",
+      "actual": 132,
+      "predicted": 131
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-06",
+      "slot": "lunch",
+      "actual": 141,
+      "predicted": 131
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-07",
+      "slot": "lunch",
+      "actual": 185,
+      "predicted": 185
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-08",
+      "slot": "lunch",
+      "actual": 188,
+      "predicted": 180
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-09",
+      "slot": "lunch",
+      "actual": 184,
+      "predicted": 180
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-10",
+      "slot": "lunch",
+      "actual": 169,
+      "predicted": 180
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-11",
+      "slot": "lunch",
+      "actual": 163,
+      "predicted": 169
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-12",
+      "slot": "lunch",
+      "actual": 128,
+      "predicted": 131
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-13",
+      "slot": "lunch",
+      "actual": 139,
+      "predicted": 140
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-14",
+      "slot": "lunch",
+      "actual": 191,
+      "predicted": 185
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-15",
+      "slot": "lunch",
+      "actual": 182,
+      "predicted": 180
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-16",
+      "slot": "lunch",
+      "actual": 170,
+      "predicted": 180
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-17",
+      "slot": "lunch",
+      "actual": 181,
+      "predicted": 176
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-18",
+      "slot": "lunch",
+      "actual": 179,
+      "predicted": 180
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-19",
+      "slot": "lunch",
+      "actual": 139,
+      "predicted": 135
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-20",
+      "slot": "lunch",
+      "actual": 130,
+      "predicted": 131
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-21",
+      "slot": "lunch",
+      "actual": 187,
+      "predicted": 180
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-22",
+      "slot": "lunch",
+      "actual": 171,
+      "predicted": 176
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-23",
+      "slot": "lunch",
+      "actual": 177,
+      "predicted": 180
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-24",
+      "slot": "lunch",
+      "actual": 171,
+      "predicted": 176
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-25",
+      "slot": "lunch",
+      "actual": 184,
+      "predicted": 176
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-26",
+      "slot": "lunch",
+      "actual": 136,
+      "predicted": 135
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-27",
+      "slot": "lunch",
+      "actual": 140,
+      "predicted": 131
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-28",
+      "slot": "lunch",
+      "actual": 164,
+      "predicted": 169
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-29",
+      "slot": "lunch",
+      "actual": 166,
+      "predicted": 180
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-30",
+      "slot": "lunch",
+      "actual": 188,
+      "predicted": 176
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-31",
+      "slot": "lunch",
+      "actual": 184,
+      "predicted": 180
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-03",
+      "slot": "dinner",
+      "actual": 194,
+      "predicted": 207
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-04",
+      "slot": "dinner",
+      "actual": 208,
+      "predicted": 207
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-05",
+      "slot": "dinner",
+      "actual": 154,
+      "predicted": 161
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-06",
+      "slot": "dinner",
+      "actual": 146,
+      "predicted": 151
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-07",
+      "slot": "dinner",
+      "actual": 214,
+      "predicted": 213
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-08",
+      "slot": "dinner",
+      "actual": 189,
+      "predicted": 203
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-09",
+      "slot": "dinner",
+      "actual": 207,
+      "predicted": 195
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-10",
+      "slot": "dinner",
+      "actual": 197,
+      "predicted": 195
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-11",
+      "slot": "dinner",
+      "actual": 211,
+      "predicted": 203
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-12",
+      "slot": "dinner",
+      "actual": 150,
+      "predicted": 151
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-13",
+      "slot": "dinner",
+      "actual": 143,
+      "predicted": 143
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-14",
+      "slot": "dinner",
+      "actual": 222,
+      "predicted": 213
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-15",
+      "slot": "dinner",
+      "actual": 215,
+      "predicted": 207
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-16",
+      "slot": "dinner",
+      "actual": 208,
+      "predicted": 213
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-17",
+      "slot": "dinner",
+      "actual": 198,
+      "predicted": 203
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-18",
+      "slot": "dinner",
+      "actual": 193,
+      "predicted": 203
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-19",
+      "slot": "dinner",
+      "actual": 166,
+      "predicted": 155
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-20",
+      "slot": "dinner",
+      "actual": 152,
+      "predicted": 143
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-21",
+      "slot": "dinner",
+      "actual": 198,
+      "predicted": 195
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-22",
+      "slot": "dinner",
+      "actual": 192,
+      "predicted": 195
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-23",
+      "slot": "dinner",
+      "actual": 211,
+      "predicted": 195
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-24",
+      "slot": "dinner",
+      "actual": 213,
+      "predicted": 213
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-25",
+      "slot": "dinner",
+      "actual": 186,
+      "predicted": 195
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-26",
+      "slot": "dinner",
+      "actual": 134,
+      "predicted": 143
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-27",
+      "slot": "dinner",
+      "actual": 153,
+      "predicted": 143
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-28",
+      "slot": "dinner",
+      "actual": 251,
+      "predicted": 244
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-29",
+      "slot": "dinner",
+      "actual": 203,
+      "predicted": 195
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-09-30",
+      "slot": "dinner",
+      "actual": 183,
+      "predicted": 195
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-01",
+      "slot": "dinner",
+      "actual": 216,
+      "predicted": 207
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-02",
+      "slot": "dinner",
+      "actual": 211,
+      "predicted": 203
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-03",
+      "slot": "dinner",
+      "actual": 144,
+      "predicted": 155
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-04",
+      "slot": "dinner",
+      "actual": 153,
+      "predicted": 151
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-05",
+      "slot": "dinner",
+      "actual": 207,
+      "predicted": 203
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-06",
+      "slot": "dinner",
+      "actual": 222,
+      "predicted": 207
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-07",
+      "slot": "dinner",
+      "actual": 215,
+      "predicted": 207
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-08",
+      "slot": "dinner",
+      "actual": 204,
+      "predicted": 195
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-09",
+      "slot": "dinner",
+      "actual": 207,
+      "predicted": 207
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-10",
+      "slot": "dinner",
+      "actual": 164,
+      "predicted": 155
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-11",
+      "slot": "dinner",
+      "actual": 150,
+      "predicted": 151
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-12",
+      "slot": "dinner",
+      "actual": 206,
+      "predicted": 195
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-13",
+      "slot": "dinner",
+      "actual": 217,
+      "predicted": 207
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-14",
+      "slot": "dinner",
+      "actual": 210,
+      "predicted": 207
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-15",
+      "slot": "dinner",
+      "actual": 194,
+      "predicted": 207
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-16",
+      "slot": "dinner",
+      "actual": 202,
+      "predicted": 207
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-17",
+      "slot": "dinner",
+      "actual": 157,
+      "predicted": 161
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-18",
+      "slot": "dinner",
+      "actual": 143,
+      "predicted": 151
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-19",
+      "slot": "dinner",
+      "actual": 204,
+      "predicted": 207
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-20",
+      "slot": "dinner",
+      "actual": 222,
+      "predicted": 207
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-21",
+      "slot": "dinner",
+      "actual": 204,
+      "predicted": 207
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-22",
+      "slot": "dinner",
+      "actual": 191,
+      "predicted": 207
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-23",
+      "slot": "dinner",
+      "actual": 208,
+      "predicted": 195
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-24",
+      "slot": "dinner",
+      "actual": 152,
+      "predicted": 155
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-25",
+      "slot": "dinner",
+      "actual": 158,
+      "predicted": 155
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-26",
+      "slot": "dinner",
+      "actual": 194,
+      "predicted": 195
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-27",
+      "slot": "dinner",
+      "actual": 216,
+      "predicted": 213
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-28",
+      "slot": "dinner",
+      "actual": 215,
+      "predicted": 207
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-29",
+      "slot": "dinner",
+      "actual": 198,
+      "predicted": 203
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-30",
+      "slot": "dinner",
+      "actual": 195,
+      "predicted": 203
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-10-31",
+      "slot": "dinner",
+      "actual": 130,
+      "predicted": 141
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-01",
+      "slot": "dinner",
+      "actual": 143,
+      "predicted": 143
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-02",
+      "slot": "dinner",
+      "actual": 219,
+      "predicted": 203
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-03",
+      "slot": "dinner",
+      "actual": 211,
+      "predicted": 207
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-04",
+      "slot": "dinner",
+      "actual": 214,
+      "predicted": 207
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-05",
+      "slot": "dinner",
+      "actual": 219,
+      "predicted": 213
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-06",
+      "slot": "dinner",
+      "actual": 209,
+      "predicted": 203
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-07",
+      "slot": "dinner",
+      "actual": 161,
+      "predicted": 161
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-08",
+      "slot": "dinner",
+      "actual": 136,
+      "predicted": 143
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-09",
+      "slot": "dinner",
+      "actual": 218,
+      "predicted": 213
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-10",
+      "slot": "dinner",
+      "actual": 217,
+      "predicted": 207
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-11",
+      "slot": "dinner",
+      "actual": 197,
+      "predicted": 207
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-12",
+      "slot": "dinner",
+      "actual": 225,
+      "predicted": 213
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-13",
+      "slot": "dinner",
+      "actual": 197,
+      "predicted": 207
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-14",
+      "slot": "dinner",
+      "actual": 166,
+      "predicted": 155
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-15",
+      "slot": "dinner",
+      "actual": 119,
+      "predicted": 122
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-16",
+      "slot": "dinner",
+      "actual": 178,
+      "predicted": 186
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-17",
+      "slot": "dinner",
+      "actual": 163,
+      "predicted": 174
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-18",
+      "slot": "dinner",
+      "actual": 193,
+      "predicted": 207
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-19",
+      "slot": "dinner",
+      "actual": 192,
+      "predicted": 195
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-20",
+      "slot": "dinner",
+      "actual": 216,
+      "predicted": 207
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-21",
+      "slot": "dinner",
+      "actual": 145,
+      "predicted": 143
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-22",
+      "slot": "dinner",
+      "actual": 140,
+      "predicted": 151
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-23",
+      "slot": "dinner",
+      "actual": 219,
+      "predicted": 207
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-24",
+      "slot": "dinner",
+      "actual": 187,
+      "predicted": 203
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-25",
+      "slot": "dinner",
+      "actual": 181,
+      "predicted": 195
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-26",
+      "slot": "dinner",
+      "actual": 155,
+      "predicted": 166
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-27",
+      "slot": "dinner",
+      "actual": 164,
+      "predicted": 172
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-28",
+      "slot": "dinner",
+      "actual": 165,
+      "predicted": 155
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-29",
+      "slot": "dinner",
+      "actual": 145,
+      "predicted": 155
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-11-30",
+      "slot": "dinner",
+      "actual": 201,
+      "predicted": 207
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-01",
+      "slot": "dinner",
+      "actual": 214,
+      "predicted": 203
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-02",
+      "slot": "dinner",
+      "actual": 178,
+      "predicted": 174
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-03",
+      "slot": "dinner",
+      "actual": 197,
+      "predicted": 186
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-04",
+      "slot": "dinner",
+      "actual": 175,
+      "predicted": 186
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-05",
+      "slot": "dinner",
+      "actual": 146,
+      "predicted": 143
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-06",
+      "slot": "dinner",
+      "actual": 153,
+      "predicted": 161
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-07",
+      "slot": "dinner",
+      "actual": 199,
+      "predicted": 207
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-08",
+      "slot": "dinner",
+      "actual": 207,
+      "predicted": 203
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-09",
+      "slot": "dinner",
+      "actual": 217,
+      "predicted": 207
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-10",
+      "slot": "dinner",
+      "actual": 193,
+      "predicted": 207
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-11",
+      "slot": "dinner",
+      "actual": 222,
+      "predicted": 213
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-12",
+      "slot": "dinner",
+      "actual": 162,
+      "predicted": 161
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-13",
+      "slot": "dinner",
+      "actual": 147,
+      "predicted": 151
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-14",
+      "slot": "dinner",
+      "actual": 207,
+      "predicted": 203
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-15",
+      "slot": "dinner",
+      "actual": 215,
+      "predicted": 207
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-16",
+      "slot": "dinner",
+      "actual": 199,
+      "predicted": 203
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-17",
+      "slot": "dinner",
+      "actual": 199,
+      "predicted": 203
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-18",
+      "slot": "dinner",
+      "actual": 212,
+      "predicted": 203
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-19",
+      "slot": "dinner",
+      "actual": 142,
+      "predicted": 155
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-20",
+      "slot": "dinner",
+      "actual": 147,
+      "predicted": 155
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-21",
+      "slot": "dinner",
+      "actual": 223,
+      "predicted": 207
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-22",
+      "slot": "dinner",
+      "actual": 202,
+      "predicted": 207
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-23",
+      "slot": "dinner",
+      "actual": 213,
+      "predicted": 207
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-24",
+      "slot": "dinner",
+      "actual": 205,
+      "predicted": 207
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-25",
+      "slot": "dinner",
+      "actual": 191,
+      "predicted": 207
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-26",
+      "slot": "dinner",
+      "actual": 160,
+      "predicted": 155
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-27",
+      "slot": "dinner",
+      "actual": 145,
+      "predicted": 155
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-28",
+      "slot": "dinner",
+      "actual": 190,
+      "predicted": 203
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-29",
+      "slot": "dinner",
+      "actual": 207,
+      "predicted": 207
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-30",
+      "slot": "dinner",
+      "actual": 213,
+      "predicted": 207
+    },
+    {
+      "kitchen_id": "1",
+      "date": "2026-12-31",
+      "slot": "dinner",
+      "actual": 201,
+      "predicted": 207
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-03",
+      "slot": "lunch",
+      "actual": 138,
+      "predicted": 136
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-04",
+      "slot": "lunch",
+      "actual": 133,
+      "predicted": 142
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-05",
+      "slot": "lunch",
+      "actual": 106,
+      "predicted": 100
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-06",
+      "slot": "lunch",
+      "actual": 106,
+      "predicted": 106
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-07",
+      "slot": "lunch",
+      "actual": 140,
+      "predicted": 136
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-08",
+      "slot": "lunch",
+      "actual": 131,
+      "predicted": 136
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-09",
+      "slot": "lunch",
+      "actual": 154,
+      "predicted": 142
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-10",
+      "slot": "lunch",
+      "actual": 132,
+      "predicted": 136
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-11",
+      "slot": "lunch",
+      "actual": 132,
+      "predicted": 136
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-12",
+      "slot": "lunch",
+      "actual": 96,
+      "predicted": 100
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-13",
+      "slot": "lunch",
+      "actual": 99,
+      "predicted": 100
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-14",
+      "slot": "lunch",
+      "actual": 129,
+      "predicted": 136
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-15",
+      "slot": "lunch",
+      "actual": 144,
+      "predicted": 145
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-16",
+      "slot": "lunch",
+      "actual": 137,
+      "predicted": 136
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-17",
+      "slot": "lunch",
+      "actual": 133,
+      "predicted": 142
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-18",
+      "slot": "lunch",
+      "actual": 136,
+      "predicted": 136
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-19",
+      "slot": "lunch",
+      "actual": 105,
+      "predicted": 100
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-20",
+      "slot": "lunch",
+      "actual": 99,
+      "predicted": 100
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-21",
+      "slot": "lunch",
+      "actual": 140,
+      "predicted": 149
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-22",
+      "slot": "lunch",
+      "actual": 147,
+      "predicted": 136
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-23",
+      "slot": "lunch",
+      "actual": 143,
+      "predicted": 142
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-24",
+      "slot": "lunch",
+      "actual": 143,
+      "predicted": 136
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-25",
+      "slot": "lunch",
+      "actual": 132,
+      "predicted": 136
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-26",
+      "slot": "lunch",
+      "actual": 111,
+      "predicted": 106
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-27",
+      "slot": "lunch",
+      "actual": 120,
+      "predicted": 113
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-28",
+      "slot": "lunch",
+      "actual": 167,
+      "predicted": 158
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-29",
+      "slot": "lunch",
+      "actual": 141,
+      "predicted": 149
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-30",
+      "slot": "lunch",
+      "actual": 144,
+      "predicted": 136
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-01",
+      "slot": "lunch",
+      "actual": 149,
+      "predicted": 149
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-02",
+      "slot": "lunch",
+      "actual": 152,
+      "predicted": 145
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-03",
+      "slot": "lunch",
+      "actual": 109,
+      "predicted": 106
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-04",
+      "slot": "lunch",
+      "actual": 114,
+      "predicted": 106
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-05",
+      "slot": "lunch",
+      "actual": 154,
+      "predicted": 142
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-06",
+      "slot": "lunch",
+      "actual": 135,
+      "predicted": 145
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-07",
+      "slot": "lunch",
+      "actual": 155,
+      "predicted": 145
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-08",
+      "slot": "lunch",
+      "actual": 154,
+      "predicted": 145
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-09",
+      "slot": "lunch",
+      "actual": 152,
+      "predicted": 142
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-10",
+      "slot": "lunch",
+      "actual": 100,
+      "predicted": 106
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-11",
+      "slot": "lunch",
+      "actual": 112,
+      "predicted": 109
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-12",
+      "slot": "lunch",
+      "actual": 152,
+      "predicted": 142
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-13",
+      "slot": "lunch",
+      "actual": 147,
+      "predicted": 145
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-14",
+      "slot": "lunch",
+      "actual": 155,
+      "predicted": 145
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-15",
+      "slot": "lunch",
+      "actual": 149,
+      "predicted": 149
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-16",
+      "slot": "lunch",
+      "actual": 151,
+      "predicted": 145
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-17",
+      "slot": "lunch",
+      "actual": 105,
+      "predicted": 106
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-18",
+      "slot": "lunch",
+      "actual": 99,
+      "predicted": 100
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-19",
+      "slot": "lunch",
+      "actual": 145,
+      "predicted": 136
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-20",
+      "slot": "lunch",
+      "actual": 152,
+      "predicted": 145
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-21",
+      "slot": "lunch",
+      "actual": 152,
+      "predicted": 145
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-22",
+      "slot": "lunch",
+      "actual": 149,
+      "predicted": 145
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-23",
+      "slot": "lunch",
+      "actual": 136,
+      "predicted": 142
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-24",
+      "slot": "lunch",
+      "actual": 111,
+      "predicted": 109
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-25",
+      "slot": "lunch",
+      "actual": 101,
+      "predicted": 100
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-26",
+      "slot": "lunch",
+      "actual": 131,
+      "predicted": 142
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-27",
+      "slot": "lunch",
+      "actual": 131,
+      "predicted": 136
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-28",
+      "slot": "lunch",
+      "actual": 146,
+      "predicted": 136
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-29",
+      "slot": "lunch",
+      "actual": 141,
+      "predicted": 145
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-30",
+      "slot": "lunch",
+      "actual": 148,
+      "predicted": 149
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-31",
+      "slot": "lunch",
+      "actual": 96,
+      "predicted": 102
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-01",
+      "slot": "lunch",
+      "actual": 103,
+      "predicted": 109
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-02",
+      "slot": "lunch",
+      "actual": 128,
+      "predicted": 136
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-03",
+      "slot": "lunch",
+      "actual": 148,
+      "predicted": 145
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-04",
+      "slot": "lunch",
+      "actual": 137,
+      "predicted": 145
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-05",
+      "slot": "lunch",
+      "actual": 126,
+      "predicted": 136
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-06",
+      "slot": "lunch",
+      "actual": 133,
+      "predicted": 142
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-07",
+      "slot": "lunch",
+      "actual": 106,
+      "predicted": 109
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-08",
+      "slot": "lunch",
+      "actual": 102,
+      "predicted": 109
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-09",
+      "slot": "lunch",
+      "actual": 137,
+      "predicted": 142
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-10",
+      "slot": "lunch",
+      "actual": 139,
+      "predicted": 136
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-11",
+      "slot": "lunch",
+      "actual": 149,
+      "predicted": 142
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-12",
+      "slot": "lunch",
+      "actual": 136,
+      "predicted": 145
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-13",
+      "slot": "lunch",
+      "actual": 157,
+      "predicted": 145
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-14",
+      "slot": "lunch",
+      "actual": 115,
+      "predicted": 109
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-15",
+      "slot": "lunch",
+      "actual": 98,
+      "predicted": 91
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-16",
+      "slot": "lunch",
+      "actual": 119,
+      "predicted": 122
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-17",
+      "slot": "lunch",
+      "actual": 125,
+      "predicted": 122
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-18",
+      "slot": "lunch",
+      "actual": 147,
+      "predicted": 145
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-19",
+      "slot": "lunch",
+      "actual": 137,
+      "predicted": 145
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-20",
+      "slot": "lunch",
+      "actual": 155,
+      "predicted": 145
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-21",
+      "slot": "lunch",
+      "actual": 107,
+      "predicted": 100
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-22",
+      "slot": "lunch",
+      "actual": 98,
+      "predicted": 106
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-23",
+      "slot": "lunch",
+      "actual": 140,
+      "predicted": 136
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-24",
+      "slot": "lunch",
+      "actual": 141,
+      "predicted": 142
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-25",
+      "slot": "lunch",
+      "actual": 157,
+      "predicted": 149
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-26",
+      "slot": "lunch",
+      "actual": 126,
+      "predicted": 120
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-27",
+      "slot": "lunch",
+      "actual": 121,
+      "predicted": 116
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-28",
+      "slot": "lunch",
+      "actual": 105,
+      "predicted": 113
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-29",
+      "slot": "lunch",
+      "actual": 100,
+      "predicted": 106
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-30",
+      "slot": "lunch",
+      "actual": 154,
+      "predicted": 145
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-01",
+      "slot": "lunch",
+      "actual": 138,
+      "predicted": 142
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-02",
+      "slot": "lunch",
+      "actual": 135,
+      "predicted": 130
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-03",
+      "slot": "lunch",
+      "actual": 135,
+      "predicted": 135
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-04",
+      "slot": "lunch",
+      "actual": 138,
+      "predicted": 130
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-05",
+      "slot": "lunch",
+      "actual": 115,
+      "predicted": 109
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-06",
+      "slot": "lunch",
+      "actual": 101,
+      "predicted": 109
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-07",
+      "slot": "lunch",
+      "actual": 134,
+      "predicted": 136
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-08",
+      "slot": "lunch",
+      "actual": 138,
+      "predicted": 136
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-09",
+      "slot": "lunch",
+      "actual": 137,
+      "predicted": 145
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-10",
+      "slot": "lunch",
+      "actual": 137,
+      "predicted": 142
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-11",
+      "slot": "lunch",
+      "actual": 156,
+      "predicted": 145
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-12",
+      "slot": "lunch",
+      "actual": 118,
+      "predicted": 113
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-13",
+      "slot": "lunch",
+      "actual": 118,
+      "predicted": 113
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-14",
+      "slot": "lunch",
+      "actual": 149,
+      "predicted": 142
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-15",
+      "slot": "lunch",
+      "actual": 143,
+      "predicted": 142
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-16",
+      "slot": "lunch",
+      "actual": 140,
+      "predicted": 145
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-17",
+      "slot": "lunch",
+      "actual": 151,
+      "predicted": 145
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-18",
+      "slot": "lunch",
+      "actual": 145,
+      "predicted": 145
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-19",
+      "slot": "lunch",
+      "actual": 99,
+      "predicted": 100
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-20",
+      "slot": "lunch",
+      "actual": 100,
+      "predicted": 109
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-21",
+      "slot": "lunch",
+      "actual": 138,
+      "predicted": 142
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-22",
+      "slot": "lunch",
+      "actual": 140,
+      "predicted": 142
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-23",
+      "slot": "lunch",
+      "actual": 142,
+      "predicted": 142
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-24",
+      "slot": "lunch",
+      "actual": 145,
+      "predicted": 145
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-25",
+      "slot": "lunch",
+      "actual": 151,
+      "predicted": 142
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-26",
+      "slot": "lunch",
+      "actual": 114,
+      "predicted": 109
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-27",
+      "slot": "lunch",
+      "actual": 98,
+      "predicted": 106
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-28",
+      "slot": "lunch",
+      "actual": 138,
+      "predicted": 145
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-29",
+      "slot": "lunch",
+      "actual": 127,
+      "predicted": 142
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-30",
+      "slot": "lunch",
+      "actual": 145,
+      "predicted": 145
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-31",
+      "slot": "lunch",
+      "actual": 150,
+      "predicted": 145
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-03",
+      "slot": "dinner",
+      "actual": 156,
+      "predicted": 157
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-04",
+      "slot": "dinner",
+      "actual": 150,
+      "predicted": 157
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-05",
+      "slot": "dinner",
+      "actual": 106,
+      "predicted": 115
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-06",
+      "slot": "dinner",
+      "actual": 106,
+      "predicted": 115
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-07",
+      "slot": "dinner",
+      "actual": 185,
+      "predicted": 172
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-08",
+      "slot": "dinner",
+      "actual": 151,
+      "predicted": 157
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-09",
+      "slot": "dinner",
+      "actual": 153,
+      "predicted": 157
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-10",
+      "slot": "dinner",
+      "actual": 168,
+      "predicted": 172
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-11",
+      "slot": "dinner",
+      "actual": 154,
+      "predicted": 157
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-12",
+      "slot": "dinner",
+      "actual": 113,
+      "predicted": 115
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-13",
+      "slot": "dinner",
+      "actual": 123,
+      "predicted": 115
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-14",
+      "slot": "dinner",
+      "actual": 164,
+      "predicted": 163
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-15",
+      "slot": "dinner",
+      "actual": 153,
+      "predicted": 163
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-16",
+      "slot": "dinner",
+      "actual": 157,
+      "predicted": 167
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-17",
+      "slot": "dinner",
+      "actual": 165,
+      "predicted": 157
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-18",
+      "slot": "dinner",
+      "actual": 159,
+      "predicted": 157
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-19",
+      "slot": "dinner",
+      "actual": 132,
+      "predicted": 122
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-20",
+      "slot": "dinner",
+      "actual": 115,
+      "predicted": 115
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-21",
+      "slot": "dinner",
+      "actual": 161,
+      "predicted": 167
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-22",
+      "slot": "dinner",
+      "actual": 154,
+      "predicted": 157
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-23",
+      "slot": "dinner",
+      "actual": 163,
+      "predicted": 157
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-24",
+      "slot": "dinner",
+      "actual": 176,
+      "predicted": 167
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-25",
+      "slot": "dinner",
+      "actual": 165,
+      "predicted": 157
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-26",
+      "slot": "dinner",
+      "actual": 116,
+      "predicted": 125
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-27",
+      "slot": "dinner",
+      "actual": 114,
+      "predicted": 115
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-28",
+      "slot": "dinner",
+      "actual": 180,
+      "predicted": 182
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-29",
+      "slot": "dinner",
+      "actual": 179,
+      "predicted": 172
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-09-30",
+      "slot": "dinner",
+      "actual": 162,
+      "predicted": 163
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-01",
+      "slot": "dinner",
+      "actual": 159,
+      "predicted": 163
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-02",
+      "slot": "dinner",
+      "actual": 169,
+      "predicted": 163
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-03",
+      "slot": "dinner",
+      "actual": 118,
+      "predicted": 125
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-04",
+      "slot": "dinner",
+      "actual": 127,
+      "predicted": 125
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-05",
+      "slot": "dinner",
+      "actual": 166,
+      "predicted": 167
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-06",
+      "slot": "dinner",
+      "actual": 172,
+      "predicted": 172
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-07",
+      "slot": "dinner",
+      "actual": 170,
+      "predicted": 163
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-08",
+      "slot": "dinner",
+      "actual": 157,
+      "predicted": 163
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-09",
+      "slot": "dinner",
+      "actual": 160,
+      "predicted": 163
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-10",
+      "slot": "dinner",
+      "actual": 131,
+      "predicted": 130
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-11",
+      "slot": "dinner",
+      "actual": 139,
+      "predicted": 130
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-12",
+      "slot": "dinner",
+      "actual": 176,
+      "predicted": 167
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-13",
+      "slot": "dinner",
+      "actual": 151,
+      "predicted": 163
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-14",
+      "slot": "dinner",
+      "actual": 176,
+      "predicted": 167
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-15",
+      "slot": "dinner",
+      "actual": 183,
+      "predicted": 172
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-16",
+      "slot": "dinner",
+      "actual": 161,
+      "predicted": 157
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-17",
+      "slot": "dinner",
+      "actual": 130,
+      "predicted": 125
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-18",
+      "slot": "dinner",
+      "actual": 121,
+      "predicted": 125
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-19",
+      "slot": "dinner",
+      "actual": 171,
+      "predicted": 163
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-20",
+      "slot": "dinner",
+      "actual": 173,
+      "predicted": 163
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-21",
+      "slot": "dinner",
+      "actual": 166,
+      "predicted": 167
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-22",
+      "slot": "dinner",
+      "actual": 158,
+      "predicted": 157
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-23",
+      "slot": "dinner",
+      "actual": 155,
+      "predicted": 163
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-24",
+      "slot": "dinner",
+      "actual": 109,
+      "predicted": 115
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-25",
+      "slot": "dinner",
+      "actual": 133,
+      "predicted": 125
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-26",
+      "slot": "dinner",
+      "actual": 171,
+      "predicted": 167
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-27",
+      "slot": "dinner",
+      "actual": 158,
+      "predicted": 167
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-28",
+      "slot": "dinner",
+      "actual": 155,
+      "predicted": 157
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-29",
+      "slot": "dinner",
+      "actual": 175,
+      "predicted": 167
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-30",
+      "slot": "dinner",
+      "actual": 168,
+      "predicted": 167
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-10-31",
+      "slot": "dinner",
+      "actual": 130,
+      "predicted": 117
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-01",
+      "slot": "dinner",
+      "actual": 133,
+      "predicted": 125
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-02",
+      "slot": "dinner",
+      "actual": 167,
+      "predicted": 157
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-03",
+      "slot": "dinner",
+      "actual": 184,
+      "predicted": 172
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-04",
+      "slot": "dinner",
+      "actual": 148,
+      "predicted": 157
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-05",
+      "slot": "dinner",
+      "actual": 162,
+      "predicted": 163
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-06",
+      "slot": "dinner",
+      "actual": 171,
+      "predicted": 163
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-07",
+      "slot": "dinner",
+      "actual": 127,
+      "predicted": 122
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-08",
+      "slot": "dinner",
+      "actual": 117,
+      "predicted": 122
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-09",
+      "slot": "dinner",
+      "actual": 161,
+      "predicted": 163
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-10",
+      "slot": "dinner",
+      "actual": 162,
+      "predicted": 172
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-11",
+      "slot": "dinner",
+      "actual": 183,
+      "predicted": 172
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-12",
+      "slot": "dinner",
+      "actual": 157,
+      "predicted": 163
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-13",
+      "slot": "dinner",
+      "actual": 153,
+      "predicted": 157
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-14",
+      "slot": "dinner",
+      "actual": 128,
+      "predicted": 125
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-15",
+      "slot": "dinner",
+      "actual": 109,
+      "predicted": 105
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-16",
+      "slot": "dinner",
+      "actual": 159,
+      "predicted": 150
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-17",
+      "slot": "dinner",
+      "actual": 145,
+      "predicted": 147
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-18",
+      "slot": "dinner",
+      "actual": 155,
+      "predicted": 167
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-19",
+      "slot": "dinner",
+      "actual": 179,
+      "predicted": 167
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-20",
+      "slot": "dinner",
+      "actual": 149,
+      "predicted": 157
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-21",
+      "slot": "dinner",
+      "actual": 140,
+      "predicted": 130
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-22",
+      "slot": "dinner",
+      "actual": 123,
+      "predicted": 115
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-23",
+      "slot": "dinner",
+      "actual": 160,
+      "predicted": 167
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-24",
+      "slot": "dinner",
+      "actual": 165,
+      "predicted": 163
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-25",
+      "slot": "dinner",
+      "actual": 180,
+      "predicted": 167
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-26",
+      "slot": "dinner",
+      "actual": 139,
+      "predicted": 133
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-27",
+      "slot": "dinner",
+      "actual": 139,
+      "predicted": 133
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-28",
+      "slot": "dinner",
+      "actual": 126,
+      "predicted": 130
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-29",
+      "slot": "dinner",
+      "actual": 119,
+      "predicted": 122
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-11-30",
+      "slot": "dinner",
+      "actual": 179,
+      "predicted": 167
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-01",
+      "slot": "dinner",
+      "actual": 179,
+      "predicted": 167
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-02",
+      "slot": "dinner",
+      "actual": 148,
+      "predicted": 150
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-03",
+      "slot": "dinner",
+      "actual": 154,
+      "predicted": 147
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-04",
+      "slot": "dinner",
+      "actual": 162,
+      "predicted": 155
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-05",
+      "slot": "dinner",
+      "actual": 106,
+      "predicted": 115
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-06",
+      "slot": "dinner",
+      "actual": 134,
+      "predicted": 125
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-07",
+      "slot": "dinner",
+      "actual": 181,
+      "predicted": 172
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-08",
+      "slot": "dinner",
+      "actual": 167,
+      "predicted": 163
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-09",
+      "slot": "dinner",
+      "actual": 178,
+      "predicted": 167
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-10",
+      "slot": "dinner",
+      "actual": 172,
+      "predicted": 167
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-11",
+      "slot": "dinner",
+      "actual": 170,
+      "predicted": 167
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-12",
+      "slot": "dinner",
+      "actual": 122,
+      "predicted": 125
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-13",
+      "slot": "dinner",
+      "actual": 129,
+      "predicted": 125
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-14",
+      "slot": "dinner",
+      "actual": 161,
+      "predicted": 167
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-15",
+      "slot": "dinner",
+      "actual": 161,
+      "predicted": 167
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-16",
+      "slot": "dinner",
+      "actual": 152,
+      "predicted": 163
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-17",
+      "slot": "dinner",
+      "actual": 162,
+      "predicted": 167
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-18",
+      "slot": "dinner",
+      "actual": 171,
+      "predicted": 167
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-19",
+      "slot": "dinner",
+      "actual": 122,
+      "predicted": 125
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-20",
+      "slot": "dinner",
+      "actual": 106,
+      "predicted": 115
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-21",
+      "slot": "dinner",
+      "actual": 179,
+      "predicted": 167
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-22",
+      "slot": "dinner",
+      "actual": 165,
+      "predicted": 167
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-23",
+      "slot": "dinner",
+      "actual": 186,
+      "predicted": 172
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-24",
+      "slot": "dinner",
+      "actual": 165,
+      "predicted": 163
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-25",
+      "slot": "dinner",
+      "actual": 149,
+      "predicted": 157
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-26",
+      "slot": "dinner",
+      "actual": 130,
+      "predicted": 125
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-27",
+      "slot": "dinner",
+      "actual": 120,
+      "predicted": 122
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-28",
+      "slot": "dinner",
+      "actual": 163,
+      "predicted": 167
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-29",
+      "slot": "dinner",
+      "actual": 174,
+      "predicted": 167
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-30",
+      "slot": "dinner",
+      "actual": 163,
+      "predicted": 157
+    },
+    {
+      "kitchen_id": "2",
+      "date": "2026-12-31",
+      "slot": "dinner",
+      "actual": 157,
+      "predicted": 163
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-03",
+      "slot": "lunch",
+      "actual": 89,
+      "predicted": 89
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-04",
+      "slot": "lunch",
+      "actual": 88,
+      "predicted": 89
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-05",
+      "slot": "lunch",
+      "actual": 76,
+      "predicted": 66
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-06",
+      "slot": "lunch",
+      "actual": 69,
+      "predicted": 66
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-07",
+      "slot": "lunch",
+      "actual": 88,
+      "predicted": 89
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-08",
+      "slot": "lunch",
+      "actual": 88,
+      "predicted": 93
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-09",
+      "slot": "lunch",
+      "actual": 84,
+      "predicted": 89
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-10",
+      "slot": "lunch",
+      "actual": 87,
+      "predicted": 89
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-11",
+      "slot": "lunch",
+      "actual": 94,
+      "predicted": 89
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-12",
+      "slot": "lunch",
+      "actual": 69,
+      "predicted": 69
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-13",
+      "slot": "lunch",
+      "actual": 68,
+      "predicted": 66
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-14",
+      "slot": "lunch",
+      "actual": 99,
+      "predicted": 98
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-15",
+      "slot": "lunch",
+      "actual": 96,
+      "predicted": 93
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-16",
+      "slot": "lunch",
+      "actual": 93,
+      "predicted": 89
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-17",
+      "slot": "lunch",
+      "actual": 92,
+      "predicted": 93
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-18",
+      "slot": "lunch",
+      "actual": 88,
+      "predicted": 93
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-19",
+      "slot": "lunch",
+      "actual": 65,
+      "predicted": 66
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-20",
+      "slot": "lunch",
+      "actual": 76,
+      "predicted": 71
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-21",
+      "slot": "lunch",
+      "actual": 93,
+      "predicted": 89
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-22",
+      "slot": "lunch",
+      "actual": 99,
+      "predicted": 93
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-23",
+      "slot": "lunch",
+      "actual": 88,
+      "predicted": 89
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-24",
+      "slot": "lunch",
+      "actual": 98,
+      "predicted": 95
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-25",
+      "slot": "lunch",
+      "actual": 85,
+      "predicted": 89
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-26",
+      "slot": "lunch",
+      "actual": 71,
+      "predicted": 74
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-27",
+      "slot": "lunch",
+      "actual": 67,
+      "predicted": 66
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-28",
+      "slot": "lunch",
+      "actual": 100,
+      "predicted": 104
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-29",
+      "slot": "lunch",
+      "actual": 91,
+      "predicted": 93
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-30",
+      "slot": "lunch",
+      "actual": 96,
+      "predicted": 89
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-01",
+      "slot": "lunch",
+      "actual": 98,
+      "predicted": 95
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-02",
+      "slot": "lunch",
+      "actual": 93,
+      "predicted": 95
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-03",
+      "slot": "lunch",
+      "actual": 61,
+      "predicted": 71
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-04",
+      "slot": "lunch",
+      "actual": 69,
+      "predicted": 66
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-05",
+      "slot": "lunch",
+      "actual": 93,
+      "predicted": 95
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-06",
+      "slot": "lunch",
+      "actual": 100,
+      "predicted": 95
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-07",
+      "slot": "lunch",
+      "actual": 99,
+      "predicted": 95
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-08",
+      "slot": "lunch",
+      "actual": 86,
+      "predicted": 93
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-09",
+      "slot": "lunch",
+      "actual": 96,
+      "predicted": 89
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-10",
+      "slot": "lunch",
+      "actual": 68,
+      "predicted": 71
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-11",
+      "slot": "lunch",
+      "actual": 72,
+      "predicted": 69
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-12",
+      "slot": "lunch",
+      "actual": 88,
+      "predicted": 95
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-13",
+      "slot": "lunch",
+      "actual": 102,
+      "predicted": 95
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-14",
+      "slot": "lunch",
+      "actual": 102,
+      "predicted": 95
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-15",
+      "slot": "lunch",
+      "actual": 87,
+      "predicted": 89
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-16",
+      "slot": "lunch",
+      "actual": 98,
+      "predicted": 93
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-17",
+      "slot": "lunch",
+      "actual": 64,
+      "predicted": 71
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-18",
+      "slot": "lunch",
+      "actual": 77,
+      "predicted": 74
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-19",
+      "slot": "lunch",
+      "actual": 93,
+      "predicted": 98
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-20",
+      "slot": "lunch",
+      "actual": 89,
+      "predicted": 95
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-21",
+      "slot": "lunch",
+      "actual": 102,
+      "predicted": 95
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-22",
+      "slot": "lunch",
+      "actual": 98,
+      "predicted": 93
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-23",
+      "slot": "lunch",
+      "actual": 95,
+      "predicted": 93
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-24",
+      "slot": "lunch",
+      "actual": 73,
+      "predicted": 71
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-25",
+      "slot": "lunch",
+      "actual": 70,
+      "predicted": 71
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-26",
+      "slot": "lunch",
+      "actual": 94,
+      "predicted": 93
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-27",
+      "slot": "lunch",
+      "actual": 93,
+      "predicted": 93
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-28",
+      "slot": "lunch",
+      "actual": 96,
+      "predicted": 89
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-29",
+      "slot": "lunch",
+      "actual": 97,
+      "predicted": 95
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-30",
+      "slot": "lunch",
+      "actual": 90,
+      "predicted": 95
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-31",
+      "slot": "lunch",
+      "actual": 62,
+      "predicted": 66
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-01",
+      "slot": "lunch",
+      "actual": 79,
+      "predicted": 66
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-02",
+      "slot": "lunch",
+      "actual": 91,
+      "predicted": 93
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-03",
+      "slot": "lunch",
+      "actual": 100,
+      "predicted": 95
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-04",
+      "slot": "lunch",
+      "actual": 94,
+      "predicted": 93
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-05",
+      "slot": "lunch",
+      "actual": 97,
+      "predicted": 95
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-06",
+      "slot": "lunch",
+      "actual": 103,
+      "predicted": 98
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-07",
+      "slot": "lunch",
+      "actual": 61,
+      "predicted": 66
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-08",
+      "slot": "lunch",
+      "actual": 74,
+      "predicted": 74
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-09",
+      "slot": "lunch",
+      "actual": 91,
+      "predicted": 89
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-10",
+      "slot": "lunch",
+      "actual": 89,
+      "predicted": 95
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-11",
+      "slot": "lunch",
+      "actual": 97,
+      "predicted": 98
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-12",
+      "slot": "lunch",
+      "actual": 78,
+      "predicted": 93
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-13",
+      "slot": "lunch",
+      "actual": 92,
+      "predicted": 93
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-14",
+      "slot": "lunch",
+      "actual": 61,
+      "predicted": 71
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-15",
+      "slot": "lunch",
+      "actual": 58,
+      "predicted": 62
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-16",
+      "slot": "lunch",
+      "actual": 85,
+      "predicted": 80
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-17",
+      "slot": "lunch",
+      "actual": 77,
+      "predicted": 84
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-18",
+      "slot": "lunch",
+      "actual": 96,
+      "predicted": 93
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-19",
+      "slot": "lunch",
+      "actual": 97,
+      "predicted": 95
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-20",
+      "slot": "lunch",
+      "actual": 90,
+      "predicted": 93
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-21",
+      "slot": "lunch",
+      "actual": 67,
+      "predicted": 69
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-22",
+      "slot": "lunch",
+      "actual": 65,
+      "predicted": 69
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-23",
+      "slot": "lunch",
+      "actual": 89,
+      "predicted": 95
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-24",
+      "slot": "lunch",
+      "actual": 93,
+      "predicted": 98
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-25",
+      "slot": "lunch",
+      "actual": 110,
+      "predicted": 95
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-26",
+      "slot": "lunch",
+      "actual": 74,
+      "predicted": 79
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-27",
+      "slot": "lunch",
+      "actual": 87,
+      "predicted": 76
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-28",
+      "slot": "lunch",
+      "actual": 67,
+      "predicted": 71
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-29",
+      "slot": "lunch",
+      "actual": 68,
+      "predicted": 69
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-30",
+      "slot": "lunch",
+      "actual": 97,
+      "predicted": 98
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-01",
+      "slot": "lunch",
+      "actual": 91,
+      "predicted": 95
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-02",
+      "slot": "lunch",
+      "actual": 90,
+      "predicted": 84
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-03",
+      "slot": "lunch",
+      "actual": 96,
+      "predicted": 84
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-04",
+      "slot": "lunch",
+      "actual": 86,
+      "predicted": 86
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-05",
+      "slot": "lunch",
+      "actual": 74,
+      "predicted": 69
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-06",
+      "slot": "lunch",
+      "actual": 69,
+      "predicted": 69
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-07",
+      "slot": "lunch",
+      "actual": 100,
+      "predicted": 98
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-08",
+      "slot": "lunch",
+      "actual": 106,
+      "predicted": 93
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-09",
+      "slot": "lunch",
+      "actual": 97,
+      "predicted": 93
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-10",
+      "slot": "lunch",
+      "actual": 102,
+      "predicted": 95
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-11",
+      "slot": "lunch",
+      "actual": 85,
+      "predicted": 89
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-12",
+      "slot": "lunch",
+      "actual": 76,
+      "predicted": 71
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-13",
+      "slot": "lunch",
+      "actual": 69,
+      "predicted": 74
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-14",
+      "slot": "lunch",
+      "actual": 82,
+      "predicted": 89
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-15",
+      "slot": "lunch",
+      "actual": 82,
+      "predicted": 89
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-16",
+      "slot": "lunch",
+      "actual": 89,
+      "predicted": 89
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-17",
+      "slot": "lunch",
+      "actual": 97,
+      "predicted": 93
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-18",
+      "slot": "lunch",
+      "actual": 95,
+      "predicted": 89
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-19",
+      "slot": "lunch",
+      "actual": 70,
+      "predicted": 71
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-20",
+      "slot": "lunch",
+      "actual": 73,
+      "predicted": 74
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-21",
+      "slot": "lunch",
+      "actual": 91,
+      "predicted": 95
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-22",
+      "slot": "lunch",
+      "actual": 98,
+      "predicted": 93
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-23",
+      "slot": "lunch",
+      "actual": 98,
+      "predicted": 93
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-24",
+      "slot": "lunch",
+      "actual": 86,
+      "predicted": 93
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-25",
+      "slot": "lunch",
+      "actual": 82,
+      "predicted": 89
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-26",
+      "slot": "lunch",
+      "actual": 68,
+      "predicted": 71
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-27",
+      "slot": "lunch",
+      "actual": 68,
+      "predicted": 71
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-28",
+      "slot": "lunch",
+      "actual": 100,
+      "predicted": 95
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-29",
+      "slot": "lunch",
+      "actual": 103,
+      "predicted": 98
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-30",
+      "slot": "lunch",
+      "actual": 86,
+      "predicted": 95
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-31",
+      "slot": "lunch",
+      "actual": 92,
+      "predicted": 95
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-03",
+      "slot": "dinner",
+      "actual": 106,
+      "predicted": 103
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-04",
+      "slot": "dinner",
+      "actual": 98,
+      "predicted": 103
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-05",
+      "slot": "dinner",
+      "actual": 84,
+      "predicted": 85
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-06",
+      "slot": "dinner",
+      "actual": 76,
+      "predicted": 80
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-07",
+      "slot": "dinner",
+      "actual": 118,
+      "predicted": 103
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-08",
+      "slot": "dinner",
+      "actual": 117,
+      "predicted": 109
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-09",
+      "slot": "dinner",
+      "actual": 107,
+      "predicted": 103
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-10",
+      "slot": "dinner",
+      "actual": 101,
+      "predicted": 109
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-11",
+      "slot": "dinner",
+      "actual": 117,
+      "predicted": 107
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-12",
+      "slot": "dinner",
+      "actual": 74,
+      "predicted": 75
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-13",
+      "slot": "dinner",
+      "actual": 76,
+      "predicted": 75
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-14",
+      "slot": "dinner",
+      "actual": 98,
+      "predicted": 103
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-15",
+      "slot": "dinner",
+      "actual": 114,
+      "predicted": 107
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-16",
+      "slot": "dinner",
+      "actual": 113,
+      "predicted": 113
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-17",
+      "slot": "dinner",
+      "actual": 113,
+      "predicted": 113
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-18",
+      "slot": "dinner",
+      "actual": 104,
+      "predicted": 107
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-19",
+      "slot": "dinner",
+      "actual": 86,
+      "predicted": 80
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-20",
+      "slot": "dinner",
+      "actual": 81,
+      "predicted": 80
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-21",
+      "slot": "dinner",
+      "actual": 98,
+      "predicted": 103
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-22",
+      "slot": "dinner",
+      "actual": 127,
+      "predicted": 113
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-23",
+      "slot": "dinner",
+      "actual": 113,
+      "predicted": 113
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-24",
+      "slot": "dinner",
+      "actual": 100,
+      "predicted": 103
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-25",
+      "slot": "dinner",
+      "actual": 95,
+      "predicted": 103
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-26",
+      "slot": "dinner",
+      "actual": 79,
+      "predicted": 82
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-27",
+      "slot": "dinner",
+      "actual": 81,
+      "predicted": 85
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-28",
+      "slot": "dinner",
+      "actual": 125,
+      "predicted": 119
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-29",
+      "slot": "dinner",
+      "actual": 114,
+      "predicted": 109
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-09-30",
+      "slot": "dinner",
+      "actual": 101,
+      "predicted": 103
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-01",
+      "slot": "dinner",
+      "actual": 100,
+      "predicted": 103
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-02",
+      "slot": "dinner",
+      "actual": 114,
+      "predicted": 109
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-03",
+      "slot": "dinner",
+      "actual": 80,
+      "predicted": 75
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-04",
+      "slot": "dinner",
+      "actual": 81,
+      "predicted": 82
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-05",
+      "slot": "dinner",
+      "actual": 111,
+      "predicted": 107
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-06",
+      "slot": "dinner",
+      "actual": 116,
+      "predicted": 109
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-07",
+      "slot": "dinner",
+      "actual": 108,
+      "predicted": 107
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-08",
+      "slot": "dinner",
+      "actual": 108,
+      "predicted": 107
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-09",
+      "slot": "dinner",
+      "actual": 113,
+      "predicted": 109
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-10",
+      "slot": "dinner",
+      "actual": 83,
+      "predicted": 80
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-11",
+      "slot": "dinner",
+      "actual": 81,
+      "predicted": 82
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-12",
+      "slot": "dinner",
+      "actual": 108,
+      "predicted": 107
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-13",
+      "slot": "dinner",
+      "actual": 112,
+      "predicted": 107
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-14",
+      "slot": "dinner",
+      "actual": 97,
+      "predicted": 103
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-15",
+      "slot": "dinner",
+      "actual": 109,
+      "predicted": 109
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-16",
+      "slot": "dinner",
+      "actual": 109,
+      "predicted": 109
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-17",
+      "slot": "dinner",
+      "actual": 86,
+      "predicted": 82
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-18",
+      "slot": "dinner",
+      "actual": 88,
+      "predicted": 85
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-19",
+      "slot": "dinner",
+      "actual": 111,
+      "predicted": 109
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-20",
+      "slot": "dinner",
+      "actual": 117,
+      "predicted": 109
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-21",
+      "slot": "dinner",
+      "actual": 97,
+      "predicted": 107
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-22",
+      "slot": "dinner",
+      "actual": 100,
+      "predicted": 109
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-23",
+      "slot": "dinner",
+      "actual": 114,
+      "predicted": 109
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-24",
+      "slot": "dinner",
+      "actual": 83,
+      "predicted": 80
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-25",
+      "slot": "dinner",
+      "actual": 78,
+      "predicted": 75
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-26",
+      "slot": "dinner",
+      "actual": 101,
+      "predicted": 103
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-27",
+      "slot": "dinner",
+      "actual": 100,
+      "predicted": 103
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-28",
+      "slot": "dinner",
+      "actual": 109,
+      "predicted": 113
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-29",
+      "slot": "dinner",
+      "actual": 108,
+      "predicted": 113
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-30",
+      "slot": "dinner",
+      "actual": 108,
+      "predicted": 109
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-10-31",
+      "slot": "dinner",
+      "actual": 73,
+      "predicted": 70
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-01",
+      "slot": "dinner",
+      "actual": 77,
+      "predicted": 82
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-02",
+      "slot": "dinner",
+      "actual": 107,
+      "predicted": 109
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-03",
+      "slot": "dinner",
+      "actual": 116,
+      "predicted": 113
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-04",
+      "slot": "dinner",
+      "actual": 110,
+      "predicted": 107
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-05",
+      "slot": "dinner",
+      "actual": 107,
+      "predicted": 107
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-06",
+      "slot": "dinner",
+      "actual": 100,
+      "predicted": 107
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-07",
+      "slot": "dinner",
+      "actual": 89,
+      "predicted": 82
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-08",
+      "slot": "dinner",
+      "actual": 71,
+      "predicted": 75
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-09",
+      "slot": "dinner",
+      "actual": 103,
+      "predicted": 103
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-10",
+      "slot": "dinner",
+      "actual": 107,
+      "predicted": 109
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-11",
+      "slot": "dinner",
+      "actual": 101,
+      "predicted": 109
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-12",
+      "slot": "dinner",
+      "actual": 107,
+      "predicted": 103
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-13",
+      "slot": "dinner",
+      "actual": 109,
+      "predicted": 109
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-14",
+      "slot": "dinner",
+      "actual": 82,
+      "predicted": 82
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-15",
+      "slot": "dinner",
+      "actual": 78,
+      "predicted": 74
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-16",
+      "slot": "dinner",
+      "actual": 91,
+      "predicted": 96
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-17",
+      "slot": "dinner",
+      "actual": 93,
+      "predicted": 96
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-18",
+      "slot": "dinner",
+      "actual": 121,
+      "predicted": 113
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-19",
+      "slot": "dinner",
+      "actual": 113,
+      "predicted": 107
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-20",
+      "slot": "dinner",
+      "actual": 105,
+      "predicted": 107
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-21",
+      "slot": "dinner",
+      "actual": 79,
+      "predicted": 82
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-22",
+      "slot": "dinner",
+      "actual": 79,
+      "predicted": 80
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-23",
+      "slot": "dinner",
+      "actual": 117,
+      "predicted": 113
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-24",
+      "slot": "dinner",
+      "actual": 96,
+      "predicted": 109
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-25",
+      "slot": "dinner",
+      "actual": 103,
+      "predicted": 109
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-26",
+      "slot": "dinner",
+      "actual": 80,
+      "predicted": 81
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-27",
+      "slot": "dinner",
+      "actual": 87,
+      "predicted": 87
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-28",
+      "slot": "dinner",
+      "actual": 84,
+      "predicted": 82
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-29",
+      "slot": "dinner",
+      "actual": 82,
+      "predicted": 80
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-11-30",
+      "slot": "dinner",
+      "actual": 111,
+      "predicted": 109
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-01",
+      "slot": "dinner",
+      "actual": 104,
+      "predicted": 109
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-02",
+      "slot": "dinner",
+      "actual": 103,
+      "predicted": 98
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-03",
+      "slot": "dinner",
+      "actual": 92,
+      "predicted": 96
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-04",
+      "slot": "dinner",
+      "actual": 98,
+      "predicted": 98
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-05",
+      "slot": "dinner",
+      "actual": 85,
+      "predicted": 82
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-06",
+      "slot": "dinner",
+      "actual": 79,
+      "predicted": 75
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-07",
+      "slot": "dinner",
+      "actual": 106,
+      "predicted": 113
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-08",
+      "slot": "dinner",
+      "actual": 108,
+      "predicted": 109
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-09",
+      "slot": "dinner",
+      "actual": 114,
+      "predicted": 109
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-10",
+      "slot": "dinner",
+      "actual": 104,
+      "predicted": 109
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-11",
+      "slot": "dinner",
+      "actual": 108,
+      "predicted": 103
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-12",
+      "slot": "dinner",
+      "actual": 83,
+      "predicted": 82
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-13",
+      "slot": "dinner",
+      "actual": 80,
+      "predicted": 80
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-14",
+      "slot": "dinner",
+      "actual": 113,
+      "predicted": 109
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-15",
+      "slot": "dinner",
+      "actual": 120,
+      "predicted": 113
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-16",
+      "slot": "dinner",
+      "actual": 112,
+      "predicted": 109
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-17",
+      "slot": "dinner",
+      "actual": 95,
+      "predicted": 103
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-18",
+      "slot": "dinner",
+      "actual": 118,
+      "predicted": 109
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-19",
+      "slot": "dinner",
+      "actual": 88,
+      "predicted": 85
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-20",
+      "slot": "dinner",
+      "actual": 84,
+      "predicted": 82
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-21",
+      "slot": "dinner",
+      "actual": 115,
+      "predicted": 107
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-22",
+      "slot": "dinner",
+      "actual": 103,
+      "predicted": 103
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-23",
+      "slot": "dinner",
+      "actual": 108,
+      "predicted": 103
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-24",
+      "slot": "dinner",
+      "actual": 104,
+      "predicted": 113
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-25",
+      "slot": "dinner",
+      "actual": 111,
+      "predicted": 107
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-26",
+      "slot": "dinner",
+      "actual": 81,
+      "predicted": 82
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-27",
+      "slot": "dinner",
+      "actual": 83,
+      "predicted": 80
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-28",
+      "slot": "dinner",
+      "actual": 96,
+      "predicted": 109
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-29",
+      "slot": "dinner",
+      "actual": 113,
+      "predicted": 109
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-30",
+      "slot": "dinner",
+      "actual": 110,
+      "predicted": 109
+    },
+    {
+      "kitchen_id": "3",
+      "date": "2026-12-31",
+      "slot": "dinner",
+      "actual": 111,
+      "predicted": 109
+    }
   ],
   "baselines": {
-    "1": {"lunch": 180},
-    "2": {"lunch": 145},
-    "3": {"lunch": 95}
+    "1": {
+      "lunch": 180,
+      "dinner": 207
+    },
+    "2": {
+      "lunch": 145,
+      "dinner": 167
+    },
+    "3": {
+      "lunch": 95,
+      "dinner": 109
+    }
   }
 }
