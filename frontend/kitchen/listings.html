@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Listings - AnnaSetu AI</title>
+    <link rel="stylesheet" href="/shared/styles.css">
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <script type="module" src="/shared/nav.js"></script>
+
+    <main id="main-content" class="page">
+        <div class="container">
+            <header class="page-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+                <div>
+                    <h1 class="page-title">
+                        <span>My Listings &amp; Disposals</span>
+                        <span class="goal-tag">Redistribute</span>
+                    </h1>
+                    <p class="page-subtitle">Verify pickup codes, monitor expired items, and pledge to nearby needs (auto-refreshes every 5s)</p>
+                </div>
+                <a id="btn-download-csv" class="btn btn-outline btn-sm" href="/api/safety/records.csv" target="_blank" rel="noopener">
+                    Download Records CSV
+                </a>
+            </header>
+
+            <!-- My Listings -->
+            <div class="card" style="margin-bottom: var(--space-6);">
+                <div class="card-header">
+                    <h2 class="card-title">My Marketplace Listings</h2>
+                </div>
+                <div class="card-body">
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Qty</th>
+                                    <th>Consume By</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="listings-body">
+                                <tr><td colspan="5" class="text-muted text-center">Loading listings...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Open Needs Near You (F3) -->
+            <div class="card" style="margin-bottom: var(--space-6);">
+                <div class="card-header">
+                    <h2 class="card-title">Open needs near you</h2>
+                </div>
+                <div class="card-body" id="open-needs-list">
+                    <p class="text-muted">Loading open needs...</p>
+                </div>
+            </div>
+
+            <!-- Disposals Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Disposals (Animal Feed / Compost)</h2>
+                </div>
+                <div class="card-body">
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Qty</th>
+                                    <th>Route</th>
+                                    <th>Reason</th>
+                                    <th>Logged</th>
+                                </tr>
+                            </thead>
+                            <tbody id="disposals-body">
+                                <tr><td colspan="5" class="text-muted text-center">Loading disposals...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        import {
+            getMarketplaceListings,
+            pickupListing,
+            getSafetyDisposals,
+            getMarketplaceNeeds,
+            pledgeToNeed,
+            withSubmitLock,
+            showToast,
+            formatDateTime,
+            escapeHtml
+        } from '/shared/api.js';
+        import { navReady } from '/shared/nav.js';
+        import { state } from '/shared/state.js';
+
+        function statusBadge(status) {
+            const map = {
+                open: 'badge-info',
+                claimed: 'badge-warning',
+                collected: 'badge-primary',
+                distributed: 'badge-success',
+                expired: 'badge-danger',
+            };
+            return `<span class="badge ${map[status] || 'badge-secondary'}">${escapeHtml(status)}</span>`;
+        }
+
+        async function loadListings() {
+            const tbody = document.getElementById('listings-body');
+            if (!state.user) return;
+            try {
+                const listings = await getMarketplaceListings(state.user.id);
+                if (!listings.length) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-muted text-center">No listings posted yet.</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = listings.map(l => {
+                    let actionHtml = '<span class="text-muted">—</span>';
+                    if (l.status === 'claimed') {
+                        actionHtml = `
+                            <form class="pickup-form" data-listing-id="${escapeHtml(l.id)}" style="display:flex; gap:0.4rem; align-items:center;">
+                                <input type="text" class="form-input pickup-code-input" placeholder="Enter pickup code" maxlength="4" pattern="\\d{4}" required style="width:140px;">
+                                <button type="submit" class="btn btn-primary btn-sm">Confirm</button>
+                            </form>
+                        `;
+                    } else if (l.status === 'expired') {
+                        actionHtml = '<span class="text-danger"><strong>Expired - send to animal feed / compost</strong></span>';
+                    }
+                    return `
+                        <tr>
+                            <td><strong>${escapeHtml(l.item_name)}</strong></td>
+                            <td>${escapeHtml(l.quantity)} ${escapeHtml(l.unit)}</td>
+                            <td>${escapeHtml(formatDateTime(l.consume_by))}</td>
+                            <td>${statusBadge(l.status)}</td>
+                            <td>${actionHtml}</td>
+                        </tr>
+                    `;
+                }).join('');
+
+                tbody.querySelectorAll('.pickup-form').forEach(form => {
+                    form.addEventListener('submit', async (e) => {
+                        e.preventDefault();
+                        const listingId = form.dataset.listingId;
+                        const code = form.querySelector('.pickup-code-input').value.trim();
+                        await withSubmitLock(form, async () => {
+                            await pickupListing(listingId, String(state.user.id), code);
+                            showToast('Pickup confirmed!', 'success');
+                            await loadListings();
+                        });
+                    });
+                });
+            } catch {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-danger text-center">Failed to load listings.</td></tr>';
+            }
+        }
+
+        async function loadDisposals() {
+            const tbody = document.getElementById('disposals-body');
+            if (!state.user) return;
+            try {
+                const disposals = await getSafetyDisposals(state.user.id);
+                if (!disposals.length) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-muted text-center">No disposal records yet.</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = disposals.map(d => `
+                    <tr>
+                        <td>${escapeHtml(d.item_name)}</td>
+                        <td>${escapeHtml(d.quantity)} ${escapeHtml(d.unit)}</td>
+                        <td><span class="badge badge-warning">${escapeHtml(d.route)}</span></td>
+                        <td>${escapeHtml(d.reason)}</td>
+                        <td>${escapeHtml(formatDateTime(d.created_at))}</td>
+                    </tr>
+                `).join('');
+            } catch {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-danger text-center">Failed to load disposals.</td></tr>';
+            }
+        }
+
+        async function loadOpenNeeds() {
+            const container = document.getElementById('open-needs-list');
+            if (!state.user) return;
+            try {
+                const needs = await getMarketplaceNeeds('open', null, state.user.id);
+                if (!needs.length) {
+                    container.innerHTML = '<p class="text-muted">No open needs near you right now.</p>';
+                    return;
+                }
+                container.innerHTML = needs.map(n => `
+                    <div class="card" style="margin-bottom:0.75rem;">
+                        <div class="card-body">
+                            <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:0.5rem;">
+                                <div>
+                                    <strong>${escapeHtml(n.recipient_name)}</strong> — ${escapeHtml(n.people)} people
+                                    ${n.veg_only ? '<span class="badge badge-success">Veg Only</span>' : ''}
+                                    ${n.distance_km != null ? `<span class="text-muted">(${escapeHtml(n.distance_km)} km away)</span>` : ''}
+                                    <div class="text-muted" style="font-size:0.85rem;">Needed by: ${escapeHtml(formatDateTime(n.needed_by))} · ${escapeHtml(n.notes || '')}</div>
+                                </div>
+                            </div>
+                            <form class="pledge-form" data-need-id="${escapeHtml(n.id)}" style="display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:0.75rem; align-items:center;">
+                                <input type="number" class="form-input pledge-qty" min="1" step="1" value="${escapeHtml(n.people)}" style="width:90px;" required>
+                                <input type="text" class="form-input pledge-unit" value="plates" style="width:90px;" required>
+                                <input type="text" class="form-input pledge-note" placeholder="Note (e.g. Ready by 12:30)" style="flex:1; min-width:160px;">
+                                <button type="submit" class="btn btn-primary btn-sm">Pledge</button>
+                            </form>
+                        </div>
+                    </div>
+                `).join('');
+
+                container.querySelectorAll('.pledge-form').forEach(form => {
+                    form.addEventListener('submit', async (e) => {
+                        e.preventDefault();
+                        const needId = form.dataset.needId;
+                        await withSubmitLock(form, async () => {
+                            await pledgeToNeed(needId, {
+                                donor_id: String(state.user.id),
+                                quantity: Number(form.querySelector('.pledge-qty').value),
+                                unit: form.querySelector('.pledge-unit').value.trim(),
+                                note: form.querySelector('.pledge-note').value.trim(),
+                            });
+                            showToast('Pledge submitted!', 'success');
+                            await loadOpenNeeds();
+                        });
+                    });
+                });
+            } catch {
+                container.innerHTML = '<p class="text-danger">Failed to load open needs.</p>';
+            }
+        }
+
+        function isUserTypingInListingsOrNeeds() {
+            const listingsBody = document.getElementById('listings-body');
+            const needsList = document.getElementById('open-needs-list');
+            for (const sec of [listingsBody, needsList]) {
+                if (!sec) continue;
+                for (const el of sec.querySelectorAll('input, textarea')) {
+                    if (document.activeElement === el) return true;
+                    if (sec === listingsBody && el.value.trim() !== '') return true;
+                    if (sec === needsList && (el.defaultValue ? el.value !== el.defaultValue : el.value.trim() !== '')) return true;
+                }
+            }
+            return false;
+        }
+
+        await navReady;
+        if (state.user) {
+            document.getElementById('btn-download-csv').href = `/api/safety/records.csv?donor_id=${encodeURIComponent(state.user.id)}`;
+        }
+        await Promise.all([loadListings(), loadDisposals(), loadOpenNeeds()]);
+        setInterval(() => {
+            if (!isUserTypingInListingsOrNeeds()) {
+                loadListings();
+            }
+        }, 5000);
+        window.addEventListener('demo-clock-advanced', loadListings);
+    </script>
+</body>
+</html>

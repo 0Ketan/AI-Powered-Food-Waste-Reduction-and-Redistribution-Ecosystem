@@ -106,14 +106,17 @@ This checklist ensures all test scenarios pass for the hackathon prototype.
 - [ ] POST /marketplace/alerts/read
 - [ ] GET /marketplace/impact
 
-## Frontend Tests
-- [ ] Frontend loads at http://localhost:8000
-- [ ] Dashboard tabs switch correctly
-- [ ] Waste logging form submits
-- [ ] Safety evaluation form submits
-- [ ] Forecast recommendation form submits
-- [ ] Marketplace listing creation works
-- [ ] Clock display updates
+## Frontend Tests (Click-by-Click per Page)
+- [ ] `index.html` (Demo Guide): Open `/index.html`, verify `/api/health` module modes table renders, click "Switch and go" on Step 3 and confirm it switches user and opens `/kitchen/plan.html`.
+- [ ] `kitchen/dashboard.html` (Monitor): Select a kitchen in the top bar, confirm totals/leftover %/shortage count/active listings/people served cards and daily Chart.js bar chart (or table fallback) render.
+- [ ] `kitchen/plan.html` (Reduce): Select kitchen, slot, date, weather, event, adjust the Safety margin slider (50-95%), click "Get recommendation", verify big recommended number, baseline, summary, reasons, 14-day history chart, and `/metrics` comparison line appear.
+- [ ] `kitchen/log.html` (Monitor): Enter date, slot, prepared, served, leftover (validating `>= 0` and `served + leftover == prepared`), click "Save Waste Log", confirm it appears in the Recent Logs table.
+- [ ] `kitchen/post-surplus.html` (Identify): Fill item name, category, quantity, storage, prepared time, keep "Kept covered and hygienic" checked (and batch/mfg/expiry if processing unit), click "Check and post"; verify green card with "Print label" link for safe food or orange card for expired food.
+- [ ] `kitchen/listings.html` (Redistribute): Verify status badges, enter 4-digit pickup code on a `claimed` listing and confirm; check disposals table, "Download Records CSV" link, and "Open needs near you" Pledge form.
+- [ ] `recipient/nearby.html` (Redistribute): Switch to an NGO/Mandir user, verify ranked cards and Leaflet map markers load (plus "You only see vegetarian food" for veg-only users), click "Claim" and confirm pickup code toast (or 409 message if already claimed).
+- [ ] `recipient/needs.html` (Redistribute): Submit people count, needed-by, veg-only, notes, and verify the new need appears under "My Posted Needs & Pledges".
+- [ ] `recipient/claims.html` (Redistribute): Verify large pickup code displays; after donor pickup (`collected`), enter people served and click "Mark served" to complete both `/served` and `/api/safety/records/{id}/complete`.
+- [ ] Top bar on all pages: Verify `+1 Hour` advances demo clock, `Reset Demo` confirms and reloads, and bell icon shows unread count and marks alerts read on open.
 
 ## Ownership Tests
 - [ ] `python scripts/check_ownership.py` passes
