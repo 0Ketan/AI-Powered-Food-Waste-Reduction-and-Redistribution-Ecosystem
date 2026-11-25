@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nearby Food - AnnaSetu AI</title>
+    <link rel="stylesheet" href="/shared/styles.css">
+    <link rel="stylesheet" href="/vendor/leaflet/leaflet.css">
+    <script src="/vendor/leaflet/leaflet.js" defer></script>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <script type="module" src="/shared/nav.js"></script>
+
+    <main id="main-content" class="page">
+        <div class="container">
+            <header class="page-header">
+                <h1 class="page-title">
+                    <span>🗺️</span>
+                    <span>Nearby Surplus Food</span>
+                    <span class="goal-tag">Redistribute</span>
+                </h1>
+                <p class="page-subtitle">Ranked surplus listings near you (auto-refreshes every 5s)</p>
+                <div id="veg-only-notice" class="badge badge-success" style="display:none; margin-top:0.5rem;">
+                    You only see vegetarian food
+                </div>
+            </header>
+
+            <!-- Ranked Cards (Primary View) -->
+            <div class="card" style="margin-bottom: var(--space-6);">
+                <div class="card-header">
+                    <h2 class="card-title">Ranked Available Listings</h2>
+                </div>
+                <div class="card-body" id="nearby-cards">
+                    <p class="text-muted">Loading nearby listings...</p>
+                </div>
+            </div>
+
+            <!-- Leaflet Map -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Map View</h2>
+                </div>
+                <div class="card-body">
+                    <p id="map-note" class="text-muted" style="display:none; margin-bottom:0.5rem;"></p>
+                    <div id="nearby-map" style="height: 360px; width: 100%; border-radius: 8px; background: #f5f5f5;"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        import {
+            getNearbyListings,
+            claimListing,
+            getUsers,
+            withSubmitLock,
+            showError,
+            showToast,
+            escapeHtml
+        } from '/shared/api.js';
+        import { navReady } from '/shared/nav.js';
+        import { state } from '/shared/state.js';
+
+        let map = null;
+        let markersLayer = null;
+        let usersById = {};
+
+        function initMap() {
+            const noteEl = document.getElementById('map-note');
+            if (typeof window.L === 'undefined') {
+                noteEl.style.display = 'block';
+                noteEl.textContent = 'Map library unavailable — use the ranked list above.';
+                return;
+            }
+            const u = state.user;
+            const center = u && u.lat != null && u.lng != null ? [u.lat, u.lng] : [28.7041, 77.1025];
+            map = window.L.map('nearby-map').setView(center, 14);
+            const tiles = window.L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors',
+                maxZoom: 19,
+            });
+            tiles.on('tileerror', () => {
+                noteEl.style.display = 'block';
+                noteEl.textContent = 'Map tiles failed to load — ranked list above is primary.';
+            });
+            tiles.addTo(map);
+            markersLayer = window.L.layerGroup().addTo(map);
+        }
+
+        function updateMapMarkers(items) {
+            if (!map || !markersLayer) return;
+            markersLayer.clearLayers();
+            const u = state.user;
+            if (u && u.lat != null && u.lng != null) {
+                window.L.marker([u.lat, u.lng])
+                    .bindPopup(`<strong>You:</strong> ${escapeHtml(u.name)}`)
+                    .addTo(markersLayer);
+            }
+            items.forEach(item => {
+                const l = item.listing || item;
+                const donor = usersById[String(l.donor_id)];
+                const lat = l.lat ?? donor?.lat;
+                const lng = l.lng ?? donor?.lng;
+                if (lat != null && lng != null) {
+                    window.L.marker([lat, lng])
+                        .bindPopup(`<strong>${escapeHtml(l.item_name)}</strong><br>${escapeHtml(l.quantity)} ${escapeHtml(l.unit)} · ${escapeHtml(item.distance_km)} km`)
+                        .addTo(markersLayer);
+                }
+            });
+        }
+
+        async function loadNearby() {
+            const container = document.getElementById('nearby-cards');
+            if (!state.user) return;
+            try {
+                const items = await getNearbyListings(state.user.id);
+                if (!items.length) {
+                    container.innerHTML = '<p class="text-muted">No open nearby listings right now.</p>';
+                    updateMapMarkers([]);
+                    return;
+                }
+                container.innerHTML = items.map(item => {
+                    const l = item.listing || item;
+                    return `
+                        <div class="card" style="margin-bottom:0.75rem;">
+                            <div class="card-body" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+                                <div>
+                                    <h3 style="margin-bottom:0.25rem;">
+                                        ${escapeHtml(l.item_name)}
+                                        ${l.veg ? '<span class="badge badge-success">Veg</span>' : '<span class="badge badge-danger">Non-Veg</span>'}
+                                    </h3>
+                                    <p style="margin:0;">
+                                        <strong>${escapeHtml(l.quantity)} ${escapeHtml(l.unit)}</strong> ·
+                                        From: ${escapeHtml(l.donor_name || l.donor_id)}
+                                    </p>
+                                    <p class="text-muted" style="margin:0.25rem 0 0; font-size:0.875rem;">
+                                        Distance: <strong>${escapeHtml(item.distance_km)} km</strong> ·
+                                        Travel: ~<strong>${escapeHtml(item.travel_minutes)} min</strong> ·
+                                        Time left: <strong>${escapeHtml(item.minutes_left)} min</strong>
+                                    </p>
+                                </div>
+                                <button type="button" class="btn btn-primary btn-claim" data-id="${escapeHtml(l.id)}">
+                                    Claim
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                container.querySelectorAll('.btn-claim').forEach(btn => {
+                    btn.addEventListener('click', async () => {
+                        const id = btn.dataset.id;
+                        await withSubmitLock(btn, async () => {
+                            try {
+                                const res = await claimListing(id, String(state.user.id));
+                                showToast(`Claimed! Pickup code: ${res.pickup_code}`, 'success', 6000);
+                                await loadNearby();
+                            } catch (err) {
+                                if (err.status === 409) {
+                                    showError('Already claimed by someone else');
+                                    await loadNearby();
+                                } else {
+                                    showError(err.message || 'Failed to claim listing');
+                                }
+                            }
+                        });
+                    });
+                });
+
+                updateMapMarkers(items);
+            } catch {
+                container.innerHTML = '<p class="text-danger">Failed to load nearby listings.</p>';
+            }
+        }
+
+        await navReady;
+        if (state.user?.veg_only) {
+            document.getElementById('veg-only-notice').style.display = 'inline-block';
+        }
+        try {
+            const uRes = await getUsers();
+            (uRes.users || []).forEach(u => { usersById[String(u.id)] = u; });
+        } catch {}
+
+        initMap();
+        await loadNearby();
+        setInterval(loadNearby, 5000);
+        window.addEventListener('demo-clock-advanced', loadNearby);
+    </script>
+</body>
+</html>

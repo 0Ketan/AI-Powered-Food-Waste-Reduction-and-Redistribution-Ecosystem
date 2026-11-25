@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan Cooking Quantity - AnnaSetu AI</title>
+    <link rel="stylesheet" href="/shared/styles.css">
+    <script src="/vendor/chart.js/chart.umd.min.js" defer></script>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <script type="module" src="/shared/nav.js"></script>
+
+    <main id="main-content" class="page">
+        <div class="container">
+            <header class="page-header">
+                <h1 class="page-title">
+                    <span>🔮</span>
+                    <span>Plan Cooking Quantity</span>
+                    <span class="goal-tag">Reduce</span>
+                </h1>
+                <p class="page-subtitle">AI cooking quantity recommendation with adjustable safety margin</p>
+            </header>
+
+            <div class="card" style="margin-bottom: var(--space-6);">
+                <div class="card-header">
+                    <h2 class="card-title">Forecast Parameters</h2>
+                </div>
+                <div class="card-body">
+                    <form id="forecast-form" class="form-grid">
+                        <div class="form-group">
+                            <label for="kitchen-id" class="form-label">Kitchen</label>
+                            <select id="kitchen-id" class="form-select" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="slot" class="form-label">Meal Slot</label>
+                            <select id="slot" class="form-select" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="date" class="form-label">Date</label>
+                            <input type="date" id="date" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="weather" class="form-label">Weather</label>
+                            <select id="weather" class="form-select"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="event" class="form-label">Event</label>
+                            <select id="event" class="form-select"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="safety-slider" class="form-label">
+                                Safety margin: <strong id="safety-slider-val">75%</strong>
+                            </label>
+                            <input type="range" id="safety-slider" min="50" max="95" step="5" value="75" style="width:100%;">
+                            <small class="form-hint" id="safety-slider-ratio">about 3 times: running short is treated 3 times worse than having extra</small>
+                        </div>
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <button type="submit" class="btn btn-primary" id="btn-recommend">Get recommendation</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Recommendation Result -->
+            <div class="card" id="result-card" style="display:none; margin-bottom: var(--space-6);">
+                <div class="card-header">
+                    <h2 class="card-title">Recommendation</h2>
+                </div>
+                <div class="card-body">
+                    <div style="display:flex; flex-wrap:wrap; gap:2rem; align-items:baseline; margin-bottom:1rem;">
+                        <div>
+                            <div class="text-muted">Recommended</div>
+                            <div style="font-size:2.5rem; font-weight:800; color:var(--color-primary);">
+                                <span id="rec-value">--</span> <span id="rec-unit" style="font-size:1.1rem;">plates</span>
+                            </div>
+                            <div id="rec-margin-note" class="text-muted" style="display:none; font-size:0.875rem;"></div>
+                        </div>
+                        <div>
+                            <div class="text-muted">Baseline</div>
+                            <div style="font-size:1.5rem; font-weight:700;" id="rec-baseline">--</div>
+                        </div>
+                        <div id="rec-median-box" style="display:none;">
+                            <div class="text-muted">Forecast Median</div>
+                            <div style="font-size:1.5rem; font-weight:700;" id="rec-median">--</div>
+                        </div>
+                    </div>
+
+                    <p style="font-weight:600; margin-bottom:0.75rem;" id="rec-summary">--</p>
+                    <ul id="rec-reasons" style="margin-bottom:1rem; padding-left:1.25rem;"></ul>
+                    <p class="text-muted" style="font-size:0.875rem;">
+                        Model: <strong id="rec-model">--</strong> · <span id="rec-data-note">Simulated data</span>
+                    </p>
+                    <p id="metrics-line" class="text-muted" style="font-size:0.875rem; margin-top:0.5rem;">Loading metrics...</p>
+                </div>
+            </div>
+
+            <!-- 14-day history chart -->
+            <div class="card" id="history-card" style="display:none;">
+                <div class="card-header">
+                    <h2 class="card-title">14-Day History</h2>
+                </div>
+                <div class="card-body">
+                    <div id="history-chart-wrapper" style="display:none; position:relative; height:280px;">
+                        <canvas id="history-chart"></canvas>
+                    </div>
+                    <div id="history-fallback" style="display:none;">
+                        <p class="text-muted" id="history-fallback-note"></p>
+                        <div class="table-container">
+                            <table class="table">
+                                <thead><tr><th>Date</th><th>Actual</th></tr></thead>
+                                <tbody id="history-fallback-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        import { getForecastOptions, getForecastRecommend, getForecastMetrics, withSubmitLock, escapeHtml } from '/shared/api.js';
+        import { navReady } from '/shared/nav.js';
+        import { state, getDemoTime } from '/shared/state.js';
+
+        let historyChart = null;
+
+        const slider = document.getElementById('safety-slider');
+        const sliderVal = document.getElementById('safety-slider-val');
+        const sliderRatio = document.getElementById('safety-slider-ratio');
+
+        function updateSliderHelper() {
+            const pct = Number(slider.value);
+            const level = pct / 100;
+            const n = Math.round(level / (1 - level));
+            sliderVal.textContent = `${pct}%`;
+            sliderRatio.textContent = `about ${n} times: running short is treated ${n} times worse than having extra`;
+        }
+        slider.addEventListener('input', updateSliderHelper);
+        updateSliderHelper();
+
+        async function loadOptions() {
+            const opts = await getForecastOptions();
+            const kSel = document.getElementById('kitchen-id');
+            const sSel = document.getElementById('slot');
+            const wSel = document.getElementById('weather');
+            const eSel = document.getElementById('event');
+
+            const kitchens = opts.kitchens || [];
+            kSel.innerHTML = kitchens.map(k => `<option value="${escapeHtml(k.id)}">${escapeHtml(k.name)}</option>`).join('');
+            if (state.user && kitchens.some(k => String(k.id) === String(state.user.id))) {
+                kSel.value = String(state.user.id);
+            }
+
+            sSel.innerHTML = (opts.slots || ['lunch', 'dinner']).map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
+            wSel.innerHTML = (opts.weather_options || ['clear', 'cloudy', 'rain', 'hot']).map(w => `<option value="${escapeHtml(w)}">${escapeHtml(w)}</option>`).join('');
+            eSel.innerHTML = (opts.event_options || ['none', 'exam', 'festival', 'holiday', 'sports']).map(ev => `<option value="${escapeHtml(ev)}">${escapeHtml(ev)}</option>`).join('');
+
+            const demoDate = getDemoTime().toISOString().slice(0, 10);
+            document.getElementById('date').value = demoDate;
+        }
+
+        function renderHistory(history) {
+            const card = document.getElementById('history-card');
+            const wrapper = document.getElementById('history-chart-wrapper');
+            const fallback = document.getElementById('history-fallback');
+            card.style.display = 'block';
+
+            const sorted = [...(history || [])].sort((a, b) => String(a.date).localeCompare(String(b.date))).slice(-14);
+            if (!sorted.length) {
+                wrapper.style.display = 'none';
+                fallback.style.display = 'block';
+                document.getElementById('history-fallback-note').textContent = 'No history entries available.';
+                document.getElementById('history-fallback-body').innerHTML =
+                    '<tr><td colspan="2" class="text-muted text-center">No history</td></tr>';
+                return;
+            }
+
+            if (typeof window.Chart !== 'undefined') {
+                wrapper.style.display = 'block';
+                fallback.style.display = 'none';
+                const ctx = document.getElementById('history-chart').getContext('2d');
+                if (historyChart) historyChart.destroy();
+                historyChart = new window.Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: sorted.map(h => h.date),
+                        datasets: [{
+                            label: 'Actual Demand',
+                            data: sorted.map(h => h.actual),
+                            borderColor: '#2e7d32',
+                            backgroundColor: 'rgba(46,125,50,0.12)',
+                            fill: true,
+                            tension: 0.25,
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
+                });
+            } else {
+                wrapper.style.display = 'none';
+                fallback.style.display = 'block';
+                document.getElementById('history-fallback-note').textContent = 'Chart library unavailable — showing 14-day history table.';
+                document.getElementById('history-fallback-body').innerHTML = sorted.map(h =>
+                    `<tr><td>${escapeHtml(h.date)}</td><td>${escapeHtml(h.actual)}</td></tr>`
+                ).join('');
+            }
+        }
+
+        document.getElementById('forecast-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.currentTarget;
+            await withSubmitLock(form, async () => {
+                const payload = {
+                    kitchen_id: document.getElementById('kitchen-id').value,
+                    slot: document.getElementById('slot').value,
+                    date: document.getElementById('date').value,
+                    weather: document.getElementById('weather').value,
+                    event: document.getElementById('event').value,
+                    safety_level: Number(slider.value) / 100,
+                };
+                const [rec, metrics] = await Promise.all([
+                    getForecastRecommend(payload),
+                    getForecastMetrics(payload.kitchen_id, payload.slot).catch(() => null),
+                ]);
+
+                document.getElementById('result-card').style.display = 'block';
+                document.getElementById('rec-value').textContent = rec.recommended;
+                document.getElementById('rec-unit').textContent = rec.unit || 'plates';
+                document.getElementById('rec-baseline').textContent = rec.baseline;
+                document.getElementById('rec-summary').textContent = rec.summary || 'No adjustments';
+                document.getElementById('rec-model').textContent = rec.model || 'stub';
+                document.getElementById('rec-data-note').textContent = rec.data_note || 'Simulated data';
+
+                const marginNote = document.getElementById('rec-margin-note');
+                if (rec.safety_margin_pct != null) {
+                    const mVal = Number(rec.safety_margin_pct);
+                    const sign = mVal >= 0 ? '+' : '';
+                    marginNote.textContent = `includes ${sign}${mVal}% safety margin`;
+                    marginNote.style.display = 'block';
+                } else {
+                    marginNote.style.display = 'none';
+                }
+
+                const medianBox = document.getElementById('rec-median-box');
+                if (rec.forecast_median != null) {
+                    medianBox.style.display = 'block';
+                    document.getElementById('rec-median').textContent = rec.forecast_median;
+                } else {
+                    medianBox.style.display = 'none';
+                }
+
+                const reasonsUl = document.getElementById('rec-reasons');
+                const reasons = (rec.reasons || []).filter(r => !/safety|margin|slider/i.test(String(r.factor || '')));
+                reasonsUl.innerHTML = reasons.length
+                    ? reasons.map(r => `<li><strong>${escapeHtml(r.factor)}</strong>: ${r.effect_pct > 0 ? '+' : ''}${escapeHtml(r.effect_pct)}%</li>`).join('')
+                    : '<li class="text-muted">No special demand drivers</li>';
+
+                const metricsLine = document.getElementById('metrics-line');
+                if (metrics) {
+                    metricsLine.textContent = `On simulated held-out days: model error ${metrics.model_mae} vs baseline ${metrics.baseline_mae}`;
+                } else {
+                    metricsLine.textContent = 'Metrics unavailable.';
+                }
+
+                renderHistory(rec.history || []);
+            });
+        });
+
+        await navReady;
+        await loadOptions();
+    </script>
+</body>
+</html>

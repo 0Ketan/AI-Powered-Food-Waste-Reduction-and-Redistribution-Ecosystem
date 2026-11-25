@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post Surplus - AnnaSetu AI</title>
+    <link rel="stylesheet" href="/shared/styles.css">
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <script type="module" src="/shared/nav.js"></script>
+
+    <main id="main-content" class="page">
+        <div class="container">
+            <header class="page-header">
+                <h1 class="page-title">
+                    <span>🏪</span>
+                    <span>Post Surplus Food</span>
+                    <span class="goal-tag">Identify</span>
+                </h1>
+                <p class="page-subtitle">Run safety evaluation and post safe surplus to the marketplace (Flow F1)</p>
+            </header>
+
+            <div class="card" style="margin-bottom: var(--space-6);">
+                <div class="card-header">
+                    <h2 class="card-title">Safety Check &amp; Surplus Details</h2>
+                </div>
+                <div class="card-body">
+                    <form id="surplus-form" class="form-grid">
+                        <div class="form-group">
+                            <label for="item-name" class="form-label">Item Name</label>
+                            <input type="text" id="item-name" class="form-input" placeholder="e.g., Veg Biryani" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="category-id" class="form-label">Food Category</label>
+                            <select id="category-id" class="form-select" required>
+                                <option value="">Loading categories...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="quantity" class="form-label">Quantity</label>
+                            <input type="number" id="quantity" class="form-input" min="1" step="0.5" value="25" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="unit" class="form-label">Unit</label>
+                            <input type="text" id="unit" class="form-input" value="plates" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="storage" class="form-label">Storage</label>
+                            <select id="storage" class="form-select" required>
+                                <option value="hot_held">hot_held</option>
+                                <option value="room_temp">room_temp</option>
+                                <option value="cold">cold</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="prepared-at" class="form-label">Prepared Time (UTC)</label>
+                            <input type="datetime-local" id="prepared-at" class="form-input" required>
+                        </div>
+
+                        <!-- Processing unit extra fields -->
+                        <div class="form-group processing-only" style="display:none;">
+                            <label for="batch-no" class="form-label">Batch No.</label>
+                            <input type="text" id="batch-no" class="form-input" placeholder="BATCH-001">
+                        </div>
+                        <div class="form-group processing-only" style="display:none;">
+                            <label for="mfg-date" class="form-label">Manufacture Date</label>
+                            <input type="date" id="mfg-date" class="form-input">
+                        </div>
+                        <div class="form-group processing-only" style="display:none;">
+                            <label for="expiry-date" class="form-label">Expiry Date</label>
+                            <input type="date" id="expiry-date" class="form-input">
+                        </div>
+
+                        <div class="form-group" style="display:flex; align-items:center; gap:0.5rem;">
+                            <input type="checkbox" id="veg-toggle" checked>
+                            <label for="veg-toggle" class="form-label" style="margin:0;">Vegetarian</label>
+                        </div>
+                        <div class="form-group" style="display:flex; align-items:center; gap:0.5rem;">
+                            <input type="checkbox" id="confirms-safe" checked>
+                            <label for="confirms-safe" class="form-label" style="margin:0;">Kept covered and hygienic</label>
+                        </div>
+
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <button type="submit" class="btn btn-primary" id="btn-check-post">Check and post</button>
+                        </div>
+                    </form>
+                    <p class="text-muted" style="margin-top:0.75rem; font-size:0.875rem;">
+                        Consume-by hours are demo placeholders.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Evaluation Result Card -->
+            <div id="result-area"></div>
+        </div>
+    </main>
+
+    <script type="module">
+        import {
+            getSafetyCategories,
+            evaluateSafety,
+            createMarketplaceListing,
+            withSubmitLock,
+            showToast,
+            formatDateTime,
+            escapeHtml
+        } from '/shared/api.js';
+        import { navReady } from '/shared/nav.js';
+        import { state, getDemoTime } from '/shared/state.js';
+
+        async function loadCategories() {
+            const sel = document.getElementById('category-id');
+            try {
+                const cats = await getSafetyCategories();
+                sel.innerHTML = (cats || []).map(c =>
+                    `<option value="${escapeHtml(c.id)}">${escapeHtml(c.name)} (${escapeHtml(c.hold_hours ?? '?')}h)</option>`
+                ).join('');
+            } catch {
+                sel.innerHTML = '<option value="">Failed to load categories</option>';
+            }
+        }
+
+        function setDefaultPreparedTime() {
+            const dt = getDemoTime();
+            const pad = n => String(n).padStart(2, '0');
+            const localIso = `${dt.getUTCFullYear()}-${pad(dt.getUTCMonth() + 1)}-${pad(dt.getUTCDate())}T${pad(dt.getUTCHours())}:${pad(dt.getUTCMinutes())}`;
+            document.getElementById('prepared-at').value = localIso;
+        }
+
+        document.getElementById('surplus-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!state.user) return;
+            const resultArea = document.getElementById('result-area');
+            const itemName = document.getElementById('item-name').value.trim();
+            const categoryId = document.getElementById('category-id').value;
+            const veg = document.getElementById('veg-toggle').checked;
+            const quantity = Number(document.getElementById('quantity').value);
+            const unit = document.getElementById('unit').value.trim();
+            const storage = document.getElementById('storage').value;
+            const preparedRaw = document.getElementById('prepared-at').value;
+            const preparedAt = preparedRaw.endsWith('Z') ? preparedRaw : `${preparedRaw}:00Z`;
+            const confirmsSafe = document.getElementById('confirms-safe').checked;
+
+            await withSubmitLock(e.currentTarget, async () => {
+                const evalRes = await evaluateSafety({
+                    donor_id: String(state.user.id),
+                    item_name: itemName,
+                    category_id: categoryId,
+                    veg,
+                    quantity,
+                    unit,
+                    storage,
+                    prepared_at: preparedAt,
+                    kitchen_confirms_safe: confirmsSafe,
+                    pickup_buffer_minutes: 45,
+                });
+
+                const isDonate = evalRes.decision === 'donate' || evalRes.decision === 'approve';
+                if (isDonate) {
+                    const listing = await createMarketplaceListing({
+                        donor_id: String(state.user.id),
+                        item_name: itemName,
+                        category_id: categoryId,
+                        veg,
+                        quantity,
+                        unit,
+                        storage,
+                        consume_by: evalRes.consume_by,
+                        label_id: evalRes.label_id || evalRes.label?.label_id || null,
+                        record_id: evalRes.record_id || null,
+                    });
+
+                    const labelId = evalRes.label_id || evalRes.label?.label_id || '';
+                    const minsLeft = evalRes.minutes_left != null
+                        ? evalRes.minutes_left
+                        : Math.max(0, Math.round((new Date(evalRes.consume_by) - getDemoTime()) / 60000));
+
+                    resultArea.innerHTML = `
+                        <div class="card card-green">
+                            <div class="card-body">
+                                <h2 style="margin-bottom:0.5rem;">✅ Safe to Donate — Posted to Marketplace</h2>
+                                <p><strong>Listing ID:</strong> ${escapeHtml(listing.listing_id || listing.id || 'created')}</p>
+                                <p><strong>Consume By:</strong> ${escapeHtml(formatDateTime(evalRes.consume_by))} (${escapeHtml(minsLeft)} min left)</p>
+                                <div style="background:white; padding:0.75rem; border-radius:6px; margin:0.75rem 0; border:1px solid #a5d6a7;">
+                                    <strong>Label Preview:</strong> ${escapeHtml(itemName)} · ${veg ? 'Vegetarian' : 'Non-Veg'} · Source: ${escapeHtml(state.user.name)} · Consume by ${escapeHtml(formatDateTime(evalRes.consume_by))}
+                                </div>
+                                ${labelId ? `<a class="btn btn-primary btn-sm" href="/api/safety/label/${encodeURIComponent(labelId)}/print" target="_blank" rel="noopener">Print label</a>` : ''}
+                            </div>
+                        </div>
+                    `;
+                    showToast('Surplus evaluated and posted to marketplace!', 'success');
+                } else {
+                    resultArea.innerHTML = `
+                        <div class="card card-orange">
+                            <div class="card-body">
+                                <h2 style="margin-bottom:0.5rem;">⚠️ Sent to animal feed / compost</h2>
+                                <p><strong>Reason:</strong> ${escapeHtml(evalRes.reason || 'Not safe for human donation')}</p>
+                                ${evalRes.disposal_id ? `<p><strong>Disposal ID:</strong> ${escapeHtml(evalRes.disposal_id)}</p>` : ''}
+                            </div>
+                        </div>
+                    `;
+                    showToast('Food routed to animal feed / compost', 'warning');
+                }
+            });
+        });
+
+        await navReady;
+        if (state.user?.role === 'processing_unit') {
+            document.querySelectorAll('.processing-only').forEach(el => { el.style.display = 'block'; });
+        }
+        setDefaultPreparedTime();
+        await loadCategories();
+    </script>
+</body>
+</html>

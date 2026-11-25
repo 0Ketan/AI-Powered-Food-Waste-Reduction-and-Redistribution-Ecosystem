@@ -1,108 +1,98 @@
 /**
  * AnnaSetu AI - Shared State Management
- * Handles user session, demo clock, alerts polling, and global state.
+ * Persists user ID in localStorage key `annasetu_user_id` (defaults to first kitchen).
+ * Polls demo clock and alerts every 5 seconds.
  */
 
-const STORAGE_KEY = 'annasetu_user';
+export const USER_ID_KEY = 'annasetu_user_id';
 
-/**
- * Current user state
- */
 export const state = {
+    users: [],
     user: null,
     demoTime: null,
     offsetMinutes: 0,
     alerts: [],
-    lastAlertCheck: null,
     unreadAlertCount: 0,
     pollingIntervals: {},
+    readyPromise: null,
 };
 
-/**
- * Initialize state from localStorage
- */
-export function initState() {
+export function isDonorRole(role) {
+    return role === 'kitchen' || role === 'processing_unit';
+}
+
+export function getHomePageForRole(role) {
+    return isDonorRole(role) ? '/kitchen/dashboard.html' : '/recipient/nearby.html';
+}
+
+export function getSavedUserId() {
     try {
-        const stored = localStorage.getItem(STORAGE_KEY);
-        if (stored) {
-            const parsed = JSON.parse(stored);
-            state.user = parsed.user || null;
-        }
-    } catch (e) {
-        console.warn('Failed to load state from localStorage:', e);
+        return localStorage.getItem(USER_ID_KEY);
+    } catch {
+        return null;
     }
 }
 
-/**
- * Save current user to localStorage
- */
 export function saveUser(user) {
     state.user = user;
     try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({ user }));
+        if (user?.id) {
+            localStorage.setItem(USER_ID_KEY, String(user.id));
+        }
     } catch (e) {
-        console.warn('Failed to save user to localStorage:', e);
+        console.warn('Failed to save annasetu_user_id:', e);
     }
+    window.dispatchEvent(new CustomEvent('user-changed', { detail: { user } }));
 }
 
-/**
- * Clear user session
- */
-export function clearUser() {
-    state.user = null;
-    try {
-        localStorage.removeItem(STORAGE_KEY);
-    } catch (e) {
-        console.warn('Failed to clear localStorage:', e);
-    }
-}
-
-/**
- * Check if user is logged in
- */
-export function isLoggedIn() {
-    return state.user !== null;
-}
-
-/**
- * Get current user
- */
 export function getUser() {
     return state.user;
 }
 
-/**
- * Get user role
- */
 export function getUserRole() {
     return state.user?.role || null;
 }
 
 /**
- * Update demo clock state
+ * Load users from /api/demo/users and select saved user or default to first kitchen.
  */
+export async function ensureUserLoaded(api) {
+    if (state.readyPromise) return state.readyPromise;
+    state.readyPromise = (async () => {
+        try {
+            const res = await api.getUsers();
+            state.users = res.users || [];
+            const savedId = getSavedUserId();
+            let chosen = state.users.find(u => String(u.id) === String(savedId));
+            if (!chosen) {
+                chosen = state.users.find(u => u.role === 'kitchen') || state.users[0] || null;
+            }
+            if (chosen) {
+                state.user = chosen;
+                try {
+                    localStorage.setItem(USER_ID_KEY, String(chosen.id));
+                } catch {}
+            }
+        } catch (e) {
+            console.warn('Failed to load users:', e);
+        }
+        return state.user;
+    })();
+    return state.readyPromise;
+}
+
 export function updateDemoClock(demoTime, offsetMinutes) {
     state.demoTime = demoTime;
     state.offsetMinutes = offsetMinutes;
-    // Dispatch event for UI updates
     window.dispatchEvent(new CustomEvent('democlock-update', {
         detail: { demoTime, offsetMinutes }
     }));
 }
 
-/**
- * Get demo time as Date object
- */
 export function getDemoTime() {
-    if (state.demoTime) {
-        return new Date(state.demoTime);
-    }
-    return new Date(); // Fallback to real time
+    return state.demoTime ? new Date(state.demoTime) : new Date();
 }
 
-/**
- * Format demo time for display
- */
 export function formatDemoTime() {
     const dt = getDemoTime();
     return dt.toLocaleString('en-IN', {
@@ -115,66 +105,21 @@ export function formatDemoTime() {
     });
 }
 
-/**
- * Start polling for demo clock and alerts
- */
-export function startPolling(api) {
-    // Stop any existing polling
-    stopPolling();
-
-    // Poll demo clock every 5 seconds
-    state.pollingIntervals.clock = setInterval(async () => {
-        try {
-            const data = await api.getDemoClock();
-            updateDemoClock(data.demo_time_utc, data.offset_minutes);
-        } catch (e) {
-            console.warn('Demo clock poll failed:', e);
-        }
-    }, 5000);
-
-    // Poll alerts every 5 seconds if logged in
-    state.pollingIntervals.alerts = setInterval(async () => {
-        if (state.user) {
-            try {
-                const alerts = await api.getAlerts(state.user.id, state.lastAlertCheck, true);
-                if (alerts && alerts.length > 0) {
-                    state.alerts = [...alerts, ...state.alerts].slice(0, 50);
-                    state.unreadAlertCount = alerts.length;
-                    state.lastAlertCheck = new Date().toISOString();
-                    window.dispatchEvent(new CustomEvent('alerts-update', {
-                        detail: { alerts: state.alerts, unreadCount: state.unreadAlertCount }
-                    }));
-                }
-            } catch (e) {
-                console.warn('Alerts poll failed:', e);
-            }
-        }
-    }, 5000);
-
-    // Initial fetch
-    if (state.user) {
-        fetchAlerts(api);
+export async function refreshClock(api) {
+    try {
+        const data = await api.getDemoClock({ silent: true });
+        updateDemoClock(data.demo_time_utc, data.offset_minutes);
+    } catch (e) {
+        console.warn('Demo clock poll failed:', e);
     }
 }
 
-/**
- * Stop all polling intervals
- */
-export function stopPolling() {
-    Object.values(state.pollingIntervals).forEach(id => clearInterval(id));
-    state.pollingIntervals = {};
-}
-
-/**
- * Fetch alerts for current user
- */
 export async function fetchAlerts(api) {
     if (!state.user) return;
     try {
         const alerts = await api.getAlerts(state.user.id);
-        state.alerts = alerts || [];
+        state.alerts = Array.isArray(alerts) ? alerts : [];
         state.unreadAlertCount = state.alerts.filter(a => !a.read).length;
-        state.lastAlertCheck = new Date().toISOString();
         window.dispatchEvent(new CustomEvent('alerts-update', {
             detail: { alerts: state.alerts, unreadCount: state.unreadAlertCount }
         }));
@@ -183,14 +128,11 @@ export async function fetchAlerts(api) {
     }
 }
 
-/**
- * Mark alerts as read
- */
 export async function markAlertsRead(api) {
     if (!state.user) return;
     try {
         await api.markAlertsRead(state.user.id);
-        state.alerts.forEach(a => a.read = 1);
+        state.alerts.forEach(a => { a.read = 1; });
         state.unreadAlertCount = 0;
         window.dispatchEvent(new CustomEvent('alerts-update', {
             detail: { alerts: state.alerts, unreadCount: 0 }
@@ -200,68 +142,33 @@ export async function markAlertsRead(api) {
     }
 }
 
-/**
- * Get all alerts
- */
-export function getAlerts() {
-    return state.alerts;
+export function startPolling(api) {
+    stopPolling();
+    refreshClock(api);
+    if (state.user) fetchAlerts(api);
+
+    state.pollingIntervals.clock = setInterval(() => refreshClock(api), 5000);
+    state.pollingIntervals.alerts = setInterval(() => {
+        if (state.user) fetchAlerts(api);
+    }, 5000);
 }
 
-/**
- * Get unread alert count
- */
-export function getUnreadAlertCount() {
-    return state.unreadAlertCount;
+export function stopPolling() {
+    Object.values(state.pollingIntervals).forEach(id => clearInterval(id));
+    state.pollingIntervals = {};
 }
 
-/**
- * Add a new alert (from polling or real-time)
- */
-export function addAlert(alert) {
-    state.alerts.unshift(alert);
-    if (state.alerts.length > 50) state.alerts.pop();
-    if (!alert.read) state.unreadAlertCount++;
-    window.dispatchEvent(new CustomEvent('alerts-update', {
-        detail: { alerts: state.alerts, unreadCount: state.unreadAlertCount }
-    }));
-}
-
-/**
- * Check if current user can access a page based on role
- */
-export function canAccessPage(pageRoles) {
-    if (!state.user) return false;
-    if (!pageRoles || pageRoles.length === 0) return true;
-    return pageRoles.includes(state.user.role);
-}
-
-/**
- * Get navigation items for current user role
- */
 export function getNavItems() {
     const role = getUserRole();
-    const baseItems = [
-        { id: 'dashboard', label: 'Dashboard', href: 'dashboard.html', icon: '📊', roles: ['kitchen', 'processing_unit'] },
-        { id: 'plan', label: 'Plan', href: 'plan.html', icon: '🔮', roles: ['kitchen', 'processing_unit'] },
-        { id: 'log', label: 'Log Waste', href: 'log.html', icon: '📊', roles: ['kitchen', 'processing_unit'] },
-        { id: 'post-surplus', label: 'Post Surplus', href: 'post-surplus.html', icon: '🏪', roles: ['kitchen', 'processing_unit'] },
-        { id: 'listings', label: 'My Listings', href: 'listings.html', icon: '📋', roles: ['kitchen', 'processing_unit'] },
-        { id: 'nearby', label: 'Nearby Food', href: 'nearby.html', icon: '🗺️', roles: ['ngo', 'mandir'] },
-        { id: 'needs', label: 'My Needs', href: 'needs.html', icon: '📝', roles: ['ngo', 'mandir'] },
-        { id: 'claims', label: 'My Claims', href: 'claims.html', icon: '✅', roles: ['ngo', 'mandir'] },
+    const items = [
+        { id: 'dashboard', label: 'Dashboard', href: '/kitchen/dashboard.html', icon: '📊', roles: ['kitchen', 'processing_unit'] },
+        { id: 'plan', label: 'Plan', href: '/kitchen/plan.html', icon: '🔮', roles: ['kitchen', 'processing_unit'] },
+        { id: 'log', label: 'Log Waste', href: '/kitchen/log.html', icon: '📝', roles: ['kitchen', 'processing_unit'] },
+        { id: 'post-surplus', label: 'Post Surplus', href: '/kitchen/post-surplus.html', icon: '🏪', roles: ['kitchen', 'processing_unit'] },
+        { id: 'listings', label: 'My Listings', href: '/kitchen/listings.html', icon: '📋', roles: ['kitchen', 'processing_unit'] },
+        { id: 'nearby', label: 'Nearby Food', href: '/recipient/nearby.html', icon: '🗺️', roles: ['ngo', 'mandir'] },
+        { id: 'needs', label: 'My Needs', href: '/recipient/needs.html', icon: '🙏', roles: ['ngo', 'mandir'] },
+        { id: 'claims', label: 'My Claims', href: '/recipient/claims.html', icon: '✅', roles: ['ngo', 'mandir'] },
     ];
-
-    return baseItems.filter(item => item.roles.includes(role));
+    return items.filter(item => item.roles.includes(role));
 }
-
-/**
- * Logout current user
- */
-export function logout(api) {
-    stopPolling();
-    clearUser();
-    window.location.href = 'index.html';
-}
-
-// Initialize on load
-initState();
