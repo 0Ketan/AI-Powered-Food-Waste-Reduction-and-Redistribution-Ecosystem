@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan - AnnaSetu AI</title>
+    <link rel="stylesheet" href="shared/styles.css">
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <script type="module" src="shared/nav.js"></script>
+
+    <main id="main-content" class="page">
+        <div class="container">
+            <header class="page-header">
+                <h1 class="page-title">
+                    <span>🔮</span>
+                    <span>Plan Cooking Quantity</span>
+                </h1>
+                <p class="page-subtitle">AI-Powered Forecast Recommendation</p>
+            </header>
+
+            <!-- Input Form -->
+            <div class="card" style="margin-bottom: var(--space-6);">
+                <div class="card-header">
+                    <h2 class="card-title">Forecast Parameters</h2>
+                </div>
+                <div class="card-body">
+                    <form id="forecast-form" class="form-grid">
+                        <div class="form-group">
+                            <label for="kitchen-id" class="form-label">Kitchen <span class="required">*</span></label>
+                            <select id="kitchen-id" class="form-select" required>
+                                <option value="">Select Kitchen</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="meal-slot" class="form-label">Meal Slot <span class="required">*</span></label>
+                            <select id="meal-slot" class="form-select" required>
+                                <option value="">Select Meal</option>
+                                <option value="breakfast">Breakfast</option>
+                                <option value="lunch">Lunch</option>
+                                <option value="dinner">Dinner</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="forecast-date" class="form-label">Date <span class="required">*</span></label>
+                            <input type="date" id="forecast-date" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="weather" class="form-label">Weather</label>
+                            <select id="weather" class="form-select">
+                                <option value="sunny">Sunny</option>
+                                <option value="cloudy">Cloudy</option>
+                                <option value="rainy">Rainy</option>
+                                <option value="extreme_heat">Extreme Heat</option>
+                                <option value="extreme_cold">Extreme Cold</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="events" class="form-label">Special Events</label>
+                            <select id="events" class="form-select" multiple>
+                                <option value="holiday">Holiday</option>
+                                <option value="festival">Festival</option>
+                                <option value="exam_period">Exam Period</option>
+                                <option value="sports_event">Sports Event</option>
+                                <option value="none">None</option>
+                            </select>
+                            <small class="form-hint">Hold Ctrl/Cmd to select multiple</small>
+                        </div>
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <button type="submit" class="btn btn-primary" id="btn-get-recommendation">
+                                <span>🔮</span> Get Recommendation
+                            </button>
+                            <button type="button" class="btn btn-secondary" id="btn-load-metrics">
+                                <span>📊</span> View Model Metrics
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Recommendation Result -->
+            <div class="card" style="margin-bottom: var(--space-6); display: none;" id="recommendation-card">
+                <div class="card-header">
+                    <h2 class="card-title">AI Recommendation</h2>
+                </div>
+                <div class="card-body">
+                    <div id="recommendation-content"></div>
+                </div>
+            </div>
+
+            <!-- Model Metrics Modal Area -->
+            <div class="card" id="metrics-card" style="display: none;">
+                <div class="card-header">
+                    <h2 class="card-title">Model Performance Metrics</h2>
+                </div>
+                <div class="card-body" id="metrics-content">
+                    <div class="text-center text-muted">Loading...</div>
+                </div>
+            </div>
+
+            <!-- History -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Recent Recommendations</h2>
+                </div>
+                <div class="card-body">
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Kitchen</th>
+                                    <th>Meal</th>
+                                    <th>Predicted</th>
+                                    <th>Recommended</th>
+                                    <th>Confidence</th>
+                                    <th>Actual</th>
+                                </tr>
+                            </thead>
+                            <tbody id="history-body">
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted">No history available</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        import { state, initState } from './shared/state.js';
+        import { api, formatNumber, formatDateTime, showToast } from './shared/api.js';
+        import { updateNavUI } from './shared/nav.js';
+
+        // Initialize
+        initState();
+        updateNavUI();
+
+        // Check access
+        if (!state.canAccessPage(['kitchen', 'processing_unit'])) {
+            window.location.href = 'index.html';
+        }
+
+        // DOM elements
+        const form = document.getElementById('forecast-form');
+        const kitchenSelect = document.getElementById('kitchen-id');
+        const dateInput = document.getElementById('forecast-date');
+        const recommendationCard = document.getElementById('recommendation-card');
+        const recommendationContent = document.getElementById('recommendation-content');
+        const metricsCard = document.getElementById('metrics-card');
+        const metricsContent = document.getElementById('metrics-content');
+        const historyBody = document.getElementById('history-body');
+
+        // Load kitchens and set default date
+        async function initPage() {
+            await loadKitchens();
+            setDefaultDate();
+            await loadMetrics();
+        }
+
+        async function loadKitchens() {
+            try {
+                const users = await api.getUsers();
+                const kitchens = users.filter(u => u.role === 'kitchen' || u.role === 'processing_unit');
+                kitchenSelect.innerHTML = '<option value="">Select Kitchen</option>' +
+                    kitchens.map(k => `<option value="${k.id}">${escapeHtml(k.name)} (${k.role})</option>`).join('');
+            } catch (e) {
+                console.error('Failed to load kitchens:', e);
+                showToast('Failed to load kitchens', 'error');
+            }
+        }
+
+        function setDefaultDate() {
+            const now = state.getDemoTime();
+            dateInput.value = now.toISOString().split('T')[0];
+        }
+
+        // Form submission
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await getRecommendation();
+        });
+
+        async function getRecommendation() {
+            const kitchenId = kitchenSelect.value;
+            const mealSlot = document.getElementById('meal-slot').value;
+            const date = dateInput.value;
+            const weather = document.getElementById('weather').value;
+            const events = Array.from(document.getElementById('events').selectedOptions).map(o => o.value);
+
+            if (!kitchenId || !mealSlot || !date) {
+                showToast('Please fill all required fields', 'warning');
+                return;
+            }
+
+            const btn = document.getElementById('btn-get-recommendation');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Getting recommendation...';
+
+            try {
+                const result = await api.getForecastRecommendation({
+                    kitchen_id: parseInt(kitchenId),
+                    meal_slot: mealSlot,
+                    date,
+                    weather,
+                    events: events.includes('none') ? [] : events
+                });
+
+                displayRecommendation(result);
+                recommendationCard.style.display = 'block';
+                recommendationCard.scrollIntoView({ behavior: 'smooth' });
+            } catch (e) {
+                console.error('Forecast failed:', e);
+                showToast('Failed to get recommendation: ' + e.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<span>🔮</span> Get Recommendation';
+            }
+        }
+
+        function displayRecommendation(result) {
+            const { predicted_attendance, recommended_cook_qty, confidence_interval, model_version } = result;
+            const lower = confidence_interval[0];
+            const upper = confidence_interval[1];
+            const confidencePct = Math.round(((upper - lower) / recommended_cook_qty) * 100);
+
+            recommendationContent.innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-6);">
+                    <div class="stat-card">
+                        <div class="stat-icon stat-icon-primary">👥</div>
+                        <div class="stat-content">
+                            <div class="stat-value">${predicted_attendance}</div>
+                            <div class="stat-label">Predicted Attendance</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon stat-icon-success">🍲</div>
+                        <div class="stat-content">
+                            <div class="stat-value">${recommended_cook_qty} kg</div>
+                            <div class="stat-label">Recommended Cook Qty</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon stat-icon-info">📊</div>
+                        <div class="stat-content">
+                            <div class="stat-value">${lower} - ${upper} kg</div>
+                            <div class="stat-label">Confidence Interval</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon stat-icon-warning">🎯</div>
+                        <div class="stat-content">
+                            <div class="stat-value">${confidencePct}%</div>
+                            <div class="stat-label">Interval Width</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-info">
+                    <strong>Model:</strong> ${model_version} |
+                    <strong>Advice:</strong> Cook ${recommended_cook_qty} kg for ${predicted_attendance} expected attendees.
+                    The 95% confidence interval suggests actual need between ${lower}-${upper} kg.
+                </div>
+
+                <div style="display: flex; gap: var(--space-3); margin-top: var(--space-4);">
+                    <button class="btn btn-primary" onclick="saveRecommendation(${JSON.stringify(result).replace(/"/g, '"')})">
+                        <span>💾</span> Save to Plan
+                    </button>
+                    <a href="log.html" class="btn btn-secondary">
+                        <span>📋</span> Log Actual Waste After Meal
+                    </a>
+                </div>
+            `;
+        }
+
+        window.saveRecommendation = function(result) {
+            // Store in localStorage for reference
+            const plans = JSON.parse(localStorage.getItem('annasetu_plans') || '[]');
+            plans.unshift({
+                ...result,
+                kitchen_id: kitchenSelect.value,
+                meal_slot: document.getElementById('meal-slot').value,
+                date: dateInput.value,
+                created_at: new Date().toISOString()
+            });
+            if (plans.length > 20) plans.pop();
+            localStorage.setItem('annasetu_plans', JSON.stringify(plans));
+            showToast('Recommendation saved to local plan', 'success');
+            loadHistory();
+        }
+
+        async function loadMetrics() {
+            try {
+                const metrics = await api.getForecastMetrics();
+                displayMetrics(metrics);
+            } catch (e) {
+                console.error('Failed to load metrics:', e);
+                metricsContent.innerHTML = '<div class="text-center text-muted">Failed to load metrics</div>';
+            }
+        }
+
+        function displayMetrics(metrics) {
+            const { mae_kg, rmse_kg, mape_pct, within_ci_pct, total_predictions, model_version, last_trained } = metrics;
+
+            metricsContent.innerHTML = `
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon stat-icon-primary">📏</div>
+                        <div class="stat-content">
+                            <div class="stat-value">${mae_kg.toFixed(2)} kg</div>
+                            <div class="stat-label">Mean Absolute Error</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon stat-icon-warning">📐</div>
+                        <div class="stat-content">
+                            <div class="stat-value">${rmse_kg.toFixed(2)} kg</div>
+                            <div class="stat-label">Root Mean Square Error</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon stat-icon-success">📊</div>
+                        <div class="stat-content">
+                            <div class="stat-value">${mape_pct.toFixed(1)}%</div>
+                            <div class="stat-label">Mean Abs % Error</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon stat-icon-info">🎯</div>
+                        <div class="stat-content">
+                            <div class="stat-value">${within_ci_pct.toFixed(1)}%</div>
+                            <div class="stat-label">Within CI (95%)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: var(--space-6); padding: var(--space-4); background: var(--color-gray-50); border-radius: var(--radius-md);">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4);">
+                        <div>
+                            <strong>Model Version:</strong> ${model_version}
+                        </div>
+                        <div>
+                            <strong>Total Predictions:</strong> ${total_predictions}
+                        </div>
+                        <div>
+                            <strong>Last Trained:</strong> ${formatDateTime(last_trained)}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        document.getElementById('btn-load-metrics')?.addEventListener('click', () => {
+            metricsCard.style.display = metricsCard.style.display === 'none' ? 'block' : 'none';
+            if (metricsCard.style.display === 'block') {
+                metricsCard.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+
+        function loadHistory() {
+            const plans = JSON.parse(localStorage.getItem('annasetu_plans') || '[]');
+            if (plans.length === 0) {
+                historyBody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">No saved recommendations</td></tr>';
+                return;
+            }
+
+            historyBody.innerHTML = plans.map(p => `
+                <tr>
+                    <td>${formatDateTime(p.date)}</td>
+                    <td>${escapeHtml(kitchenSelect.options[kitchenSelect.selectedIndex]?.text || 'Unknown')}</td>
+                    <td>${p.meal_slot}</td>
+                    <td>${p.predicted_attendance}</td>
+                    <td>${p.recommended_cook_qty} kg</td>
+                    <td>${p.confidence_interval[0]} - ${p.confidence_interval[1]} kg</td>
+                    <td><span class="text-muted">--</span></td>
+                </tr>
+            `).join('');
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Initialize
+        initPage();
+        loadHistory();
+    </script>
+</body>
+</html>

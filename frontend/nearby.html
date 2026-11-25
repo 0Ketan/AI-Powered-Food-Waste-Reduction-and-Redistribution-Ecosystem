@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nearby Listings - AnnaSetu AI</title>
+    <link rel="stylesheet" href="shared/styles.css">
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <script type="module" src="shared/nav.js"></script>
+
+    <main id="main-content" class="page">
+        <div class="container">
+            <header class="page-header">
+                <h1 class="page-title">
+                    <span>🗺️</span>
+                    <span>Nearby Surplus Food</span>
+                </h1>
+                <p class="page-subtitle">Find and claim available surplus food near you</p>
+            </header>
+
+            <!-- Map + List View Toggle -->
+            <div class="card" style="margin-bottom: var(--space-6);">
+                <div class="card-body" style="padding: var(--space-4);">
+                    <div style="display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center;">
+                        <div style="display: flex; gap: var(--space-2);">
+                            <button class="btn btn-primary" id="btn-view-map" data-view="map">
+                                <span>🗺️</span> Map View
+                            </button>
+                            <button class="btn btn-outline" id="btn-view-list" data-view="list">
+                                <span>📋</span> List View
+                            </button>
+                        </div>
+                        <div style="margin-left: auto; display: flex; gap: var(--space-2); align-items: center;">
+                            <label for="distance-filter" style="font-size: var(--font-size-sm); white-space: nowrap;">
+                                Within
+                                <select id="distance-filter" class="form-select" style="width: auto; margin: 0 var(--space-2);">
+                                    <option value="5">5 km</option>
+                                    <option value="10" selected>10 km</option>
+                                    <option value="25">25 km</option>
+                                    <option value="50">50 km</option>
+                                </select>
+                            </label>
+                            <button class="btn btn-secondary" id="btn-refresh-nearby">
+                                <span>🔄</span> Refresh
+                            </button>
+                            <button class="btn btn-outline" id="btn-use-my-location">
+                                <span>📍</span> Use My Location
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Map View -->
+            <div class="card" id="map-view" style="display: none;">
+                <div class="card-body" style="padding: 0;">
+                    <div id="map" style="height: 500px; width: 100%;"></div>
+                </div>
+            </div>
+
+            <!-- List View -->
+            <div class="card" id="list-view">
+                <div class="card-header">
+                    <h2 class="card-title">Available Listings</h2>
+                </div>
+                <div class="card-body">
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Type</th>
+                                    <th>Qty (kg)</th>
+                                    <th>Expiry</th>
+                                    <th>Location</th>
+                                    <th>Distance</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="nearby-listings-body">
+                                <tr>
+                                    <td colspan="8" class="text-center text-muted">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="empty-nearby" style="display: none; text-align: center; padding: var(--space-12);">
+                        <div style="font-size: 4rem; margin-bottom: var(--space-4);">🍽️</div>
+                        <h3 style="margin-bottom: var(--space-2);">No Nearby Surplus Found</h3>
+                        <p class="text-muted" style="margin-bottom: var(--space-6);">Try increasing the search radius or check back later.</p>
+                        <button class="btn btn-outline" onclick="loadNearbyListings()">🔄 Refresh</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Pickup Code Modal -->
+    <div class="modal-overlay" id="pickup-modal" role="dialog" aria-modal="true" aria-labelledby="pickup-modal-title">
+        <div class="modal modal-lg">
+            <div class="modal-header">
+                <h2 class="modal-title" id="pickup-modal-title">🎫 Pickup Code</h2>
+                <button class="modal-close" onclick="closePickupModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="pickup-modal-body"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { state, initState } from './shared/state.js';
+        import { api, formatDateTime, showToast, minutesUntilExpiry, escapeHtml, calculateDistance } from './shared/api.js';
+        import { updateNavUI } from './shared/nav.js';
+
+        initState();
+        updateNavUI();
+
+        if (!state.canAccessPage(['ngo', 'mandir'])) {
+            window.location.href = 'index.html';
+        }
+
+        let map = null;
+        let markers = [];
+        let currentView = 'list';
+        let allListings = [];
+        let userLocation = null;
+
+        // DOM elements
+        const mapView = document.getElementById('map-view');
+        const listView = document.getElementById('list-view');
+        const nearbyBody = document.getElementById('nearby-listings-body');
+        const emptyNearby = document.getElementById('empty-nearby');
+        const distanceFilter = document.getElementById('distance-filter');
+        const pickupModal = document.getElementById('pickup-modal');
+        const pickupModalBody = document.getElementById('pickup-modal-body');
+
+        async function initPage() {
+            await getUserLocation();
+            await loadNearbyListings();
+            setupViewToggle();
+            setupEventListeners();
+        }
+
+        async function getUserLocation() {
+            // Try to get from state (saved from previous geolocation)
+            if (state.userLocation) {
+                userLocation = state.userLocation;
+                return;
+            }
+
+            // Try geolocation
+            if (navigator.geolocation) {
+                try {
+                    const pos = await new Promise((resolve, reject) => {
+                        navigator.geolocation.getCurrentPosition(resolve, reject, {
+                            enableHighAccuracy: true,
+                            timeout: 10000,
+                            maximumAge: 300000
+                        });
+                    });
+                    userLocation = {
+                        lat: pos.coords.latitude,
+                        lng: pos.coords.longitude
+                    };
+                    state.userLocation = userLocation;
+                } catch (e) {
+                    console.warn('Geolocation failed:', e);
+                    // Default to a central location (e.g., Delhi)
+                    userLocation = { lat: 28.6139, lng: 77.2090 };
+                    state.userLocation = userLocation;
+                }
+            } else {
+                userLocation = { lat: 28.6139, lng: 77.2090 };
+                state.userLocation = userLocation;
+            }
+        }
+
+        function setupViewToggle() {
+            document.getElementById('btn-view-map').addEventListener('click', () => switchView('map'));
+            document.getElementById('btn-view-list').addEventListener('click', () => switchView('list'));
+        }
+
+        function switchView(view) {
+            currentView = view;
+            if (view === 'map') {
+                mapView.style.display = 'block';
+                listView.style.display = 'none';
+                document.getElementById('btn-view-map').classList.remove('btn-outline');
+                document.getElementById('btn-view-map').classList.add('btn-primary');
+                document.getElementById('btn-view-list').classList.remove('btn-primary');
+                document.getElementById('btn-view-list').classList.add('btn-outline');
+                setTimeout(initMap, 100);
+            } else {
+                mapView.style.display = 'none';
+                listView.style.display = 'block';
+                document.getElementById('btn-view-list').classList.remove('btn-outline');
+                document.getElementById('btn-view-list').classList.add('btn-primary');
+                document.getElementById('btn-view-map').classList.remove('btn-primary');
+                document.getElementById('btn-view-map').classList.add('btn-outline');
+            }
+        }
+
+        function setupEventListeners() {
+            distanceFilter.addEventListener('change', () => {
+                renderListView();
+                if (currentView === 'map' && map) {
+                    updateMapMarkers();
+                }
+            });
+            document.getElementById('btn-refresh-nearby').addEventListener('click', loadNearbyListings);
+            document.getElementById('btn-use-my-location').addEventListener('click', async () => {
+                await getUserLocation();
+                showToast('Location updated', 'success');
+                await loadNearbyListings();
+            });
+        }
+
+        async function loadNearbyListings() {
+            try {
+                nearbyBody.innerHTML = '<tr><td colspan="8" class="text-center text-muted">Loading...</td></tr>';
+                emptyNearby.style.display = 'none';
+
+                const listings = await api.getListings({ status: 'available', veg_only: false });
+                allListings = listings || [];
+
+                if (userLocation) {
+                    allListings.forEach(listing => {
+                        if (listing.lat && listing.lng) {
+                            listing.distance_km = calculateDistance(
+                                userLocation.lat, userLocation.lng,
+                                listing.lat, listing.lng
+                            );
+                        } else {
+                            listing.distance_km = null;
+                        }
+                    });
+                }
+
+                // Sort by distance
+                allListings.sort((a, b) => (a.distance_km || 999) - (b.distance_km || 999));
+
+                renderListView();
+                if (currentView === 'map') {
+                    initMap();
+                }
+            } catch (e) {
+                console.error('Failed to load nearby listings:', e);
+                nearbyBody.innerHTML = '<tr><td colspan="8" class="text-center text-danger">Failed to load listings</td></tr>';
+                showToast('Failed to load listings', 'error');
+            }
+        }
+
+        function renderListView() {
+            const maxDistance = parseFloat(distanceFilter.value);
+            const filtered = allListings.filter(l => l.distance_km !== null && l.distance_km <= maxDistance);
+
+            if (filtered.length === 0) {
+                nearbyBody.innerHTML = '';
+                emptyNearby.style.display = 'block';
+                return;
+            }
+
+            emptyNearby.style.display = 'none';
+            nearbyBody.innerHTML = filtered.map(listing => {
+                const minsLeft = minutesUntilExpiry(listing.expiry_time);
+                const isExpired = minsLeft <= 0;
+                const statusClass = isExpired ? 'danger' : minsLeft < 60 ? 'warning' : 'success';
+                const statusText = isExpired ? 'Expired' : `${minsLeft}m left`;
+                const distanceText = listing.distance_km !== null ? `${listing.distance_km.toFixed(1)} km` : 'Unknown';
+
+                return `
+                    <tr>
+                        <td>${escapeHtml(listing.title)}</td>
+                        <td>${escapeHtml(listing.food_type.replace('_', ' '))}</td>
+                        <td>${listing.quantity_kg}</td>
+                        <td><span class="badge badge-${statusClass}">${statusText}</span></td>
+                        <td>${escapeHtml(listing.location)}</td>
+                        <td>${distanceText}</td>
+                        <td><span class="badge badge-success">Available</span></td>
+                        <td>
+                            ${!isExpired ? `
+                                <button class="btn btn-sm btn-success" onclick="claimListing(${listing.id})">
+                                    <span>🎫</span> Claim
+                                </button>
+                            ` : `
+                                <span class="text-muted">Expired</span>
+                            `}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        async function initMap() {
+            if (typeof L === 'undefined') {
+                console.warn('Leaflet not loaded');
+                return;
+            }
+
+            if (!map) {
+                map = L.map('map').setView([userLocation.lat, userLocation.lng], 12);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                    maxZoom: 19
+                }).addTo(map);
+
+                // User location marker
+                L.marker([userLocation.lat, userLocation.lng], {
+                    icon: L.divIcon({
+                        className: 'user-location-marker',
+                        html: '<div style="width: 20px; height: 20px; background: #1e88e5; border: 3px solid white; border-radius: 50%; box-shadow: 0 2px 6px rgba(0,0,0,0.3);"></div>',
+                        iconSize: [20, 20],
+                        iconAnchor: [10, 10]
+                    })
+                }).addTo(map).bindPopup('Your Location').openPopup();
+            }
+
+            updateMapMarkers();
+        }
+
+        function updateMapMarkers() {
+            if (!map) return;
+
+            // Clear existing markers
+            markers.forEach(m => map.removeLayer(m));
+            markers = [];
+
+            const maxDistance = parseFloat(distanceFilter.value);
+            const filtered = allListings.filter(l =>
+                l.lat && l.lng &&
+                l.distance_km !== null &&
+                l.distance_km <= maxDistance &&
+                minutesUntilExpiry(l.expiry_time) > 0
+            );
+
+            filtered.forEach(listing => {
+                const minsLeft = minutesUntilExpiry(listing.expiry_time);
+                const isUrgent = minsLeft < 60;
+                const markerHtml = `
+                    <div style="
+                        width: 36px; height: 36px;
+                        background: ${isUrgent ? '#e53935' : '#43a047'};
+                        border: 3px solid white;
+                        border-radius: 50% 50% 50% 0;
+                        transform: rotate(-45deg);
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        color: white;
+                        font-weight: bold;
+                        font-size: 12px;
+                    ">
+                        ${listing.quantity_kg}kg
+                    </div>
+                `;
+
+                const marker = L.marker([listing.lat, listing.lng], {
+                    icon: L.divIcon({
+                        className: 'listing-marker',
+                        html: markerHtml,
+                        iconSize: [36, 36],
+                        iconAnchor: [18, 36]
+                    })
+                }).addTo(map);
+
+                marker.bindPopup(`
+                    <div style="min-width: 200px;">
+                        <h4 style="margin: 0 0 8px 0;">${escapeHtml(listing.title)}</h4>
+                        <p style="margin: 4px 0;"><strong>Type:</strong> ${escapeHtml(listing.food_type.replace('_', ' '))}</p>
+                        <p style="margin: 4px 0;"><strong>Qty:</strong> ${listing.quantity_kg} kg</p>
+                        <p style="margin: 4px 0;"><strong>Location:</strong> ${escapeHtml(listing.location)}</p>
+                        <p style="margin: 4px 0;"><strong>Distance:</strong> ${listing.distance_km.toFixed(1)} km</p>
+                        <p style="margin: 4px 0;"><strong>Expiry:</strong> ${minsLeft}m left</p>
+                        <button class="btn btn-sm btn-success" style="margin-top: 8px; width: 100%;" onclick="claimListing(${listing.id}); this.closest('.leaflet-popup').remove();">
+                            <span>🎫</span> Claim This
+                        </button>
+                    </div>
+                `);
+
+                markers.push(marker);
+            });
+
+            // Fit bounds to show all markers + user location
+            if (markers.length > 0) {
+                const group = new L.featureGroup(markers);
+                group.addLayer(L.marker([userLocation.lat, userLocation.lng]));
+                map.fitBounds(group.getBounds().pad(0.1));
+            }
+        }
+
+        window.claimListing = async function(listingId) {
+            const listing = allListings.find(l => l.id === listingId);
+            if (!listing) return;
+
+            const minsLeft = minutesUntilExpiry(listing.expiry_time);
+            if (minsLeft <= 0) {
+                showToast('This listing has expired', 'warning');
+                return;
+            }
+
+            if (!confirm(`Claim "${listing.title}" (${listing.quantity_kg} kg)?`)) return;
+
+            try {
+                const result = await api.claimListing(listingId, state.user.id);
+                showPickupModal(result);
+            } catch (e) {
+                console.error('Claim failed:', e);
+                showToast('Failed to claim: ' + e.message, 'error');
+            }
+        };
+
+        function showPickupModal(result) {
+            const { listing, pickup_code, expires_at } = result;
+            const minsLeft = minutesUntilExpiry(expires_at);
+
+            pickupModalBody.innerHTML = `
+                <div class="alert alert-success" style="text-align: center; margin-bottom: var(--space-6);">
+                    <div style="font-size: 3rem; margin-bottom: var(--space-3);">🎫</div>
+                    <h3 style="margin: 0;">Listing Claimed Successfully!</h3>
+                </div>
+
+                <div style="background: var(--color-gray-50); border-radius: var(--radius-lg); padding: var(--space-6); text-align: center; margin-bottom: var(--space-6);">
+                    <div style="font-size: var(--font-size-sm); color: var(--color-gray-600); margin-bottom: var(--space-2);">Your Pickup Code</div>
+                    <div style="font-size: 2.5rem; font-weight: 700; letter-spacing: 0.3em; color: var(--color-primary); font-family: monospace;">${escapeHtml(pickup_code)}</div>
+                    <div style="font-size: var(--font-size-sm); color: var(--color-gray-600); margin-top: var(--space-3);">
+                        Valid for ${minsLeft} minutes
+                    </div>
+                </div>
+
+                <div class="card" style="background: var(--color-primary-50); border: 1px solid var(--color-primary-200);">
+                    <div class="card-body">
+                        <h4 style="margin-bottom: var(--space-3);">📋 Pickup Details</h4>
+                        <div style="display: grid; gap: var(--space-2); text-align: left;">
+                            <div><strong>Food:</strong> ${escapeHtml(listing.title)}</div>
+                            <div><strong>Quantity:</strong> ${listing.quantity_kg} kg</div>
+                            <div><strong>Type:</strong> ${escapeHtml(listing.food_type.replace('_', ' '))}</div>
+                            <div><strong>Location:</strong> ${escapeHtml(listing.location)}</div>
+                            <div><strong>Expires:</strong> ${formatDateTime(expires_at)}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-warning" style="margin-top: var(--space-4);">
+                    <strong>⚠️ Important:</strong> Share this pickup code with the donor when collecting the food.
+                    The code expires in ${minsLeft} minutes. After pickup, mark as "Picked Up" in your Claims page.
+                </div>
+
+                <div style="display: flex; gap: var(--space-3); justify-content: center; margin-top: var(--space-6);">
+                    <button class="btn btn-primary" onclick="copyPickupCode('${escapeHtml(pickup_code)}')">
+                        <span>📋</span> Copy Code
+                    </button>
+                    <button class="btn btn-secondary" onclick="closePickupModal()">
+                        Done
+                    </button>
+                </div>
+            `;
+
+            pickupModal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        window.closePickupModal = function() {
+            pickupModal.classList.remove('show');
+            document.body.style.overflow = '';
+            // Refresh to update status
+            loadNearbyListings();
+        };
+
+        window.copyPickupCode = function(code) {
+            navigator.clipboard.writeText(code).then(() => {
+                showToast('Pickup code copied to clipboard!', 'success');
+            }).catch(() => {
+                showToast('Failed to copy code', 'error');
+            });
+        };
+
+        // Close modal on overlay click
+        pickupModal.addEventListener('click', (e) => {
+            if (e.target === pickupModal) {
+                closePickupModal();
+            }
+        });
+
+        // Initialize
+        initPage();
+    </script>
+
+    <!-- Leaflet CSS (inlined for offline) -->
+    <style>
+        .leaflet-container { font-family: inherit; }
+        .leaflet-popup-content-wrapper { border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); }
+        .leaflet-popup-content { margin: 8px 12px; }
+        .leaflet-popup-tip { box-shadow: var(--shadow-lg); }
+    </style>
+</body>
+</html>

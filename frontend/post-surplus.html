@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post Surplus - AnnaSetu AI</title>
+    <link rel="stylesheet" href="shared/styles.css">
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <script type="module" src="shared/nav.js"></script>
+
+    <main id="main-content" class="page">
+        <div class="container">
+            <header class="page-header">
+                <h1 class="page-title">
+                    <span>🏪</span>
+                    <span>Post Surplus Food</span>
+                </h1>
+                <p class="page-subtitle">List safe surplus items for redistribution</p>
+            </header>
+
+            <!-- Post Surplus Form -->
+            <div class="card" style="margin-bottom: var(--space-6);">
+                <div class="card-header">
+                    <h2 class="card-title">New Surplus Listing</h2>
+                </div>
+                <div class="card-body">
+                    <form id="surplus-form" class="form-grid">
+                        <div class="form-group">
+                            <label for="listing-title" class="form-label">Listing Title <span class="required">*</span></label>
+                            <input type="text" id="listing-title" class="form-input" placeholder="e.g., Fresh Cooked Rice - 20kg" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="food-type" class="form-label">Food Type <span class="required">*</span></label>
+                            <select id="food-type" class="form-select" required>
+                                <option value="">Select Type</option>
+                                <option value="cooked_meal">Cooked Meal</option>
+                                <option value="prepared_ingredients">Prepared Ingredients</option>
+                                <option value="raw_produce">Raw Produce</option>
+                                <option value="packaged_food">Packaged Food</option>
+                                <option value="bakery">Bakery Items</option>
+                                <option value="beverages">Beverages</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="quantity-kg" class="form-label">Quantity (kg) <span class="required">*</span></label>
+                            <input type="number" id="quantity-kg" class="form-input" step="0.1" min="0.1" placeholder="0.0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="expiry-hours" class="form-label">Expiry (hours from now) <span class="required">*</span></label>
+                            <input type="number" id="expiry-hours" class="form-input" min="1" max="72" value="4" required>
+                            <small class="form-hint">Max 72 hours</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="location" class="form-label">Pickup Location <span class="required">*</span></label>
+                            <input type="text" id="location" class="form-input" placeholder="e.g., Main Kitchen, Block A" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lat" class="form-label">Latitude</label>
+                            <input type="number" id="lat" class="form-input" step="any" placeholder="Auto-filled from location">
+                        </div>
+                        <div class="form-group">
+                            <label for="lng" class="form-label">Longitude</label>
+                            <input type="number" id="lng" class="form-input" step="any" placeholder="Auto-filled from location">
+                        </div>
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea id="description" class="form-input" rows="3" placeholder="Details about the food, preparation time, special instructions..."></textarea>
+                        </div>
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <button type="submit" class="btn btn-success" id="btn-post-surplus">
+                                <span>🏪</span> Post Surplus Listing
+                            </button>
+                            <button type="button" class="btn btn-secondary" id="btn-use-location">
+                                <span>📍</span> Use My Location
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- My Active Listings -->
+            <div class="card">
+                <div class="card-header">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-3);">
+                        <h2 class="card-title">My Active Listings</h2>
+                        <button class="btn btn-sm btn-outline" id="btn-refresh-listings">
+                            <span>🔄</span> Refresh
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Type</th>
+                                    <th>Qty (kg)</th>
+                                    <th>Expiry</th>
+                                    <th>Location</th>
+                                    <th>Status</th>
+                                    <th>Claims</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="my-listings-body">
+                                <tr>
+                                    <td colspan="8" class="text-center text-muted">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        import { state, initState } from './shared/state.js';
+        import { api, formatDateTime, showToast, minutesUntilExpiry, escapeHtml } from './shared/api.js';
+        import { updateNavUI } from './shared/nav.js';
+
+        initState();
+        updateNavUI();
+
+        if (!state.canAccessPage(['kitchen', 'processing_unit'])) {
+            window.location.href = 'index.html';
+        }
+
+        const form = document.getElementById('post-surplus');
+        const listingsBody = document.getElementById('my-listings-body');
+
+        async function initPage() {
+            await loadMyListings();
+            setupLocationButton();
+        }
+
+        function setupLocationButton() {
+            document.getElementById('btn-use-location')?.addEventListener('click', () => {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        (pos) => {
+                            document.getElementById('lat').value = pos.coords.latitude.toFixed(6);
+                            document.getElementById('lng').value = pos.coords.longitude.toFixed(6);
+                            showToast('Location captured', 'success');
+                        },
+                        () => showToast('Could not get location', 'warning')
+                    );
+                } else {
+                    showToast('Geolocation not supported', 'warning');
+                }
+            });
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await postSurplus();
+        });
+
+        async function postSurplus() {
+            const title = document.getElementById('listing-title').value.trim();
+            const foodType = document.getElementById('food-type').value;
+            const quantityKg = parseFloat(document.getElementById('quantity-kg').value);
+            const expiryHours = parseInt(document.getElementById('expiry-hours').value);
+            const location = document.getElementById('location').value.trim();
+            const lat = parseFloat(document.getElementById('lat').value) || null;
+            const lng = parseFloat(document.getElementById('lng').value) || null;
+            const description = document.getElementById('description').value.trim();
+
+            if (!title || !foodType || !quantityKg || !expiryHours || !location) {
+                showToast('Please fill all required fields', 'warning');
+                return;
+            }
+
+            const btn = document.getElementById('btn-post-surplus');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Posting...';
+
+            try {
+                const expiryTime = new Date(Date.now() + expiryHours * 60 * 60 * 1000).toISOString();
+
+                const result = await api.createListing({
+                    title,
+                    food_type: foodType,
+                    quantity_kg: quantityKg,
+                    expiry_time: expiryTime,
+                    location,
+                    lat,
+                    lng,
+                    description,
+                    posted_by: state.user.id
+                });
+
+                showToast('Surplus posted successfully!', 'success');
+                form.reset();
+                await loadMyListings();
+            } catch (e) {
+                console.error('Failed to post surplus:', e);
+                showToast('Failed to post: ' + e.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<span>🏪</span> Post Surplus Listing';
+            }
+        }
+
+        async function loadMyListings() {
+            try {
+                const listings = await api.getListings({ posted_by: state.user.id });
+                if (!listings || listings.length === 0) {
+                    listingsBody.innerHTML = '<tr><td colspan="8" class="text-center text-muted">No active listings</td></tr>';
+                    return;
+                }
+
+                listingsBody.innerHTML = listings.map(listing => {
+                    const minsLeft = minutesUntilExpiry(listing.expiry_time);
+                    const isExpired = minsLeft <= 0;
+                    const statusClass = isExpired ? 'danger' : minsLeft < 60 ? 'warning' : 'success';
+                    const statusText = isExpired ? 'Expired' : `${minsLeft}m left`;
+
+                    return `
+                        <tr>
+                            <td>${escapeHtml(listing.title)}</td>
+                            <td>${escapeHtml(listing.food_type.replace('_', ' '))}</td>
+                            <td>${listing.quantity_kg}</td>
+                            <td><span class="badge badge-${statusClass}">${statusText}</span></td>
+                            <td>${escapeHtml(listing.location)}</td>
+                            <td><span class="badge badge-${getStatusBadgeClass(listing.status)}">${escapeHtml(listing.status)}</span></td>
+                            <td>${listing.claim_count || 0}</td>
+                            <td>
+                                <div style="display: flex; gap: var(--space-1);">
+                                    ${listing.status === 'available' ? `
+                                        <button class="btn btn-sm btn-outline" onclick="markClaimed(${listing.id})" title="Mark as Claimed">
+                                            ✅
+                                        </button>
+                                        <button class="btn btn-sm btn-outline" onclick="markServed(${listing.id})" title="Mark as Served">
+                                            🍽️
+                                        </button>
+                                    ` : ''}
+                                    <button class="btn btn-sm btn-outline" onclick="deleteListing(${listing.id})" title="Delete">
+                                        🗑️
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (e) {
+                console.error('Failed to load listings:', e);
+                listingsBody.innerHTML = '<tr><td colspan="8" class="text-center text-danger">Failed to load listings</td></tr>';
+            }
+        }
+
+        function getStatusBadgeClass(status) {
+            const classes = {
+                'available': 'success',
+                'claimed': 'warning',
+                'picked_up': 'info',
+                'served': 'success',
+                'expired': 'danger',
+                'cancelled': 'gray'
+            };
+            return classes[status] || 'gray';
+        }
+
+        window.markClaimed = async function(id) {
+            if (!confirm('Mark this listing as claimed?')) return;
+            try {
+                await api.claimListing(id, state.user.id);
+                showToast('Marked as claimed', 'success');
+                await loadMyListings();
+            } catch (e) {
+                showToast('Failed: ' + e.message, 'error');
+            }
+        };
+
+        window.markServed = async function(id) {
+            if (!confirm('Mark this listing as served?')) return;
+            try {
+                await api.markServed(id);
+                showToast('Marked as served', 'success');
+                await loadMyListings();
+            } catch (e) {
+                showToast('Failed: ' + e.message, 'error');
+            }
+        };
+
+        window.deleteListing = async function(id) {
+            if (!confirm('Delete this listing?')) return;
+            try {
+                await api.deleteListing(id);
+                showToast('Listing deleted', 'success');
+                await loadMyListings();
+            } catch (e) {
+                showToast('Failed: ' + e.message, 'error');
+            }
+        };
+
+        document.getElementById('btn-refresh-listings')?.addEventListener('click', loadMyListings);
+
+        initPage();
+    </script>
+</body>
+</html>

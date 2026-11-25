@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Listings - AnnaSetu AI</title>
+    <link rel="stylesheet" href="shared/styles.css">
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <script type="module" src="shared/nav.js"></script>
+
+    <main id="main-content" class="page">
+        <div class="container">
+            <header class="page-header">
+                <h1 class="page-title">
+                    <span>📋</span>
+                    <span>My Listings</span>
+                </h1>
+                <p class="page-subtitle">Manage your surplus food listings</p>
+            </header>
+
+            <!-- Filter Bar -->
+            <div class="card" style="margin-bottom: var(--space-6);">
+                <div class="card-body" style="padding: var(--space-4);">
+                    <div style="display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center;">
+                        <div style="display: flex; gap: var(--space-2); flex-wrap: wrap;">
+                            <select id="filter-status" class="form-select" style="width: auto;">
+                                <option value="">All Statuses</option>
+                                <option value="available">Available</option>
+                                <option value="claimed">Claimed</option>
+                                <option value="picked_up">Picked Up</option>
+                                <option value="served">Served</option>
+                                <option value="expired">Expired</option>
+                                <option value="cancelled">Cancelled</option>
+                            </select>
+                            <select id="filter-type" class="form-select" style="width: auto;">
+                                <option value="">All Types</option>
+                                <option value="cooked_meal">Cooked Meal</option>
+                                <option value="prepared_ingredients">Prepared Ingredients</option>
+                                <option value="raw_produce">Raw Produce</option>
+                                <option value="packaged_food">Packaged Food</option>
+                                <option value="bakery">Bakery Items</option>
+                                <option value="beverages">Beverages</option>
+                            </select>
+                            <input type="text" id="filter-search" class="form-input" placeholder="Search titles..." style="width: 200px; max-width: 100%;">
+                        </div>
+                        <div style="margin-left: auto; display: flex; gap: var(--space-2);">
+                            <button class="btn btn-secondary" id="btn-refresh">
+                                <span>🔄</span> Refresh
+                            </button>
+                            <a href="post-surplus.html" class="btn btn-success">
+                                <span>➕</span> Post New
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Listings Table -->
+            <div class="card">
+                <div class="card-header">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-3);">
+                        <h2 class="card-title">All Listings</h2>
+                        <div id="listing-stats" style="font-size: var(--font-size-sm); color: var(--color-gray-600);"></div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Type</th>
+                                    <th>Qty (kg)</th>
+                                    <th>Expiry</th>
+                                    <th>Location</th>
+                                    <th>Status</th>
+                                    <th>Claims</th>
+                                    <th>Created</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="listings-body">
+                                <tr>
+                                    <td colspan="9" class="text-center text-muted">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty State (shown via JS) -->
+            <div class="card" id="empty-state" style="display: none; text-align: center; padding: var(--space-12);">
+                <div style="font-size: 4rem; margin-bottom: var(--space-4);">📋</div>
+                <h3 style="margin-bottom: var(--space-2);">No Listings Yet</h3>
+                <p class="text-muted" style="margin-bottom: var(--space-6);">You haven't posted any surplus listings yet.</p>
+                <a href="post-surplus.html" class="btn btn-success">
+                    <span>🏪</span> Post Your First Surplus
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        import { state, initState } from './shared/state.js';
+        import { api, formatDateTime, showToast, minutesUntilExpiry, escapeHtml } from './shared/api.js';
+        import { updateNavUI } from './shared/nav.js';
+
+        initState();
+        updateNavUI();
+
+        if (!state.canAccessPage(['kitchen', 'processing_unit'])) {
+            window.location.href = 'index.html';
+        }
+
+        const listingsBody = document.getElementById('listings-body');
+        const emptyState = document.getElementById('empty-state');
+        const listingStats = document.getElementById('listing-stats');
+        const filterStatus = document.getElementById('filter-status');
+        const filterType = document.getElementById('filter-type');
+        const filterSearch = document.getElementById('filter-search');
+
+        let allListings = [];
+
+        async function initPage() {
+            await loadListings();
+            setupFilters();
+        }
+
+        function setupFilters() {
+            [filterStatus, filterType, filterSearch].forEach(el => {
+                el.addEventListener('change', applyFilters);
+                el.addEventListener('input', applyFilters);
+            });
+            document.getElementById('btn-refresh')?.addEventListener('click', loadListings);
+        }
+
+        function applyFilters() {
+            const status = filterStatus.value;
+            const type = filterType.value;
+            const search = filterSearch.value.toLowerCase();
+
+            const filtered = allListings.filter(l => {
+                if (status && l.status !== status) return false;
+                if (type && l.food_type !== type) return false;
+                if (search && !l.title.toLowerCase().includes(search)) return false;
+                return true;
+            });
+
+            renderListings(filtered);
+            updateStats(filtered);
+        }
+
+        async function loadListings() {
+            try {
+                listingsBody.innerHTML = '<tr><td colspan="9" class="text-center text-muted">Loading...</td></tr>';
+                emptyState.style.display = 'none';
+
+                allListings = await api.getListings({ posted_by: state.user.id });
+                renderListings(allListings);
+                updateStats(allListings);
+            } catch (e) {
+                console.error('Failed to load listings:', e);
+                listingsBody.innerHTML = '<tr><td colspan="9" class="text-center text-danger">Failed to load listings</td></tr>';
+                showToast('Failed to load listings', 'error');
+            }
+        }
+
+        function updateStats(listings) {
+            const total = listings.length;
+            const available = listings.filter(l => l.status === 'available').length;
+            const claimed = listings.filter(l => l.status === 'claimed').length;
+            const served = listings.filter(l => l.status === 'served').length;
+            const expired = listings.filter(l => l.status === 'expired').length;
+
+            listingStats.innerHTML = `
+                Total: <strong>${total}</strong> |
+                Available: <strong>${available}</strong> |
+                Claimed: <strong>${claimed}</strong> |
+                Served: <strong>${served}</strong> |
+                Expired: <strong>${expired}</strong>
+            `;
+
+            if (total === 0) {
+                emptyState.style.display = 'block';
+            } else {
+                emptyState.style.display = 'none';
+            }
+        }
+
+        function renderListings(listings) {
+            if (!listings || listings.length === 0) {
+                listingsBody.innerHTML = '<tr><td colspan="9" class="text-center text-muted">No listings match your filters</td></tr>';
+                return;
+            }
+
+            listingsBody.innerHTML = listings.map(listing => {
+                const minsLeft = minutesUntilExpiry(listing.expiry_time);
+                const isExpired = minsLeft <= 0;
+                const statusClass = isExpired ? 'danger' : minsLeft < 60 ? 'warning' : 'success';
+                const statusText = isExpired ? 'Expired' : `${minsLeft}m left`;
+
+                const statusBadgeClass = getStatusBadgeClass(listing.status);
+
+                let actionsHtml = `
+                    <div style="display: flex; gap: var(--space-1); flex-wrap: wrap;">
+                        <button class="btn btn-sm btn-outline" onclick="viewDetails(${listing.id})" title="View Details">
+                            👁️
+                        </button>
+                `;
+
+                if (listing.status === 'available') {
+                    actionsHtml += `
+                        <button class="btn btn-sm btn-outline" onclick="markClaimed(${listing.id})" title="Mark as Claimed">
+                            ✅
+                        </button>
+                        <button class="btn btn-sm btn-outline" onclick="markServed(${listing.id})" title="Mark as Served">
+                            🍽️
+                        </button>
+                    `;
+                } else if (listing.status === 'claimed') {
+                    actionsHtml += `
+                        <button class="btn btn-sm btn-outline" onclick="markPickedUp(${listing.id})" title="Mark as Picked Up">
+                            📦
+                        </button>
+                        <button class="btn btn-sm btn-outline" onclick="markServed(${listing.id})" title="Mark as Served">
+                            🍽️
+                        </button>
+                    `;
+                } else if (listing.status === 'picked_up') {
+                    actionsHtml += `
+                        <button class="btn btn-sm btn-outline" onclick="markServed(${listing.id})" title="Mark as Served">
+                            🍽️
+                        </button>
+                    `;
+                }
+
+                actionsHtml += `
+                        <button class="btn btn-sm btn-outline" onclick="deleteListing(${listing.id})" title="Delete" style="color: var(--color-danger);">
+                            🗑️
+                        </button>
+                    </div>
+                `;
+
+                return `
+                    <tr>
+                        <td>${escapeHtml(listing.title)}</td>
+                        <td>${escapeHtml(listing.food_type.replace('_', ' '))}</td>
+                        <td>${listing.quantity_kg}</td>
+                        <td><span class="badge badge-${statusClass}">${statusText}</span></td>
+                        <td>${escapeHtml(listing.location)}</td>
+                        <td><span class="badge badge-${statusBadgeClass}">${escapeHtml(listing.status.replace('_', ' '))}</span></td>
+                        <td>${listing.claim_count || 0}</td>
+                        <td>${formatDateTime(listing.created_at)}</td>
+                        <td>${actionsHtml}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function getStatusBadgeClass(status) {
+            const classes = {
+                'available': 'success',
+                'claimed': 'warning',
+                'picked_up': 'info',
+                'served': 'success',
+                'expired': 'danger',
+                'cancelled': 'gray'
+            };
+            return classes[status] || 'gray';
+        }
+
+        // Window functions for inline onclick handlers
+        window.viewDetails = async function(id) {
+            const listing = allListings.find(l => l.id === id);
+            if (!listing) return;
+
+            const minsLeft = minutesUntilExpiry(listing.expiry_time);
+            const isExpired = minsLeft <= 0;
+
+            alert(`
+Listing Details:
+Title: ${listing.title}
+Type: ${listing.food_type.replace('_', ' ')}
+Quantity: ${listing.quantity_kg} kg
+Status: ${listing.status.replace('_', ' ')}
+Location: ${listing.location}
+Expiry: ${formatDateTime(listing.expiry_time)} (${isExpired ? 'EXPIRED' : minsLeft + ' minutes left'})
+Description: ${listing.description || 'None'}
+Created: ${formatDateTime(listing.created_at)}
+Claims: ${listing.claim_count || 0}
+            `.trim());
+        };
+
+        window.markClaimed = async function(id) {
+            if (!confirm('Mark this listing as claimed?')) return;
+            try {
+                await api.claimListing(id, state.user.id);
+                showToast('Marked as claimed', 'success');
+                await loadListings();
+            } catch (e) {
+                showToast('Failed: ' + e.message, 'error');
+            }
+        };
+
+        window.markPickedUp = async function(id) {
+            if (!confirm('Mark this listing as picked up?')) return;
+            try {
+                await api.pickupListing(id);
+                showToast('Marked as picked up', 'success');
+                await loadListings();
+            } catch (e) {
+                showToast('Failed: ' + e.message, 'error');
+            }
+        };
+
+        window.markServed = async function(id) {
+            if (!confirm('Mark this listing as served?')) return;
+            try {
+                await api.markServed(id);
+                showToast('Marked as served', 'success');
+                await loadListings();
+            } catch (e) {
+                showToast('Failed: ' + e.message, 'error');
+            }
+        };
+
+        window.deleteListing = async function(id) {
+            if (!confirm('Delete this listing permanently?')) return;
+            try {
+                await api.deleteListing(id);
+                showToast('Listing deleted', 'success');
+                await loadListings();
+            } catch (e) {
+                showToast('Failed: ' + e.message, 'error');
+            }
+        };
+
+        initPage();
+    </script>
+</body>
+</html>
