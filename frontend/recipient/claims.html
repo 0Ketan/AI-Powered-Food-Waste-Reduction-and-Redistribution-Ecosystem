@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Claims - AnnaSetu AI</title>
+    <link rel="stylesheet" href="/shared/styles.css">
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <script type="module" src="/shared/nav.js"></script>
+
+    <main id="main-content" class="page">
+        <div class="container">
+            <header class="page-header">
+                <h1 class="page-title">
+                    <span>My Claims</span>
+                    <span class="goal-tag">Redistribute</span>
+                </h1>
+                <p class="page-subtitle">Show pickup code to kitchen, mark served, and complete safety record (Flow F2)</p>
+            </header>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Claimed Listings</h2>
+                </div>
+                <div class="card-body" id="claims-list">
+                    <p class="text-muted">Loading claims...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        import {
+            getMarketplaceClaims,
+            getMarketplaceListings,
+            serveListing,
+            completeSafetyRecord,
+            withSubmitLock,
+            showToast,
+            formatDateTime,
+            escapeHtml
+        } from '/shared/api.js';
+        import { navReady } from '/shared/nav.js';
+        import { state, getDemoTime } from '/shared/state.js';
+
+        async function loadClaims() {
+            const container = document.getElementById('claims-list');
+            if (!state.user) return;
+            try {
+                const [claims, listings] = await Promise.all([
+                    getMarketplaceClaims(state.user.id),
+                    getMarketplaceListings(),
+                ]);
+
+                if (!claims.length) {
+                    container.innerHTML = '<p class="text-muted">No claimed listings yet. Visit <a href="/recipient/nearby.html">Nearby Food</a> to claim surplus.</p>';
+                    return;
+                }
+
+                const listingsById = {};
+                (listings || []).forEach(l => { listingsById[String(l.id)] = l; });
+
+                container.innerHTML = claims.map(c => {
+                    const l = listingsById[String(c.listing_id)] || {};
+                    const status = l.status || 'claimed';
+                    const isCollected = status === 'collected';
+                    const isDistributed = status === 'distributed';
+
+                    return `
+                        <div class="card" style="margin-bottom:1rem;">
+                            <div class="card-body">
+                                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+                                    <div>
+                                        <h3 style="margin-bottom:0.25rem;">${escapeHtml(l.item_name || c.listing_id)}</h3>
+                                        <p style="margin:0;">
+                                            <strong>${escapeHtml(l.quantity ?? '--')} ${escapeHtml(l.unit || '')}</strong> ·
+                                            Donor: ${escapeHtml(l.donor_name || l.donor_id || '--')} ·
+                                            Status: <span class="badge badge-info">${escapeHtml(status)}</span>
+                                        </p>
+                                        <p class="text-muted" style="margin:0.25rem 0 0; font-size:0.85rem;">
+                                            Consume by: ${escapeHtml(formatDateTime(l.consume_by))}
+                                        </p>
+                                    </div>
+                                    <div style="text-align:center;">
+                                        <div class="text-muted" style="font-size:0.75rem; margin-bottom:0.25rem;">PICKUP CODE</div>
+                                        <div class="pickup-code-large">${escapeHtml(c.pickup_code)}</div>
+                                        <div class="text-muted" style="font-size:0.7rem; margin-top:0.25rem;">Show this code to the kitchen staff</div>
+                                    </div>
+                                </div>
+
+                                ${isCollected ? `
+                                    <form class="served-form" data-listing-id="${escapeHtml(c.listing_id)}" data-record-id="${escapeHtml(l.record_id || '')}" data-qty="${escapeHtml(l.quantity || 0)}" style="display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:1rem; align-items:center;">
+                                        <label class="form-label" style="margin:0;">People served:</label>
+                                        <input type="number" class="form-input people-served-input" min="1" step="1" value="${escapeHtml(Math.round(l.quantity || 20))}" style="width:110px;" required>
+                                        <button type="submit" class="btn btn-success btn-sm">Mark served</button>
+                                    </form>
+                                ` : ''}
+
+                                ${isDistributed ? `
+                                    <p class="text-success" style="margin-top:0.75rem;"><strong>Served ${escapeHtml(l.people_served || 0)} people.</strong></p>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                container.querySelectorAll('.served-form').forEach(form => {
+                    form.addEventListener('submit', async (e) => {
+                        e.preventDefault();
+                        const listingId = form.dataset.listingId;
+                        const recordId = form.dataset.recordId;
+                        const qty = Number(form.dataset.qty) || 0;
+                        const peopleServed = Number(form.querySelector('.people-served-input').value);
+
+                        await withSubmitLock(form, async () => {
+                            await serveListing(listingId, String(state.user.id), peopleServed);
+                            if (recordId) {
+                                await completeSafetyRecord(recordId, {
+                                    recipient_id: String(state.user.id),
+                                    recipient_name: state.user.name,
+                                    recipient_address: state.user.address || 'Demo Campus',
+                                    quantity_distributed: qty || peopleServed,
+                                    area_distributed: state.user.address || 'Demo Campus',
+                                    distribution_date: getDemoTime().toISOString(),
+                                });
+                            }
+                            showToast('Marked as served and safety record completed!', 'success');
+                            await loadClaims();
+                        });
+                    });
+                });
+            } catch {
+                container.innerHTML = '<p class="text-danger">Failed to load claims.</p>';
+            }
+        }
+
+        await navReady;
+        await loadClaims();
+        setInterval(loadClaims, 5000);
+    </script>
+</body>
+</html>

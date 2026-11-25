@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - AnnaSetu AI</title>
+    <link rel="stylesheet" href="/shared/styles.css">
+    <script src="/vendor/chart.js/chart.umd.min.js" defer></script>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <script type="module" src="/shared/nav.js"></script>
+
+    <main id="main-content" class="page">
+        <div class="container">
+            <header class="page-header">
+                <h1 class="page-title">
+                    <span>Kitchen Dashboard</span>
+                    <span class="goal-tag">Monitor</span>
+                </h1>
+                <p class="page-subtitle" id="kitchen-subtitle">Loading kitchen details...</p>
+            </header>
+
+            <!-- Summary & Impact Cards -->
+            <div class="stats-grid" style="margin-bottom: var(--space-6);">
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <div class="stat-value" id="stat-prepared">--</div>
+                        <div class="stat-label">Total Prepared (plates)</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <div class="stat-value" id="stat-served">--</div>
+                        <div class="stat-label">Total Served (plates)</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <div class="stat-value" id="stat-leftover">--</div>
+                        <div class="stat-label">Leftover (<span id="stat-leftover-pct">--</span>%)</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <div class="stat-value" id="stat-shortages">--</div>
+                        <div class="stat-label">Shortage Count</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <div class="stat-value" id="stat-active-listings">--</div>
+                        <div class="stat-label">Active Listings</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-content">
+                        <div class="stat-value" id="stat-people-served">--</div>
+                        <div class="stat-label">People Served (Redistributed)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chart / Fallback Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Prepared vs Served vs Leftover by Day</h2>
+                </div>
+                <div class="card-body">
+                    <div id="chart-loading" class="text-muted">Loading chart data...</div>
+                    <div id="chart-wrapper" style="display:none; position:relative; height:320px;">
+                        <canvas id="waste-bar-chart"></canvas>
+                    </div>
+                    <div id="chart-fallback" style="display:none;">
+                        <p class="text-muted" id="chart-fallback-note"></p>
+                        <div class="table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Prepared</th>
+                                        <th>Served</th>
+                                        <th>Leftover</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="chart-fallback-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        import { getWasteSummary, getImpact, getMarketplaceListings, escapeHtml } from '/shared/api.js';
+        import { navReady } from '/shared/nav.js';
+        import { state } from '/shared/state.js';
+
+        let chartInstance = null;
+
+        async function loadDashboard() {
+            const user = state.user;
+            if (!user) return;
+            document.getElementById('kitchen-subtitle').textContent = `Showing metrics for ${user.name} (${user.role})`;
+
+            const [summaryRes, impactRes, listingsRes] = await Promise.allSettled([
+                getWasteSummary(user.id, { silent: true }),
+                getImpact(user.id),
+                getMarketplaceListings(user.id),
+            ]);
+
+            if (summaryRes.status === 'fulfilled') {
+                const s = summaryRes.value;
+                const totals = s.totals || {};
+                document.getElementById('stat-prepared').textContent = totals.prepared ?? 0;
+                document.getElementById('stat-served').textContent = totals.served ?? 0;
+                document.getElementById('stat-leftover').textContent = totals.leftover ?? 0;
+                document.getElementById('stat-leftover-pct').textContent = totals.leftover_pct ?? 0;
+                document.getElementById('stat-shortages').textContent = s.shortage_count ?? totals.shortage_count ?? 0;
+                renderChartOrTable(s.days || []);
+            } else {
+                document.getElementById('stat-prepared').textContent = '0';
+                document.getElementById('stat-served').textContent = '0';
+                document.getElementById('stat-leftover').textContent = '0';
+                document.getElementById('stat-leftover-pct').textContent = '0';
+                document.getElementById('stat-shortages').textContent = '0';
+                document.getElementById('chart-loading').textContent = 'No waste logs recorded yet for this unit.';
+            }
+
+            if (impactRes.status === 'fulfilled') {
+                const imp = impactRes.value;
+                document.getElementById('stat-people-served').textContent = imp.total_people_served ?? 0;
+            }
+
+            if (listingsRes.status === 'fulfilled') {
+                const listings = Array.isArray(listingsRes.value) ? listingsRes.value : [];
+                const active = listings.filter(l => ['open', 'claimed', 'collected'].includes(l.status)).length;
+                document.getElementById('stat-active-listings').textContent = active;
+            }
+        }
+
+        function renderChartOrTable(days) {
+            const loading = document.getElementById('chart-loading');
+            const wrapper = document.getElementById('chart-wrapper');
+            const fallback = document.getElementById('chart-fallback');
+            loading.style.display = 'none';
+
+            if (!days.length) {
+                fallback.style.display = 'block';
+                document.getElementById('chart-fallback-note').textContent = 'No daily waste data recorded yet.';
+                document.getElementById('chart-fallback-body').innerHTML =
+                    '<tr><td colspan="4" class="text-muted text-center">No records yet</td></tr>';
+                return;
+            }
+
+            if (typeof window.Chart !== 'undefined') {
+                wrapper.style.display = 'block';
+                fallback.style.display = 'none';
+                const ctx = document.getElementById('waste-bar-chart').getContext('2d');
+                if (chartInstance) chartInstance.destroy();
+                chartInstance = new window.Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: days.map(d => d.date),
+                        datasets: [
+                            { label: 'Prepared', data: days.map(d => d.prepared), backgroundColor: '#1565c0' },
+                            { label: 'Served', data: days.map(d => d.served), backgroundColor: '#2e7d32' },
+                            { label: 'Leftover', data: days.map(d => d.leftover), backgroundColor: '#f57f17' },
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: { y: { beginAtZero: true } }
+                    }
+                });
+            } else {
+                wrapper.style.display = 'none';
+                fallback.style.display = 'block';
+                document.getElementById('chart-fallback-note').textContent =
+                    'Chart library unavailable — showing daily totals as a table.';
+                document.getElementById('chart-fallback-body').innerHTML = days.map(d => `
+                    <tr>
+                        <td>${escapeHtml(d.date)}</td>
+                        <td>${escapeHtml(d.prepared)}</td>
+                        <td>${escapeHtml(d.served)}</td>
+                        <td>${escapeHtml(d.leftover)}</td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        await navReady;
+        await loadDashboard();
+    </script>
+</body>
+</html>

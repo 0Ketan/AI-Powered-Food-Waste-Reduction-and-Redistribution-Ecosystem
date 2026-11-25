@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Needs - AnnaSetu AI</title>
+    <link rel="stylesheet" href="/shared/styles.css">
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <script type="module" src="/shared/nav.js"></script>
+
+    <main id="main-content" class="page">
+        <div class="container">
+            <header class="page-header">
+                <h1 class="page-title">
+                    <span>My Needs</span>
+                    <span class="goal-tag">Redistribute</span>
+                </h1>
+                <p class="page-subtitle">Post meal requirements and view pledges from nearby kitchens (Flow F3)</p>
+            </header>
+
+            <div class="card" style="margin-bottom: var(--space-6);">
+                <div class="card-header">
+                    <h2 class="card-title">Post a Need</h2>
+                </div>
+                <div class="card-body">
+                    <form id="need-form" class="form-grid">
+                        <div class="form-group">
+                            <label for="need-people" class="form-label">People</label>
+                            <input type="number" id="need-people" class="form-input" min="1" step="1" value="50" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="need-by" class="form-label">Needed By (UTC)</label>
+                            <input type="datetime-local" id="need-by" class="form-input" required>
+                        </div>
+                        <div class="form-group" style="display:flex; align-items:center; gap:0.5rem; padding-top:1.5rem;">
+                            <input type="checkbox" id="need-veg-only" checked>
+                            <label for="need-veg-only" class="form-label" style="margin:0;">Veg only</label>
+                        </div>
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label for="need-notes" class="form-label">Notes</label>
+                            <textarea id="need-notes" class="form-input" rows="2" placeholder="e.g., Dinner for community shelter"></textarea>
+                        </div>
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <button type="submit" class="btn btn-primary" id="btn-post-need">Post Need</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">My Posted Needs &amp; Pledges</h2>
+                </div>
+                <div class="card-body" id="needs-list">
+                    <p class="text-muted">Loading needs...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        import {
+            getMarketplaceNeeds,
+            createMarketplaceNeed,
+            withSubmitLock,
+            showToast,
+            formatDateTime,
+            escapeHtml
+        } from '/shared/api.js';
+        import { navReady } from '/shared/nav.js';
+        import { state, getDemoTime } from '/shared/state.js';
+
+        function setDefaultNeededBy() {
+            const dt = new Date(getDemoTime().getTime() + 4 * 3600000);
+            const pad = n => String(n).padStart(2, '0');
+            document.getElementById('need-by').value =
+                `${dt.getUTCFullYear()}-${pad(dt.getUTCMonth() + 1)}-${pad(dt.getUTCDate())}T${pad(dt.getUTCHours())}:${pad(dt.getUTCMinutes())}`;
+        }
+
+        async function loadNeeds() {
+            const container = document.getElementById('needs-list');
+            if (!state.user) return;
+            container.innerHTML = '<p class="text-muted">Loading needs...</p>';
+            try {
+                const needs = await getMarketplaceNeeds(null, state.user.id);
+                if (!needs.length) {
+                    container.innerHTML = '<p class="text-muted">You have not posted any needs yet.</p>';
+                    return;
+                }
+                container.innerHTML = needs.map(n => {
+                    const pledges = n.pledges || [];
+                    const pledgeHtml = pledges.length
+                        ? `<ul style="margin-top:0.5rem; padding-left:1.25rem;">${pledges.map(p =>
+                            `<li><strong>${escapeHtml(p.donor_name || p.donor_id)}</strong> pledged <strong>${escapeHtml(p.quantity)} ${escapeHtml(p.unit)}</strong> ${p.note ? `— ${escapeHtml(p.note)}` : ''}</li>`
+                        ).join('')}</ul>`
+                        : '<p class="text-muted" style="margin-top:0.5rem; font-size:0.875rem;">No pledges yet.</p>';
+
+                    return `
+                        <div class="card" style="margin-bottom:0.75rem;">
+                            <div class="card-body">
+                                <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:0.5rem;">
+                                    <div>
+                                        <strong>${escapeHtml(n.people)} people</strong>
+                                        ${n.veg_only ? '<span class="badge badge-success">Veg Only</span>' : ''}
+                                        <span class="badge badge-info">${escapeHtml(n.status)}</span>
+                                    </div>
+                                    <span class="text-muted">Needed by: ${escapeHtml(formatDateTime(n.needed_by))}</span>
+                                </div>
+                                ${n.notes ? `<p style="margin:0.4rem 0 0;">${escapeHtml(n.notes)}</p>` : ''}
+                                <div style="margin-top:0.5rem;">
+                                    <strong>Pledges (${pledges.length}):</strong>
+                                    ${pledgeHtml}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } catch {
+                container.innerHTML = '<p class="text-danger">Failed to load needs.</p>';
+            }
+        }
+
+        document.getElementById('need-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!state.user) return;
+            const raw = document.getElementById('need-by').value;
+            const neededBy = raw.endsWith('Z') ? raw : `${raw}:00Z`;
+
+            await withSubmitLock(e.currentTarget, async () => {
+                await createMarketplaceNeed({
+                    recipient_id: String(state.user.id),
+                    people: Number(document.getElementById('need-people').value),
+                    needed_by: neededBy,
+                    veg_only: document.getElementById('need-veg-only').checked,
+                    notes: document.getElementById('need-notes').value.trim(),
+                });
+                showToast('Need posted!', 'success');
+                await loadNeeds();
+            });
+        });
+
+        await navReady;
+        setDefaultNeededBy();
+        await loadNeeds();
+    </script>
+</body>
+</html>

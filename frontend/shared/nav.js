@@ -1,413 +1,219 @@
 /**
- * AnnaSetu AI - Shared Navigation Component
- * Renders the top navigation bar with user info, demo clock, alerts, and role-based navigation.
+ * AnnaSetu AI - Shared Navigation Bar
+ * Renders prototype banner, title "AnnaSetu AI — Prototype", user switcher dropdown,
+ * demo clock, Demo Guide, +1 Hour, Reset Demo, alerts bell (marks read on open), and role menu.
  */
 
-import { state, getNavItems, logout, formatDemoTime, getUnreadAlertCount, markAlertsRead } from './state.js';
-import { showToast } from './api.js';
+import * as api from './api.js';
+import {
+    state,
+    ensureUserLoaded,
+    saveUser,
+    getHomePageForRole,
+    getNavItems,
+    formatDemoTime,
+    startPolling,
+    refreshClock,
+    markAlertsRead,
+} from './state.js';
 
-/**
- * Create and return the navigation bar element
- */
-export function createNavBar() {
-    const nav = document.createElement('nav');
-    nav.className = 'navbar';
-    nav.innerHTML = `
-        <div class="nav-container">
-            <div class="nav-left">
-                <a href="index.html" class="nav-brand">
-                    <span class="brand-icon">🍲</span>
-                    <span class="brand-text">AnnaSetu AI</span>
-                </a>
-                <div class="nav-divider"></div>
-                <div class="nav-menu" id="nav-menu"></div>
-            </div>
-            <div class="nav-right">
-                <div class="nav-clock" id="nav-clock" title="Demo Clock">
-                    <span class="clock-icon">⏰</span>
-                    <span class="clock-time">--:--:--</span>
-                    <span class="clock-label">Demo Time</span>
+function createTopShell() {
+    const wrapper = document.createElement('div');
+    wrapper.id = 'app-shell-header';
+    wrapper.innerHTML = `
+        <div class="proto-banner">Prototype - simulated data</div>
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-left">
+                    <a href="/index.html" class="nav-brand">
+                        <span class="brand-text">AnnaSetu AI</span>
+                    </a>
+                    <div class="nav-menu" id="nav-menu"></div>
                 </div>
-                <button class="nav-alerts" id="nav-alerts" title="Alerts" aria-label="Alerts">
-                    <span class="alerts-icon">🔔</span>
-                    <span class="alerts-badge" id="alerts-badge" style="display: none;">0</span>
-                </button>
-                <div class="nav-user" id="nav-user" style="display: none;">
-                    <span class="user-avatar" id="user-avatar"></span>
-                    <span class="user-name" id="user-name"></span>
-                    <span class="user-role" id="user-role"></span>
-                    <button class="btn btn-sm btn-logout" id="btn-logout">Logout</button>
-                </div>
-                <div class="nav-login" id="nav-login" style="display: none;">
-                    <button class="btn btn-primary" id="btn-login-kitchen">Kitchen</button>
-                    <button class="btn btn-secondary" id="btn-login-ngo">NGO</button>
-                    <button class="btn btn-secondary" id="btn-login-mandir">Mandir</button>
-                    <button class="btn btn-secondary" id="btn-login-processing">Processing Unit</button>
+                <div class="nav-right">
+                    <a href="/index.html" class="btn btn-sm btn-outline" id="btn-demo-guide">Demo Guide</a>
+                    <div class="nav-clock" id="nav-clock" title="Demo Clock">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        <span class="clock-time" id="nav-clock-time">--:--</span>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline" id="btn-plus-hour" title="Advance demo clock by 1 hour">+1 Hour</button>
+                    <button type="button" class="btn btn-sm btn-danger" id="btn-reset-demo" title="Reset demo database and clock">Reset Demo</button>
+                    <div class="alerts-wrapper" style="position:relative;">
+                        <button type="button" class="nav-alerts" id="nav-alerts" title="Alerts" aria-label="Alerts">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                            <span class="alerts-badge" id="alerts-badge" style="display:none;">0</span>
+                        </button>
+                        <div class="alerts-dropdown" id="alerts-dropdown" style="display:none;">
+                            <div class="dropdown-header">
+                                <h4>Alerts</h4>
+                                <span class="text-muted" style="font-size:0.75rem;">Marked read on open</span>
+                            </div>
+                            <div class="dropdown-list" id="alerts-list">
+                                <div class="dropdown-empty">No alerts</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="user-switcher">
+                        <label for="user-switcher-select" class="sr-only">Switch User</label>
+                        <select id="user-switcher-select" class="form-select form-select-sm"></select>
+                    </div>
                 </div>
             </div>
-        </div>
-        <!-- Alerts Dropdown -->
-        <div class="alerts-dropdown" id="alerts-dropdown" style="display: none;">
-            <div class="dropdown-header">
-                <h4>Alerts</h4>
-                <button class="btn btn-sm btn-mark-read" id="btn-mark-read">Mark all read</button>
-            </div>
-            <div class="dropdown-list" id="alerts-list"></div>
-        </div>
+        </nav>
     `;
-    return nav;
+    return wrapper;
 }
 
-/**
- * Initialize navigation bar
- */
-export function initNavBar(api) {
-    const navBar = createNavBar();
-    document.body.insertBefore(navBar, document.body.firstChild);
-
-    // Setup event listeners
-    setupNavEvents(api);
-    updateNavUI();
-
-    // Listen for state changes
-    window.addEventListener('democlock-update', () => updateClockDisplay());
-    window.addEventListener('alerts-update', () => updateAlertsUI());
-
-    // Start polling
-    import('./state.js').then(({ startPolling }) => startPolling(api));
+function getCurrentPageId() {
+    const file = window.location.pathname.split('/').pop() || 'index.html';
+    return file.replace('.html', '') || 'index';
 }
 
-/**
- * Setup navigation event listeners
- */
-function setupNavEvents(api) {
-    // Logout button
-    document.getElementById('btn-logout')?.addEventListener('click', () => logout(api));
+function renderNavMenu() {
+    const container = document.getElementById('nav-menu');
+    if (!container) return;
+    const items = getNavItems();
+    const current = getCurrentPageId();
+    container.innerHTML = items.map(item => `
+        <a href="${item.href}" class="nav-item ${item.id === current ? 'active' : ''}" data-page="${item.id}">
+            <span>${item.label}</span>
+        </a>
+    `).join('');
+}
 
-    // Login buttons
-    document.getElementById('btn-login-kitchen')?.addEventListener('click', () => showLoginModal('kitchen'));
-    document.getElementById('btn-login-ngo')?.addEventListener('click', () => showLoginModal('ngo'));
-    document.getElementById('btn-login-mandir')?.addEventListener('click', () => showLoginModal('mandir'));
-    document.getElementById('btn-login-processing')?.addEventListener('click', () => showLoginModal('processing_unit'));
+function renderUserSwitcher() {
+    const select = document.getElementById('user-switcher-select');
+    if (!select) return;
+    if (!state.users.length) {
+        select.innerHTML = '<option value="">No users</option>';
+        return;
+    }
+    select.innerHTML = state.users.map(u => {
+        const selected = state.user && String(state.user.id) === String(u.id) ? 'selected' : '';
+        return `<option value="${api.escapeHtml(u.id)}" ${selected}>${api.escapeHtml(u.name)} (${api.escapeHtml(u.role)})</option>`;
+    }).join('');
+}
 
-    // Alerts dropdown
-    const alertsBtn = document.getElementById('nav-alerts');
-    const alertsDropdown = document.getElementById('alerts-dropdown');
+function updateClockDisplay() {
+    const el = document.getElementById('nav-clock-time');
+    if (el) el.textContent = formatDemoTime();
+}
 
-    alertsBtn?.addEventListener('click', (e) => {
-        e.stopPropagation();
-        toggleAlertsDropdown();
-    });
+function updateAlertsUI() {
+    const badge = document.getElementById('alerts-badge');
+    const count = state.unreadAlertCount || 0;
+    if (badge) {
+        if (count > 0) {
+            badge.textContent = count > 99 ? '99+' : String(count);
+            badge.style.display = 'flex';
+        } else {
+            badge.style.display = 'none';
+        }
+    }
+    const dropdown = document.getElementById('alerts-dropdown');
+    if (dropdown && dropdown.style.display !== 'none') {
+        renderAlertsList();
+    }
+}
 
-    // Close dropdown on outside click
-    document.addEventListener('click', (e) => {
-        if (!alertsBtn?.contains(e.target) && !alertsDropdown?.contains(e.target)) {
-            closeAlertsDropdown();
+function alertHref(a) {
+    const role = state.user?.role;
+    const t = (a.type || a.alert_type || '').toLowerCase();
+    if (role === 'kitchen' || role === 'processing_unit') {
+        if (t === 'log_reminder') {
+            return `/kitchen/log.html?slot=${encodeURIComponent(a.slot || 'lunch')}`;
+        }
+        return '/kitchen/listings.html';
+    }
+    if (t === 'new_listing') return '/recipient/nearby.html';
+    if (t === 'pledge') return '/recipient/needs.html';
+    if (t === 'claimed' || t === 'collected') return '/recipient/claims.html';
+    return getHomePageForRole(role || 'ngo');
+}
+
+function renderAlertsList() {
+    const list = document.getElementById('alerts-list');
+    if (!list) return;
+    const alerts = (state.alerts || []).slice(0, 15);
+    if (!alerts.length) {
+        list.innerHTML = '<div class="dropdown-empty">No alerts yet</div>';
+        return;
+    }
+    list.innerHTML = alerts.map(a => `
+        <a href="${alertHref(a)}" class="alert-item ${!a.read ? 'unread' : ''}" style="text-decoration:none; color:inherit;">
+            <div class="alert-content">
+                <div class="alert-message">${api.escapeHtml(a.message)}</div>
+                <div class="alert-time">${api.formatDateTime(a.created_at)}</div>
+            </div>
+        </a>
+    `).join('');
+}
+
+export async function initNavBar() {
+    if (document.getElementById('app-shell-header')) return;
+    const shell = createTopShell();
+    document.body.insertBefore(shell, document.body.firstChild);
+
+    await ensureUserLoaded(api);
+    renderUserSwitcher();
+    renderNavMenu();
+    updateClockDisplay();
+    startPolling(api);
+
+    // User switcher -> save to annasetu_user_id & go to that role's home page
+    document.getElementById('user-switcher-select')?.addEventListener('change', (e) => {
+        const chosen = state.users.find(u => String(u.id) === String(e.target.value));
+        if (chosen) {
+            saveUser(chosen);
+            window.location.href = getHomePageForRole(chosen.role);
         }
     });
 
-    // Mark all read
-    document.getElementById('btn-mark-read')?.addEventListener('click', async () => {
-        await markAlertsRead(api);
-        closeAlertsDropdown();
-        showToast('All alerts marked as read', 'success');
-    });
-
-    // Update clock display initially
-    updateClockDisplay();
-}
-
-/**
- * Update navigation UI based on login state
- */
-export function updateNavUI() {
-    const navMenu = document.getElementById('nav-menu');
-    const navUser = document.getElementById('nav-user');
-    const navLogin = document.getElementById('nav-login');
-    const userAvatar = document.getElementById('user-avatar');
-    const userName = document.getElementById('user-name');
-    const userRole = document.getElementById('user-role');
-
-    if (state.user) {
-        // User logged in - show nav menu and user info
-        navMenu.style.display = 'flex';
-        navUser.style.display = 'flex';
-        navLogin.style.display = 'none';
-
-        // Update user info
-        userAvatar.textContent = getRoleIcon(state.user.role);
-        userName.textContent = state.user.name;
-        userRole.textContent = formatRole(state.user.role);
-
-        // Build role-based navigation
-        renderNavMenu(navMenu);
-    } else {
-        // Not logged in
-        navMenu.style.display = 'none';
-        navUser.style.display = 'none';
-        navLogin.style.display = 'flex';
-    }
-}
-
-/**
- * Render role-based navigation menu
- */
-function renderNavMenu(container) {
-    const navItems = getNavItems();
-    container.innerHTML = navItems.map(item => `
-        <a href="${item.href}" class="nav-item" data-page="${item.id}">
-            <span class="nav-item-icon">${item.icon}</span>
-            <span class="nav-item-label">${item.label}</span>
-        </a>
-    `).join('');
-
-    // Highlight current page
-    const currentPage = getCurrentPageId();
-    const activeLink = container.querySelector(`[data-page="${currentPage}"]`);
-    if (activeLink) {
-        activeLink.classList.add('active');
-    }
-}
-
-/**
- * Get current page ID from URL
- */
-function getCurrentPageId() {
-    const path = window.location.pathname;
-    const page = path.split('/').pop().replace('.html', '');
-    return page || 'index';
-}
-
-/**
- * Update clock display
- */
-function updateClockDisplay() {
-    const clockTime = document.querySelector('.clock-time');
-    if (clockTime) {
-        clockTime.textContent = formatDemoTime();
-    }
-}
-
-/**
- * Update alerts UI
- */
-function updateAlertsUI() {
-    const badge = document.getElementById('alerts-badge');
-    const count = getUnreadAlertCount();
-
-    if (count > 0) {
-        badge.textContent = count > 99 ? '99+' : count;
-        badge.style.display = 'flex';
-    } else {
-        badge.style.display = 'none';
-    }
-
-    // Update dropdown list if open
-    const dropdown = document.getElementById('alerts-dropdown');
-    if (dropdown.style.display !== 'none') {
-        renderAlertsDropdown();
-    }
-}
-
-/**
- * Toggle alerts dropdown
- */
-function toggleAlertsDropdown() {
-    const dropdown = document.getElementById('alerts-dropdown');
-    const isOpen = dropdown.style.display !== 'none';
-
-    if (isOpen) {
-        closeAlertsDropdown();
-    } else {
-        openAlertsDropdown();
-    }
-}
-
-/**
- * Open alerts dropdown
- */
-function openAlertsDropdown() {
-    const dropdown = document.getElementById('alerts-dropdown');
-    dropdown.style.display = 'block';
-    renderAlertsDropdown();
-}
-
-/**
- * Close alerts dropdown
- */
-function closeAlertsDropdown() {
-    const dropdown = document.getElementById('alerts-dropdown');
-    dropdown.style.display = 'none';
-}
-
-/**
- * Render alerts in dropdown
- */
-function renderAlertsDropdown() {
-    const list = document.getElementById('alerts-list');
-    const alerts = state.alerts.slice(0, 10); // Show latest 10
-
-    if (alerts.length === 0) {
-        list.innerHTML = '<div class="dropdown-empty">No alerts</div>';
-        return;
-    }
-
-    list.innerHTML = alerts.map(alert => `
-        <div class="alert-item ${!alert.read ? 'unread' : ''}" data-alert-id="${alert.id}">
-            <div class="alert-icon">${getAlertIcon(alert.type)}</div>
-            <div class="alert-content">
-                <div class="alert-message">${escapeHtml(alert.message)}</div>
-                <div class="alert-time">${formatAlertTime(alert.created_at)}</div>
-            </div>
-        </div>
-    `).join('');
-
-    // Add click handlers to mark as read
-    list.querySelectorAll('.alert-item').forEach(item => {
-        item.addEventListener('click', () => {
-            const alertId = item.dataset.alertId;
-            markAlertRead(alertId);
+    // +1 Hour button
+    document.getElementById('btn-plus-hour')?.addEventListener('click', async (e) => {
+        await api.withSubmitLock(e.currentTarget, async () => {
+            await api.advanceDemoClock(60);
+            await refreshClock(api);
+            api.showToast('Demo clock advanced by +1 hour', 'success');
+            window.dispatchEvent(new CustomEvent('demo-clock-advanced'));
         });
     });
-}
 
-/**
- * Mark individual alert as read
- */
-function markAlertRead(alertId) {
-    const alert = state.alerts.find(a => a.id === alertId);
-    if (alert && !alert.read) {
-        alert.read = 1;
-        state.unreadAlertCount = Math.max(0, state.unreadAlertCount - 1);
-        window.dispatchEvent(new CustomEvent('alerts-update', {
-            detail: { alerts: state.alerts, unreadCount: state.unreadAlertCount }
-        }));
-        renderAlertsDropdown();
-    }
-}
-
-/**
- * Get icon for user role
- */
-function getRoleIcon(role) {
-    const icons = {
-        kitchen: '🍳',
-        processing_unit: '🏭',
-        ngo: '🤝',
-        mandir: '🕉️',
-    };
-    return icons[role] || '👤';
-}
-
-/**
- * Format role for display
- */
-function formatRole(role) {
-    const labels = {
-        kitchen: 'Kitchen',
-        processing_unit: 'Processing Unit',
-        ngo: 'NGO',
-        mandir: 'Mandir',
-    };
-    return labels[role] || role;
-}
-
-/**
- * Get icon for alert type
- */
-function getAlertIcon(type) {
-    const icons = {
-        new_listing: '🍽️',
-        claimed: '✅',
-        pledge: '🤝',
-        expiry_warning: '⚠️',
-        expired: '❌',
-        disposal: '🗑️',
-    };
-    return icons[type] || '🔔';
-}
-
-/**
- * Format alert time
- */
-function formatAlertTime(isoString) {
-    const date = new Date(isoString);
-    const now = new Date();
-    const diffMs = now - date;
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMs / 3600000);
-
-    if (diffMins < 1) return 'Just now';
-    if (diffMins < 60) return `${diffMins}m ago`;
-    if (diffHours < 24) return `${diffHours}h ago`;
-    return date.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' });
-}
-
-/**
- * Escape HTML to prevent XSS
- */
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
-
-/**
- * Show login modal for role selection
- */
-function showLoginModal(role) {
-    // Create modal
-    const modal = document.createElement('div');
-    modal.className = 'modal-overlay';
-    modal.innerHTML = `
-        <div class="modal login-modal">
-            <h3>Select User</h3>
-            <p>Choose a demo account to continue as ${formatRole(role)}</p>
-            <div class="user-list" id="user-list"></div>
-            <button class="btn btn-secondary modal-close" id="modal-close">Cancel</button>
-        </div>
-    `;
-    document.body.appendChild(modal);
-
-    // Fetch users and populate
-    fetch('/api/demo/users')
-        .then(r => r.json())
-        .then(data => {
-            const users = data.users.filter(u => u.role === role);
-            const list = modal.querySelector('#user-list');
-            list.innerHTML = users.map(user => `
-                <button class="user-option" data-user-id="${user.id}">
-                    <span class="user-option-name">${escapeHtml(user.name)}</span>
-                    <span class="user-option-id">${user.id}</span>
-                </button>
-            `).join('');
-
-            // Add click handlers
-            list.querySelectorAll('.user-option').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const userId = btn.dataset.userId;
-                    const user = users.find(u => u.id === userId);
-                    if (user) {
-                        import('./state.js').then(({ saveUser }) => saveUser(user));
-                        updateNavUI();
-                        showToast(`Logged in as ${user.name}`, 'success');
-                        modal.remove();
-                        // Reload page to initialize page-specific logic
-                        window.location.reload();
-                    }
-                });
-            });
-        })
-        .catch(() => {
-            showToast('Failed to load users', 'error');
+    // Reset Demo button
+    document.getElementById('btn-reset-demo')?.addEventListener('click', async (e) => {
+        if (!window.confirm('Reset demo database and clock to initial seed state?')) return;
+        await api.withSubmitLock(e.currentTarget, async () => {
+            await api.resetDemoClock();
+            window.location.reload();
         });
-
-    // Close modal handlers
-    modal.querySelector('#modal-close')?.addEventListener('click', () => modal.remove());
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) modal.remove();
     });
+
+    // Alerts bell -> open dropdown and mark read on open
+    const alertsBtn = document.getElementById('nav-alerts');
+    const dropdown = document.getElementById('alerts-dropdown');
+    alertsBtn?.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const isOpen = dropdown.style.display !== 'none';
+        if (isOpen) {
+            dropdown.style.display = 'none';
+        } else {
+            renderAlertsList();
+            dropdown.style.display = 'block';
+            if (state.unreadAlertCount > 0) {
+                await markAlertsRead(api);
+            }
+        }
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!alertsBtn?.contains(e.target) && !dropdown?.contains(e.target)) {
+            if (dropdown) dropdown.style.display = 'none';
+        }
+    });
+
+    window.addEventListener('democlock-update', updateClockDisplay);
+    window.addEventListener('alerts-update', updateAlertsUI);
 }
 
-// Export for use in pages
-export { updateNavUI, updateClockDisplay, updateAlertsUI };
+// Auto-initialize when imported as <script type="module" src=".../shared/nav.js">
+export const navReady = initNavBar();

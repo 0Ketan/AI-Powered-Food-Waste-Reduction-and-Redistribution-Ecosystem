@@ -149,18 +149,18 @@ def marketplace_claims(recipient_id: str = None, donor_id: str = None):
     try:
         if recipient_id:
             rows = conn.execute(
-                "SELECT * FROM mkt_claims WHERE recipient_id = ? ORDER BY created_at DESC",
+                "SELECT * FROM mkt_claims WHERE recipient_id = ? ORDER BY claimed_at DESC",
                 (recipient_id,)
             ).fetchall()
         elif donor_id:
             rows = conn.execute(
                 """SELECT c.* FROM mkt_claims c
                    JOIN mkt_listings l ON c.listing_id = l.id
-                   WHERE l.donor_id = ? ORDER BY c.created_at DESC""",
+                   WHERE l.donor_id = ? ORDER BY c.claimed_at DESC""",
                 (donor_id,)
             ).fetchall()
         else:
-            rows = conn.execute("SELECT * FROM mkt_claims ORDER BY created_at DESC").fetchall()
+            rows = conn.execute("SELECT * FROM mkt_claims ORDER BY claimed_at DESC").fetchall()
         return [dict(r) for r in rows]
     finally:
         conn.close()
