@@ -29,12 +29,12 @@ def get_logs(kitchen_id: Optional[str] = None, limit: int = 50):
     try:
         if kitchen_id:
             rows = conn.execute(
-                "SELECT * FROM waste_logs WHERE kitchen_id = ? ORDER BY date DESC, slot LIMIT ?",
+                "SELECT * FROM waste_logs WHERE kitchen_id = ? ORDER BY date DESC, id DESC LIMIT ?",
                 (kitchen_id, limit)
             ).fetchall()
         else:
             rows = conn.execute(
-                "SELECT * FROM waste_logs ORDER BY date DESC, slot LIMIT ?",
+                "SELECT * FROM waste_logs ORDER BY date DESC, id DESC LIMIT ?",
                 (limit,)
             ).fetchall()
         return [dict(row) for row in rows]
@@ -84,7 +84,16 @@ def get_summary(kitchen_id: Optional[str] = None):
 
         days = [dict(row) for row in daily_rows]
         totals = dict(total_row) if total_row else {"prepared": 0, "served": 0, "leftover": 0, "shortage_count": 0}
-        totals["leftover_pct"] = round((totals["leftover"] / totals["prepared"] * 100) if totals["prepared"] > 0 else 0, 1)
+        # Handle NULL values from SUM() when no rows exist
+        prepared = totals.get("prepared", 0) or 0
+        served = totals.get("served", 0) or 0
+        leftover = totals.get("leftover", 0) or 0
+        shortage_count = totals.get("shortage_count", 0) or 0
+        totals["prepared"] = prepared
+        totals["served"] = served
+        totals["leftover"] = leftover
+        totals["shortage_count"] = shortage_count
+        totals["leftover_pct"] = round((leftover / prepared * 100) if prepared > 0 else 0, 1)
         by_slot = [{"slot": row["slot"], "avg_leftover": round(row["avg_leftover"], 1)} for row in slot_rows]
 
         return {

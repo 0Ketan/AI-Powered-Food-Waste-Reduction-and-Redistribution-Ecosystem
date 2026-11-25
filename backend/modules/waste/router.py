@@ -5,10 +5,12 @@ Affected API: POST /api/waste/log, GET /api/waste/logs, GET /api/waste/summary
 Data schemas: WasteLogIn, WasteLogOut Pydantic models; waste_logs table from core/db.py
 User instruction: Build complete SKELETON of AnnaSetu AI hackathon prototype per detailed specification
 """
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Query, Request
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 from typing import Optional
 from .db import insert_log, get_logs, get_summary
+from .validation import validate_waste_log, VALID_KITCHENS, VALID_SLOTS
 
 
 router = APIRouter(prefix="/waste", tags=["waste"])
@@ -41,36 +43,85 @@ class WasteLogOut(BaseModel):
     log_id: str = "wst_1"
 
 
+def _make_error_response(error_code: str, message: str, status_code: int = 400) -> JSONResponse:
+    """Create error response in the contract's shape."""
+    return JSONResponse(
+        status_code=status_code,
+        content={"error": error_code, "message": message}
+    )
+
+
 @router.post("/logs", response_model=WasteLogOut)
 @router.post("/log", response_model=WasteLogOut)
-def log_waste(payload: WasteLogIn):
+async def log_waste(request: Request):
     """Log daily waste for a kitchen/slot."""
     from backend.core.clock import get_demo_time
-    date_val = payload.date or get_demo_time().date().isoformat()
-    slot_val = payload.slot or "lunch"
-    
-    prepared = payload.prepared or 0
-    served = payload.served or 0
-    leftover = payload.leftover or 0
-    
-    if payload.quantity_kg and prepared == 0:
-        prepared = int(payload.quantity_kg)
-        leftover = int(payload.quantity_kg)
+
+    # Read raw JSON body to validate before FastAPI's auto-parsing
+    try:
+        body = await request.json()
+    except Exception:
+        return _make_error_response("invalid_json", "Request body must be valid JSON")
+
+    if not isinstance(body, dict):
+        return _make_error_response("invalid_json", "Request body must be a JSON object")
+
+    # Validate using shared validation function
+    validation_error = validate_waste_log(body)
+    if validation_error:
+        return validation_error
+
+    # Additional validation for served + leftover == prepared (stub rule)
+    prepared = body.get("prepared", 0)
+    served = body.get("served", 0)
+    leftover = body.get("leftover", 0)
+    quantity_kg = body.get("quantity_kg")
+
+    if quantity_kg and prepared == 0:
+        prepared = int(quantity_kg)
+        leftover = int(quantity_kg)
         served = 0
-    elif prepared > 0 and (served + leftover != prepared) and not payload.quantity_kg:
-        raise HTTPException(status_code=400, detail="served + leftover must equal prepared")
-        
-    insert_log(
-        payload.kitchen_id, date_val, slot_val,
-        prepared, served, leftover, bool(payload.ran_short)
-    )
+    elif prepared > 0 and (served + leftover != prepared) and not quantity_kg:
+        return _make_error_response("invalid_value", "served + leftover must equal prepared")
+
+    try:
+        insert_log(
+            body["kitchen_id"],
+            body.get("date") or get_demo_time().date().isoformat(),
+            body.get("slot", "lunch"),
+            prepared,
+            served,
+            leftover,
+            bool(body.get("ran_short", False))
+        )
+    except Exception as e:
+        return _make_error_response("server_error", f"Failed to store waste log: {str(e)}", 500)
+
     return {"ok": True, "id": 1, "log_id": "wst_1"}
 
 
 @router.get("/logs")
-def list_logs(kitchen_id: Optional[str] = None, limit: int = Query(50, le=200)):
+def list_logs(kitchen_id: Optional[str] = None, limit: str = Query("50", description="Limit for results")):
     """List waste logs."""
-    raw_logs = get_logs(kitchen_id, limit)
+
+    # Validate limit is a positive integer - first validate format via string length
+    if len(limit) > 10:  # Max reasonable is 200, so anything longer than 10 chars is too big
+        return _make_error_response("invalid_limit", "limit must be a positive integer")
+
+    # Validate limit is a positive integer
+    try:
+        limit_int = int(limit)
+        if limit_int < 1:
+            return _make_error_response("invalid_limit", "limit must be a positive integer")
+        if limit_int > 200:
+            limit_int = 200
+    except (ValueError, TypeError):
+        return _make_error_response("invalid_limit", "limit must be a positive integer")
+
+    if kitchen_id is not None and kitchen_id not in VALID_KITCHENS:
+        return _make_error_response("invalid_kitchen", f"Kitchen {kitchen_id} not found")
+
+    raw_logs = get_logs(kitchen_id, limit_int)
     # Return dict with 'logs' key for schemas/smoke_test compatibility
     return {"logs": raw_logs}
 
@@ -78,4 +129,6 @@ def list_logs(kitchen_id: Optional[str] = None, limit: int = Query(50, le=200)):
 @router.get("/summary")
 def summary(kitchen_id: Optional[str] = None):
     """Get aggregate waste summary."""
+    if kitchen_id is not None and kitchen_id not in VALID_KITCHENS:
+        return _make_error_response("invalid_kitchen", f"Kitchen {kitchen_id} not found")
     return get_summary(kitchen_id)
