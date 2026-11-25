@@ -57,7 +57,7 @@ Provides cooking quantity recommendations for kitchens based on historical data,
 ## Status Checklist
 - S1: venv setup, server runs, endpoints tested — **done (reviewed)**
 - S2: Waste module validation, ordering, ran_short counting, /summary maths — **done (reviewed)**
-- S3: simulate.py with 120 days patterns per kitchen/slot — **not done**
+- S3: simulate.py with 120 days patterns per kitchen/slot — **done (reviewed)**
 - S4: Baseline + quantile models (0.5, 0.75, 0.9) — **not done**
 - S5: Reasons with effect_pct vs baseline — **not done**
 - S6: /metrics with MAE comparison — **not done**
